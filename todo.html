@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Todo">
+<meta name="theme-color" content="#0F0F0F">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+CiAgPHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMTIiIGZpbGw9IiMwRjBGMEYiLz4KICA8cG9seWxpbmUgcG9pbnRzPSIxMjAsMjU2IDIyMCwzNTYgMzkyLDE1NiIgc3Ryb2tlPSIjMDBFNjc2IiBzdHJva2Utd2lkdGg9IjY0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGZpbGw9Im5vbmUiLz4KPC9zdmc+">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+CiAgPHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMTIiIGZpbGw9IiMwRjBGMEYiLz4KICA8cG9seWxpbmUgcG9pbnRzPSIxMjAsMjU2IDIyMCwzNTYgMzkyLDE1NiIgc3Ryb2tlPSIjMDBFNjc2IiBzdHJva2Utd2lkdGg9IjY0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGZpbGw9Im5vbmUiLz4KPC9zdmc+">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Todo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#F2F2F2;--ink-muted:#AAAAAA;--ink-hint:#777777;
+  --bg:#0F0F0F;--surface:#1A1A1A;
+  --border:rgba(255,255,255,0.07);--border-md:rgba(255,255,255,0.12);
+  --neon:#00E676;--neon-dark:#00B857;--neon-light:rgba(0,230,118,0.12);--neon-mid:rgba(0,230,118,0.25);
+  --red:#E53E3E;--red-light:#FFF5F5;
+  --yellow:#D97706;--yellow-light:#FFFBEB;
+  --green:#0D9488;--green-light:#F0FDFA;--green-text:#0F766E;
+  --orange:#E07B54;
+  --radius:12px;--radius-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;height:100dvh;overflow:hidden}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:#F2F2F2;display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;height:100vh;height:100dvh;position:relative}
+@media(min-width:600px){
+  body{border-left:1px solid rgba(255,255,255,0.08);border-right:1px solid rgba(255,255,255,0.08);box-shadow:0 0 60px rgba(0,230,118,0.06)}
+  html{background:#080808}
+  .perso-panel{left:50%;transform:translateX(-50%);max-width:480px}
+}
+
+/* HEADER */
+.header{padding:1.25rem 1.25rem 0.75rem;flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+.app-name{font-size:22px;font-weight:800;letter-spacing:-0.5px;line-height:1;color:#F2F2F2}
+.app-name em{color:var(--neon);font-style:normal}
+.header-right{display:flex;align-items:center;gap:10px}
+.done-badge{font-size:12px;color:#AAAAAA;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 10px}
+.perso-btn{width:34px;height:34px;border-radius:50%;background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.25);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0}
+
+/* NAV */
+.nav{display:flex;border-bottom:1px solid rgba(255,255,255,0.08);margin:0 1.25rem;flex-shrink:0}
+.nav-btn{flex:1;padding:10px 4px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;text-align:center;border:none;border-bottom:2px solid transparent;cursor:pointer;background:transparent;color:#BBBBBB;transition:all 0.15s;white-space:nowrap}
+.nav-btn.active{color:var(--neon);border-bottom-color:var(--neon);font-weight:700}
+.nav-count{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;background:rgba(255,255,255,0.15);border-radius:8px;font-size:10px;padding:0 4px;margin-left:3px;color:#BBBBBB}
+.nav-btn.active .nav-count{background:rgba(0,230,118,0.12);color:var(--neon)}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:0.75rem 1.25rem 1rem;scrollbar-width:thin;min-height:0}
+.view{display:none}.view.active{display:block}
+
+/* QUICK INPUT BAR */
+.input-bar{padding:0.75rem 1.25rem;padding-bottom:calc(0.75rem + env(safe-area-inset-bottom));flex-shrink:0;background:#1A1A1A;border-top:1px solid rgba(255,255,255,0.07);display:flex;gap:8px;align-items:center;position:sticky;bottom:0}
+.quick-input{flex:1;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;padding:10px 14px;border:1.5px solid rgba(255,255,255,0.12);border-radius:24px;background:#1A1A1A;color:#F2F2F2;outline:none;transition:border-color 0.15s}
+.quick-input:focus{border-color:var(--neon)}
+.quick-input::placeholder{color:#888888}
+.add-btn{width:40px;height:40px;border-radius:50%;background:var(--neon);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;color:#0F0F0F;flex-shrink:0;transition:transform 0.1s}
+.add-btn:active{transform:scale(0.92)}
+
+/* TASK ITEMS */
+.task-item{display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.08);animation:fadeIn 0.18s ease}
+.task-item:last-child{border-bottom:none}
+@keyframes fadeIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+.task-check{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.2);flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.task-check:hover{border-color:var(--neon)}
+.task-check.checked{background:var(--neon);border-color:var(--neon);color:#0F0F0F;font-size:11px}
+.task-body{flex:1;min-width:0;cursor:pointer}
+.task-text{font-size:14px;font-weight:500;line-height:1.4;word-break:break-word}
+.task-text.done{text-decoration:line-through;color:#888888;font-weight:400}
+.task-meta{display:flex;align-items:center;gap:5px;margin-top:4px;flex-wrap:wrap}
+.cat-tag{font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;letter-spacing:0.2px}
+.prio-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.prio-urgent .prio-dot{background:var(--red)}
+.prio-important .prio-dot{background:var(--yellow)}
+.prio-someday .prio-dot{background:#444}
+.due-lbl{font-size:11px;color:#AAAAAA;font-weight:500}
+.task-del{width:26px;height:26px;border:none;background:transparent;cursor:pointer;color:#888888;font-size:13px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:0;transition:opacity 0.15s}
+.task-item:hover .task-del{opacity:1}
+
+/* CAT COLORS */
+.cat-em{background:#1a2744;color:#60a5fa}.cat-at{background:#0f2a1f;color:#4ade80}
+.cat-we{background:#2a1044;color:#c084fc}.cat-co{background:#2a1800;color:#fb923c}
+.cat-tr{background:#0a2233;color:#38bdf8}.cat-au{background:#242424;color:#9ca3af}
+
+/* TODAY SECTION */
+.section-lbl{font-size:11px;font-weight:700;color:#DDDDDD;letter-spacing:0.8px;letter-spacing:0.6px;text-transform:uppercase;margin:1rem 0 0.4rem}
+.section-lbl:first-child{margin-top:0}
+.habit-row-small{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
+.habit-row-small:last-child{border-bottom:none}
+.hab-emoji{font-size:17px;flex-shrink:0}
+.hab-name{flex:1;font-size:13px;font-weight:500}
+.hab-status{font-size:11px;color:#AAAAAA;gap:5px}
+.tog-wrap{display:flex;flex-direction:row;gap:5px;flex-shrink:0}
+.tog-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.2);background:transparent;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all 0.12s;color:#DDDDDD;font-family:'Plus Jakarta Sans',sans-serif}
+.tog-btn.yes-on{background:var(--green-light);border-color:var(--green)}
+.tog-btn.no-on{background:var(--red-light);border-color:var(--red)}
+
+/* FILTERS */
+.cat-filters{display:flex;gap:6px;overflow-x:auto;margin-bottom:0.75rem;scrollbar-width:none;padding-bottom:2px}
+.cat-filters::-webkit-scrollbar{display:none}
+.cf-btn{padding:5px 11px;font-size:11px;border:1px solid rgba(255,255,255,0.15);border-radius:20px;cursor:pointer;background:transparent;color:#BBBBBB;white-space:nowrap;transition:all 0.12s;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0}
+.cf-btn.active{background:var(--neon);border-color:var(--neon);color:#0F0F0F}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:1.5rem 0.5rem;color:#666;font-size:14px}
+.es-icon{font-size:28px;margin-bottom:8px}
+
+/* DRAWERS */
+.overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:100;align-items:flex-end;justify-content:center}
+.overlay.open{display:flex}
+.drawer{background:#1A1A1A;border-radius:20px 20px 0 0;padding:1.25rem 1.25rem 2.5rem;width:100%;max-width:480px;animation:slideUp 0.22s cubic-bezier(.32,0,.15,1);max-height:92vh;overflow-y:auto}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.drawer-handle{width:36px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 1.25rem}
+.drawer-title{font-size:18px;font-weight:700;margin-bottom:1.25rem;color:#F2F2F2}
+.field-lbl{font-size:11px;font-weight:600;color:#BBBBBB;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px}
+.field-group{margin-bottom:14px}
+input[type=text],input[type=date],textarea,select{width:100%;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;padding:10px 12px;border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-sm);background:#242424;color:#F2F2F2;outline:none;-webkit-appearance:none;transition:border-color 0.15s}
+input:focus,textarea:focus,select:focus{border-color:var(--neon)}
+textarea{resize:none;height:68px;line-height:1.5}
+.prio-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.prio-opt{padding:9px 4px;text-align:center;font-size:12px;font-weight:500;border:1.5px solid rgba(255,255,255,0.15);border-radius:var(--radius-sm);cursor:pointer;background:transparent;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.12s}
+.prio-opt.sel-urgent{background:var(--red-light);border-color:var(--red);color:var(--red)}
+.prio-opt.sel-important{background:var(--yellow-light);border-color:var(--yellow);color:#92400E}
+.prio-opt.sel-someday{background:var(--bg);border-color:rgba(255,255,255,0.15);color:#BBBBBB}
+.cat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.cat-opt{padding:8px 4px;text-align:center;font-size:11px;font-weight:600;border:1.5px solid rgba(255,255,255,0.15);border-radius:var(--radius-sm);cursor:pointer;background:transparent;font-family:'Plus Jakarta Sans',sans-serif;color:#BBBBBB;text-transform:uppercase;letter-spacing:0.3px;transition:all 0.12s}
+.cat-opt.selected{border-color:var(--neon);background:rgba(0,230,118,0.12);color:var(--neon)}
+.submit-btn{width:100%;padding:13px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;border:none;border-radius:var(--radius-sm);background:var(--neon);color:#0F0F0F;cursor:pointer;margin-top:4px;transition:background 0.12s}
+.submit-btn:hover{background:var(--neon-dark)}
+.submit-btn:active{transform:scale(0.98)}
+.ghost-btn{width:100%;padding:10px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-sm);background:transparent;color:#CCCCCC;cursor:pointer;margin-top:8px}
+
+/* PERSO PANEL */
+.perso-panel{display:none;position:fixed;top:0;right:0;width:100%;max-width:480px;height:100%;background:#1A1A1A;z-index:200;flex-direction:column;animation:slideRight 0.22s cubic-bezier(.32,0,.15,1)}
+.perso-panel.open{display:flex}
+@keyframes slideRight{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.perso-header{padding:1.25rem;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0}
+.perso-back{width:32px;height:32px;border:none;background:#242424;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.perso-title{font-size:18px;font-weight:700;color:#F2F2F2}
+.perso-content{flex:1;overflow-y:auto;padding:1rem 1.25rem 2rem}
+.perso-nav{display:flex;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:1rem;overflow-x:auto;scrollbar-width:none}
+.perso-nav::-webkit-scrollbar{display:none}
+.pnav-btn{flex-shrink:0;padding:10px 12px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;border:none;border-bottom:2px solid transparent;cursor:pointer;background:transparent;color:#BBBBBB;white-space:nowrap}
+.pnav-btn.active{color:var(--neon);border-bottom-color:var(--neon);font-weight:700}
+.pview{display:none}.pview.active{display:block}
+
+/* HABITUDES DETAIL */
+.hab-card{background:#242424;border-radius:var(--radius);padding:1rem;margin-bottom:8px}
+.hm-wrap{}
+.hm-hdr{display:flex;gap:4px;margin-bottom:4px}
+.hm-sp{width:16px;flex-shrink:0}
+.hm-dlbls{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;flex:1}
+.hm-dlbl{font-size:9px;color:#AAAAAA;text-align:center}
+.hm-row{display:flex;gap:4px;margin-bottom:2px;align-items:center}
+.hm-ml{font-size:9px;color:#AAAAAA;width:16px;flex-shrink:0}
+.hm-wk{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;flex:1}
+.hm-d{aspect-ratio:1;border-radius:2px;border:1px solid rgba(255,255,255,0.08);background:#242424}
+.hm-d.ok{background:var(--green-light);border-color:var(--green)}
+.hm-d.ko{background:var(--red-light);border-color:var(--red)}
+.hm-d.fut{background:rgba(255,255,255,0.03);border-color:transparent}
+.hm-d.tod{border:2px solid var(--neon)!important}
+.hm-legend{display:flex;gap:6px;margin-top:6px;font-size:11px;color:#AAAAAA;align-items:center}
+.hm-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+
+/* BOOKS */
+.book-item{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
+.book-item:last-child{border-bottom:none}
+.book-spine{width:4px;border-radius:2px;flex-shrink:0;align-self:stretch;min-height:40px}
+.book-info{flex:1;min-width:0}
+.book-title{font-size:13px;font-weight:600;line-height:1.3}
+.book-author{font-size:11px;color:#BBBBBB;margin-top:1px}
+.book-footer{display:flex;align-items:center;gap:8px;margin-top:4px}
+.book-stars{font-size:11px;color:var(--neon)}
+.book-date{font-size:11px;color:#888888}
+.book-del{border:none;background:transparent;cursor:pointer;font-size:13px;color:#888888;padding:0;flex-shrink:0;align-self:flex-start;margin-top:2px}
+.star-row{display:flex;gap:8px;font-size:22px;cursor:pointer}
+.star-row span{opacity:0.25;transition:opacity 0.1s}
+.star-row span.on{opacity:1;color:var(--neon)}
+.book-cat-filters{display:flex;gap:6px;overflow-x:auto;margin-bottom:0.75rem;scrollbar-width:none}
+.book-cat-filters::-webkit-scrollbar{display:none}
+
+/* LIFE IN WEEKS */
+.liw-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
+.liw-stat{background:#242424;border-radius:var(--radius-sm);padding:10px;text-align:center}
+.liw-num{font-size:18px;font-weight:600;line-height:1}
+.liw-lbl{font-size:10px;color:#BBBBBB;margin-top:2px}
+.liw-grid-wrap{overflow-x:auto;padding-bottom:4px}
+.lw{width:5px;height:5px;border-radius:1px;flex-shrink:0}
+.lw.past{background:#2A2A2A}
+.lw.cur{background:var(--neon);border-radius:2px}
+.lw.fut{background:#080808}
+.lw.ms{background:#E07B54!important}
+.liw-legend{display:flex;gap:10px;margin-top:8px;font-size:11px;color:#BBBBBB;flex-wrap:wrap}
+.liw-li{display:flex;align-items:center;gap:4px}
+.liw-dot{width:9px;height:9px;border-radius:1px}
+.ms-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
+.ms-item:last-child{border-bottom:none}
+.ms-dot{width:9px;height:9px;border-radius:50%;background:#E07B54;flex-shrink:0}
+.ms-info{flex:1}
+.ms-label{font-size:13px;font-weight:500}
+.ms-date{font-size:11px;color:#BBBBBB;margin-top:1px}
+.ms-del{border:none;background:transparent;cursor:pointer;font-size:13px;color:#888888}
+
+/* HABIT EDIT */
+.he-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:300;align-items:flex-end;justify-content:center}
+.he-overlay.open{display:flex}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="app-name">mes <em>tâches</em></div>
+  <div class="header-right">
+    <div class="done-badge" id="done-badge">0 faites aujourd'hui</div>
+    <div class="perso-btn" onclick="openPerso()">☰</div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showTab('today',this)">Aujourd'hui</button>
+  <button class="nav-btn" onclick="showTab('tasks',this)">Tâches <span class="nav-count" id="cnt-tasks">0</span></button>
+  <button class="nav-btn" onclick="showTab('done',this)">Terminées <span class="nav-count" id="cnt-done">0</span></button>
+</div>
+
+<div class="content">
+
+  <!-- AUJOURD'HUI -->
+  <div id="tab-today" class="view active">
+    <div class="section-lbl">urgentes</div>
+    <div id="today-urgent">
+      <div class="empty-state" style="padding:1rem 0;text-align:left;color:#888888;font-size:13px">Aucune tâche urgente 🎉</div>
+    </div>
+    <div class="section-lbl" id="habits-section-lbl" style="margin-top:1.25rem">habitudes</div>
+    <div id="today-habits"></div>
+  </div>
+
+  <!-- TÂCHES -->
+  <div id="tab-tasks" class="view">
+    <div class="cat-filters" id="cat-filters"></div>
+    <div id="list-tasks"></div>
+  </div>
+
+  <!-- TERMINÉES -->
+  <div id="tab-done" class="view">
+    <div id="list-done"></div>
+  </div>
+
+</div>
+
+<!-- INPUT BAR -->
+<div class="input-bar">
+  <input type="text" class="quick-input" id="quick-input" placeholder="Nouvelle tâche..." onkeydown="if(event.key==='Enter')quickAdd()">
+  <button class="add-btn" onclick="quickAdd()">+</button>
+</div>
+
+<!-- LOADING -->
+<div id="loading-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#0F0F0F;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+  <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;color:var(--neon-dark)">mes <em style="font-style:italic">tâches</em></div>
+  <div id="loading-msg" style="font-size:13px;color:#BBBBBB">Chargement...</div>
+</div>
+
+<!-- TASK DETAIL DRAWER -->
+<div class="overlay" id="detail-overlay" onclick="closeDetail(event)">
+  <div class="drawer" onclick="event.stopPropagation()">
+    <div class="drawer-handle"></div>
+    <div class="drawer-title" id="detail-title">Modifier</div>
+    <div class="field-group"><div class="field-lbl">Tâche</div><input type="text" id="det-text"></div>
+    <div class="field-group"><div class="field-lbl">Note</div><textarea id="det-note" placeholder="Détails..."></textarea></div>
+    <div class="field-group"><div class="field-lbl">Catégorie</div>
+      <div class="cat-row" id="detail-cat-row"></div>
+    </div>
+    <div class="field-group"><div class="field-lbl">Priorité</div>
+      <div class="prio-row">
+        <button class="prio-opt" data-prio="urgent" onclick="selPrio(this)">🔴 Urgent</button>
+        <button class="prio-opt" data-prio="important" onclick="selPrio(this)">🟡 Important</button>
+        <button class="prio-opt" data-prio="someday" onclick="selPrio(this)">⚪ Un jour</button>
+      </div>
+    </div>
+    <div class="field-group"><div class="field-lbl">Échéance</div><input type="date" id="det-due"></div>
+    <button class="submit-btn" onclick="saveDetail()">Enregistrer</button>
+    <button class="ghost-btn" onclick="deleteFromDetail()">Supprimer cette tâche</button>
+  </div>
+</div>
+
+<!-- HABIT EDIT -->
+<div class="he-overlay" id="he-overlay" onclick="closeHe(event)">
+  <div class="drawer" onclick="event.stopPropagation()">
+    <div class="drawer-handle"></div>
+    <div style="font-size:12px;color:#BBBBBB;margin-bottom:3px" id="he-name"></div>
+    <div style="font-size:16px;font-weight:600;margin-bottom:1.25rem" id="he-date"></div>
+    <div style="display:flex;gap:10px;margin-bottom:10px">
+      <button onclick="heLog(true)" style="flex:1;padding:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;border-radius:var(--radius-sm);border:1.5px solid var(--green);background:var(--green-light);color:var(--green-text);cursor:pointer">✓ Réussi</button>
+      <button onclick="heLog(false)" style="flex:1;padding:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;border-radius:var(--radius-sm);border:1.5px solid var(--red);background:var(--red-light);color:var(--red);cursor:pointer">✗ Raté</button>
+    </div>
+    <button onclick="heLog(null)" style="width:100%;padding:10px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-sm);background:transparent;color:#CCCCCC;cursor:pointer">Effacer</button>
+  </div>
+</div>
+
+<!-- BOOK DRAWER -->
+<div class="overlay" id="book-overlay" onclick="closeBookOverlay(event)">
+  <div class="drawer" onclick="event.stopPropagation()">
+    <div class="drawer-handle"></div>
+    <div class="drawer-title">Ajouter un livre</div>
+    <div class="field-group"><div class="field-lbl">Titre</div><input type="text" id="b-title" placeholder="Titre"></div>
+    <div class="field-group"><div class="field-lbl">Auteur</div><input type="text" id="b-author" placeholder="Auteur"></div>
+    <div class="field-group"><div class="field-lbl">Catégorie</div>
+      <select id="b-cat">
+        <option value="dev">🧠 Développement</option>
+        <option value="sport">🏃 Sport</option>
+        <option value="thriller">🔪 Thriller</option>
+        <option value="roman">📖 Roman</option>
+        <option value="histoire">📜 Histoire / essai</option>
+        <option value="fantasy">🧙 Fantasy</option>
+        <option value="bio">👤 Biographies</option>
+      </select>
+    </div>
+    <div class="field-group"><div class="field-lbl">Date de fin</div><input type="date" id="b-date"></div>
+    <div class="field-group"><div class="field-lbl">Note</div><div class="star-row" id="star-row"><span onclick="setStar(1)">★</span><span onclick="setStar(2)">★</span><span onclick="setStar(3)">★</span><span onclick="setStar(4)">★</span><span onclick="setStar(5)">★</span></div></div>
+    <button class="submit-btn" onclick="submitBook()">Ajouter</button>
+  </div>
+</div>
+
+<!-- MILESTONE DRAWER -->
+<div class="overlay" id="ms-overlay" onclick="closeMsOverlay(event)">
+  <div class="drawer" onclick="event.stopPropagation()">
+    <div class="drawer-handle"></div>
+    <div class="drawer-title">Date marquante</div>
+    <div class="field-group"><div class="field-lbl">Label</div><input type="text" id="ms-label" placeholder="ex: Naissance de Millie"></div>
+    <div class="field-group"><div class="field-lbl">Date</div><input type="date" id="ms-date"></div>
+    <button class="submit-btn" onclick="submitMs()">Ajouter</button>
+  </div>
+</div>
+
+<!-- CAT DRAWER -->
+<div class="overlay" id="cat-overlay" onclick="closeCatOverlay(event)">
+  <div class="drawer" onclick="event.stopPropagation()">
+    <div class="drawer-handle"></div>
+    <div class="drawer-title" id="cat-drawer-title">Nouvelle catégorie</div>
+    <div class="field-group"><div class="field-lbl">Nom</div><input type="text" id="cat-name" placeholder="ex: Famille"></div>
+    <button class="submit-btn" id="cat-submit-btn" onclick="submitCat()">Ajouter</button>
+    <button class="ghost-btn" id="cat-delete-btn" style="display:none" onclick="deleteCatFromDrawer()">Supprimer cette catégorie</button>
+  </div>
+</div>
+
+<!-- PERSO PANEL -->
+<div class="perso-panel" id="perso-panel">
+  <div class="perso-header">
+    <button class="perso-back" onclick="closePerso()">←</button>
+    <div class="perso-title">Espace perso</div>
+  </div>
+  <div class="perso-nav">
+    <button class="pnav-btn active" onclick="showPView('habits',this)">Habitudes</button>
+    <button class="pnav-btn" onclick="showPView('books',this)">📚 Livres</button>
+    <button class="pnav-btn" onclick="showPView('life',this)">Ma vie</button>
+    <button class="pnav-btn" onclick="showPView('cats',this)">Catégories</button>
+  </div>
+  <div class="perso-content">
+
+    <!-- HABITUDES -->
+    <div id="pv-habits" class="pview active">
+      <div id="perso-habits-today"></div>
+      <div id="perso-habits-heatmaps"></div>
+    </div>
+
+    <!-- LIVRES -->
+    <div id="pv-books" class="pview">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem">
+        <div style="font-size:13px;color:#BBBBBB" id="book-count"></div>
+        <button onclick="openBookOverlay()" style="font-size:12px;padding:6px 12px;border:1px solid rgba(255,255,255,0.15);border-radius:20px;background:transparent;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:#BBBBBB">+ Ajouter</button>
+      </div>
+      <div class="book-cat-filters" id="book-cat-filters"></div>
+      <div id="books-list"></div>
+    </div>
+
+    <!-- MA VIE -->
+    <div id="pv-life" class="pview">
+      <div class="liw-stats">
+        <div class="liw-stat"><div class="liw-num" id="liw-age">—</div><div class="liw-lbl">ans</div></div>
+        <div class="liw-stat"><div class="liw-num" id="liw-lived">—</div><div class="liw-lbl">semaines vécues</div></div>
+        <div class="liw-stat"><div class="liw-num" id="liw-left">—</div><div class="liw-lbl">restantes</div></div>
+      </div>
+      <div style="background:var(--bg);border-radius:var(--radius);padding:1rem;overflow-x:auto;margin-bottom:1rem">
+        <div id="liw-grid"></div>
+        <div class="liw-legend">
+          <div class="liw-li"><div class="liw-dot" style="background:#2A2A2A"></div>vécues</div>
+          <div class="liw-li"><div class="liw-dot" style="background:var(--neon)"></div>cette semaine</div>
+          <div class="liw-li"><div class="liw-dot" style="background:#E07B54"></div>marquante</div>
+          <div class="liw-li"><div class="liw-dot" style="background:#080808"></div>à venir</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
+        <div style="font-size:11px;font-weight:600;color:#888888;letter-spacing:0.6px;text-transform:uppercase">dates marquantes</div>
+        <button onclick="openMsOverlay()" style="font-size:12px;padding:5px 10px;border:1px solid rgba(255,255,255,0.15);border-radius:20px;background:transparent;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:#BBBBBB">+ Ajouter</button>
+      </div>
+      <div style="background:var(--bg);border-radius:var(--radius);padding:0.5rem 1rem" id="ms-list"></div>
+    </div>
+
+    <!-- CATÉGORIES -->
+    <div id="pv-cats" class="pview">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem">
+        <div style="font-size:13px;color:#BBBBBB">Gérer tes catégories</div>
+        <button onclick="openCatOverlay()" style="font-size:12px;padding:6px 12px;border:1px solid rgba(255,255,255,0.15);border-radius:20px;background:transparent;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:#BBBBBB">+ Ajouter</button>
+      </div>
+      <div id="cats-list"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SUPA_URL='https://jqjkvlafjgdsnodsdzwz.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxamt2bGFmamdkc25vZHNkend6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MzM5NTEsImV4cCI6MjA5MjIwOTk1MX0.9Suc58I_vBcnSA_UmQxCklr6QpYRns64OmiftgkYAHg';
+
+async function sbGet(table){
+  const r=await fetch(`${SUPA_URL}/rest/v1/${table}?select=*`,{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+  return r.json();
+}
+async function sbUpsert(table,data){
+  await fetch(`${SUPA_URL}/rest/v1/${table}`,{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},body:JSON.stringify(data)});
+}
+async function sbDelete(table,id){
+  await fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}`,{method:'DELETE',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+}
+
+/* DATA */
+var tasks=[];
+var hdata={};
+var bookFilter='all';
+var selStar=0, detailId=null, selCatV=null, selPrioV=null;
+var heState={id:null,ds:null};
+
+var DEFAULT_MS=[
+  {id:'m1',label:'Rencontre avec Ly',date:'2013-07-27'},
+  {id:'m2',label:'Orphelinat',date:'2013-07-15'},
+  {id:'m3',label:'Naissance de Léo',date:'2014-11-26'},
+  {id:'m4',label:'Naissance de Chloé',date:'2018-08-28'},
+  {id:'m5',label:'Naissance de Millie',date:'2022-10-25'},
+  {id:'m6',label:'Première maison',date:'2025-11-03'},
+  {id:'m7',label:'Décès de papa',date:'2026-04-19'}
+];
+var milestones=[];
+
+var BOOK_CATS={
+  dev:{label:'🧠 Développement',color:'#1D4ED8'},
+  sport:{label:'🏃 Sport',color:'#166534'},
+  thriller:{label:'🔪 Thriller',color:'#7E22CE'},
+  roman:{label:'📖 Roman',color:'#C2410C'},
+  histoire:{label:'📜 Histoire / essai',color:'#0369A1'},
+  fantasy:{label:'🧙 Fantasy',color:'#7C3AED'},
+  bio:{label:'👤 Biographies',color:'#374151'}
+};
+
+var DEFAULT_BOOKS=[
+  {id:'b001',title:'Atomic Habits',author:'James Clear',cat:'dev',stars:0,date:null},
+  {id:'b002',title:'Les 7 habitudes de ceux qui réalisent tout ce qu\'ils entreprennent',author:'Stephen R. Covey',cat:'dev',stars:0,date:null},
+  {id:'b003',title:'Le Pouvoir des habitudes',author:'Charles Duhigg',cat:'dev',stars:0,date:null},
+  {id:'b004',title:'Réfléchissez et devenez riche',author:'Napoleon Hill',cat:'dev',stars:0,date:null},
+  {id:'b005',title:'La psychologie de l\'argent',author:'Morgan Housel',cat:'dev',stars:0,date:null},
+  {id:'b006',title:'Deep Work',author:'Cal Newport',cat:'dev',stars:0,date:null},
+  {id:'b007',title:'Ils ne pourront plus se passer de vous',author:'Cal Newport',cat:'dev',stars:0,date:null},
+  {id:'b008',title:'The One Thing',author:'Gary Keller',cat:'dev',stars:0,date:null},
+  {id:'b009',title:'La 25e Heure',author:'Guillaume Declair, Bao Dinh, Jérôme Dumont',cat:'dev',stars:0,date:null},
+  {id:'b010',title:'Ce livre vous fera gagner du temps',author:'Fabien Olicard',cat:'dev',stars:0,date:null},
+  {id:'b011',title:'Unreasonable Hospitality',author:'Will Guidara',cat:'dev',stars:0,date:null},
+  {id:'b012',title:'Les Quatre Accords toltèques',author:'Don Miguel Ruiz',cat:'dev',stars:0,date:null},
+  {id:'b013',title:'La Magie du rangement',author:'Marie Kondo',cat:'dev',stars:0,date:null},
+  {id:'b014',title:'Zero to One',author:'Peter Thiel',cat:'dev',stars:0,date:null},
+  {id:'b015',title:'What I Talk About When I Talk About Running',author:'Haruki Murakami',cat:'sport',stars:0,date:null},
+  {id:'b016',title:'The Non-Runner\'s Marathon Trainer',author:'Whitsett, Dolgener & Kole',cat:'sport',stars:0,date:null},
+  {id:'b017',title:'Méfie-toi',author:'Harlan Coben',cat:'thriller',stars:0,date:null},
+  {id:'b018',title:'Rappelle-toi',author:'Harlan Coben',cat:'thriller',stars:0,date:null},
+  {id:'b019',title:'Six ans déjà',author:'Harlan Coben',cat:'thriller',stars:0,date:null},
+  {id:'b020',title:'Une chance de trop',author:'Harlan Coben',cat:'thriller',stars:0,date:null},
+  {id:'b021',title:'Disparu à jamais',author:'Harlan Coben',cat:'thriller',stars:0,date:null},
+  {id:'b022',title:'Juste un regard',author:'Harlan Coben',cat:'thriller',stars:0,date:null},
+  {id:'b023',title:'Dans les bois',author:'Harlan Coben',cat:'thriller',stars:0,date:null},
+  {id:'b024',title:'Ne t\'enfuis plus',author:'Harlan Coben',cat:'thriller',stars:0,date:null},
+  {id:'b025',title:'Sans défense',author:'Harlan Coben',cat:'thriller',stars:0,date:null},
+  {id:'b026',title:'Gagner n\'est pas jouer',author:'Harlan Coben',cat:'thriller',stars:0,date:null},
+  {id:'b027',title:'Identités croisées',author:'Harlan Coben',cat:'thriller',stars:0,date:null},
+  {id:'b028',title:'Le Vol des cigognes',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b029',title:'Les Rivières pourpres',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b030',title:'Le Concile de pierre',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b031',title:'L\'Empire des loups',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b032',title:'La Ligne noire',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b033',title:'Le Serment des limbes',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b034',title:'Miserere',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b035',title:'La Forêt des mânes',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b036',title:'Kaïken',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b037',title:'Lontano',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b038',title:'Congo Requiem',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b039',title:'La Terre des morts',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b040',title:'La Dernière Chasse',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b041',title:'Les Promises',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b042',title:'Rouge Karma',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b043',title:'Sans soleil',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b044',title:'Le Roi des ombres',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b045',title:'Disco Inferno',author:'Jean-Christophe Grangé',cat:'thriller',stars:0,date:null},
+  {id:'b046',title:'Dans les brumes de Capelans',author:'Olivier Norek',cat:'thriller',stars:0,date:null},
+  {id:'b047',title:'Les Guerriers de l\'hiver',author:'Olivier Norek',cat:'thriller',stars:0,date:null},
+  {id:'b048',title:'La femme de ménage',author:'Freida McFadden',cat:'thriller',stars:0,date:null},
+  {id:'b049',title:'Cul-de-sac',author:'Douglas Kennedy',cat:'thriller',stars:0,date:null},
+  {id:'b050',title:'Bel-Ami',author:'Guy de Maupassant',cat:'roman',stars:0,date:null},
+  {id:'b051',title:'Madame Bovary',author:'Gustave Flaubert',cat:'roman',stars:0,date:null},
+  {id:'b052',title:'Le Collier de la reine',author:'Alexandre Dumas',cat:'roman',stars:0,date:null},
+  {id:'b053',title:'Anéantir',author:'Michel Houellebecq',cat:'roman',stars:0,date:null},
+  {id:'b054',title:'Le Discours',author:'Fabrice Caro',cat:'roman',stars:0,date:null},
+  {id:'b055',title:'Une sortie honorable',author:'Éric Vuillard',cat:'histoire',stars:0,date:null},
+  {id:'b056',title:'La Disparition de Josef Mengele',author:'Olivier Guez',cat:'histoire',stars:0,date:null},
+  {id:'b057',title:'Limonov',author:'Emmanuel Carrère',cat:'histoire',stars:0,date:null},
+  {id:'b058',title:'Magellan',author:'Stefan Zweig',cat:'histoire',stars:0,date:null},
+  {id:'b059',title:'L\'Été des quatre rois',author:'Camille Pascal',cat:'histoire',stars:0,date:null},
+  {id:'b060',title:'Le Mage du Kremlin',author:'Giuliano da Empoli',cat:'histoire',stars:0,date:null},
+  {id:'b061',title:'Harry Potter à l\'École des Sorciers',author:'J.K. Rowling',cat:'fantasy',stars:0,date:null},
+  {id:'b062',title:'Harry Potter et la Chambre des Secrets',author:'J.K. Rowling',cat:'fantasy',stars:0,date:null},
+  {id:'b063',title:'Harry Potter et le Prisonnier d\'Azkaban',author:'J.K. Rowling',cat:'fantasy',stars:0,date:null},
+  {id:'b064',title:'Harry Potter et la Coupe de Feu',author:'J.K. Rowling',cat:'fantasy',stars:0,date:null},
+  {id:'b065',title:'Harry Potter et l\'Ordre du Phénix',author:'J.K. Rowling',cat:'fantasy',stars:0,date:null},
+  {id:'b066',title:'Harry Potter et le Prince de Sang-Mêlé',author:'J.K. Rowling',cat:'fantasy',stars:0,date:null},
+  {id:'b067',title:'Harry Potter et les Reliques de la Mort',author:'J.K. Rowling',cat:'fantasy',stars:0,date:null},
+  {id:'b068',title:'Steve Jobs',author:'Walter Isaacson',cat:'bio',stars:0,date:null},
+  {id:'b069',title:'Elon Musk',author:'Walter Isaacson',cat:'bio',stars:0,date:null}
+];
+var books=DEFAULT_BOOKS.slice();
+
+var HABITS=[
+  {id:'echecs',emoji:'♟️',name:'Joué aux échecs'},
+  {id:'lecture',emoji:'📖',name:'Lu'},
+  {id:'leo',emoji:'👦',name:'Temps avec Léo'},
+  {id:'ly',emoji:'🧑',name:'Temps avec Ly'},
+  {id:'chloe',emoji:'👧',name:'Temps avec Chloé'},
+  {id:'millie',emoji:'👧',name:'Temps avec Millie'},
+  {id:'ecran',emoji:'📵',name:'Pas d\'écran après 22h'}
+];
+
+var DEFAULT_CATS={em:{label:'Emotion Mobility',cls:'cat-em'},at:{label:'Atalian',cls:'cat-at'},we:{label:'Weavenn',cls:'cat-we'},co:{label:'Courses',cls:'cat-co'},tr:{label:'Travaux',cls:'cat-tr'},au:{label:'Autres',cls:'cat-au'}};
+var CATS=JSON.parse(localStorage.getItem('t_cats')||'null')||Object.assign({},DEFAULT_CATS);
+function saveCats(){localStorage.setItem('t_cats',JSON.stringify(CATS));}
+var currentFilter='all';
+
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
+function todayISO(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate();}
+function todayFR(){return new Date().toLocaleDateString('fr-FR');}
+function fmtDate(iso){if(!iso)return'';return new Date(iso+'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short'});}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function showLoading(msg){
+  var el=document.getElementById('loading-msg');
+  if(el) el.textContent=msg||'Chargement...';
+}
+
+async function loadAll(){
+  try{
+    showLoading('Chargement des données...');
+    var [t,h,m,b]=await Promise.all([sbGet('tasks'),sbGet('habits'),sbGet('milestones'),sbGet('books')]);
+    tasks=Array.isArray(t)?t:[];
+    var rawH=Array.isArray(h)?h:[];
+    hdata={};
+    rawH.forEach(function(row){hdata[row.id]=row.data||{};});
+    milestones=Array.isArray(m)?m:[];
+    if(!milestones.length) milestones=DEFAULT_MS.slice();
+    if(Array.isArray(b)&&b.length) books=b;
+    if(!milestones.length||milestones.every(function(m){return DEFAULT_MS.find(function(d){return d.id===m.id;});})){
+      await initMilestones();
+    }
+    if(books.length===0||books.every(function(bk){return DEFAULT_BOOKS.find(function(d){return d.id===bk.id;});})){
+      await initBooks();
+    }
+  }catch(e){console.error(e);}
+  document.getElementById('loading-overlay').style.display='none';
+  renderAll();
+}
+
+async function initMilestones(){
+  await sbUpsert('milestones',DEFAULT_MS);
+  milestones=DEFAULT_MS.slice();
+}
+
+async function initBooks(){
+  var chunks=[];
+  for(var i=0;i<DEFAULT_BOOKS.length;i+=20) chunks.push(DEFAULT_BOOKS.slice(i,i+20));
+  for(var c=0;c<chunks.length;c++) await sbUpsert('books',chunks[c]);
+  books=DEFAULT_BOOKS.slice();
+}
+
+/* TABS */
+function showTab(id,btn){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* QUICK ADD */
+async function quickAdd(){
+  var input=document.getElementById('quick-input');
+  var text=input.value.trim();if(!text)return;
+  var cat=currentFilter!=='all'?currentFilter:'au';
+  var t={id:uid(),text:text,note:'',cat:cat,prio:'someday',due:null,done:false,done_at:null,created_at:Date.now()};
+  tasks.unshift(t);
+  input.value='';renderAll();
+  await sbUpsert('tasks',{id:t.id,text:t.text,note:t.note,cat:t.cat,prio:t.prio,due:t.due,done:t.done,done_at:t.done_at,created_at:t.created_at});
+}
+
+/* RENDER */
+function renderAll(){
+  renderFilters();
+  var today=todayISO();
+  var active=tasks.filter(function(t){return !t.done;});
+  var done=tasks.filter(function(t){return t.done;});
+  var urgent=active.filter(function(t){return t.prio==='urgent';});
+  var doneToday=done.filter(function(t){return t.done_at===today;});
+
+  document.getElementById('done-badge').textContent=doneToday.length+' faite'+(doneToday.length>1?'s':'')+' aujourd\'hui';
+  document.getElementById('cnt-tasks').textContent=filterT(active).length;
+  document.getElementById('cnt-done').textContent=done.length;
+
+  renderToday(urgent,today);
+  renderList('list-tasks',filterT(active).slice().sort(sortActive),false);
+  renderList('list-done',done.slice().sort(function(a,b){return(b.done_at||'').localeCompare(a.done_at||'');}),true);
+}
+
+function sortActive(a,b){
+  var PRIO={urgent:0,important:1,someday:2};
+  var po=(PRIO[a.prio]||2)-(PRIO[b.prio]||2);if(po!==0)return po;
+  if(a.due&&b.due)return a.due.localeCompare(b.due);if(a.due)return-1;if(b.due)return 1;
+  return b.createdAt-a.createdAt;
+}
+
+function filterT(list){return currentFilter==='all'?list:list.filter(function(t){return t.cat===currentFilter;});}
+
+function renderFilters(){
+  var el=document.getElementById('cat-filters');
+  el.innerHTML='<button class="cf-btn'+(currentFilter==='all'?' active':'')+'" onclick="setFilter(\'all\',this)">Toutes</button>'+
+    Object.keys(CATS).map(function(k){
+      return '<button class="cf-btn'+(currentFilter===k?' active':'')+'" onclick="setFilter(\''+k+'\',this)">'+CATS[k].label+'</button>';
+    }).join('');
+}
+
+function setFilter(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.cf-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderAll();
+}
+
+var editCatId=null;
+function openCatOverlay(id){
+  editCatId=id||null;
+  document.getElementById('cat-name').value=id?CATS[id].label:'';
+  document.getElementById('cat-drawer-title').textContent=id?'Modifier la catégorie':'Nouvelle catégorie';
+  document.getElementById('cat-submit-btn').textContent=id?'Enregistrer':'Ajouter';
+  document.getElementById('cat-delete-btn').style.display=id&&id!=='au'?'block':'none';
+  document.getElementById('cat-overlay').classList.add('open');
+  setTimeout(function(){document.getElementById('cat-name').focus();},300);
+}
+function closeCatOverlay(e){if(e&&e.target!==document.getElementById('cat-overlay'))return;document.getElementById('cat-overlay').classList.remove('open');}
+function submitCat(){
+  var name=document.getElementById('cat-name').value.trim();if(!name)return;
+  if(editCatId){
+    CATS[editCatId].label=name;
+  } else {
+    var id=uid();
+    CATS[id]={label:name,cls:'cat-au'};
+  }
+  saveCats();
+  document.getElementById('cat-overlay').classList.remove('open');
+  renderFilters();renderAll();renderCatsList();
+  updateCatSelectors();
+}
+function deleteCatFromDrawer(){
+  if(!editCatId) return;
+  if(editCatId==='au') { alert('La catégorie "Autres" ne peut pas être supprimée.'); return; }
+  tasks.forEach(function(t){ if(t.cat===editCatId) t.cat='au'; });
+  tasks.forEach(function(t){ if(t.cat===editCatId) sbUpsert('tasks',t); });
+  delete CATS[editCatId];
+  saveCats();
+  if(currentFilter===editCatId) currentFilter='all';
+  document.getElementById('cat-overlay').classList.remove('open');
+  renderFilters();renderAll();renderCatsList();
+  updateCatSelectors();
+  var updated=tasks.filter(function(t){return t.cat==='au';});
+  updated.forEach(function(t){sbUpsert('tasks',{id:t.id,text:t.text,note:t.note,cat:t.cat,prio:t.prio,due:t.due,done:t.done,done_at:t.done_at,created_at:t.created_at});});
+}
+function renderCatsList(){
+  var el=document.getElementById('cats-list');if(!el)return;
+  el.innerHTML=Object.keys(CATS).map(function(k){
+    var isDeletable=k!=='au';
+    return '<div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.08)">'+
+      '<div style="flex:1;font-size:14px;font-weight:500">'+esc(CATS[k].label)+'</div>'+
+      (!isDeletable?'<div style="font-size:11px;color:#888888">défaut</div>':'')+
+      '<button onclick="openCatOverlay(\''+k+'\')" style="border:none;background:transparent;cursor:pointer;font-size:13px;color:#BBBBBB;padding:4px 8px;border-radius:6px">✏️</button>'+
+    '</div>';
+  }).join('');
+}
+function updateCatSelectors(){
+  document.querySelectorAll('.cat-opt').forEach(function(btn){
+    var k=btn.dataset.cat;
+    if(CATS[k]) btn.textContent=CATS[k].label;
+  });
+}
+
+function renderToday(urgent,today){
+  var fr=todayFR();
+  var pending=HABITS.filter(function(h){
+    var val=(hdata[h.id]&&hdata[h.id][fr]!==undefined)?hdata[h.id][fr]:null;
+    return val===null;
+  });
+  var hEl=document.getElementById('today-habits');
+  var lblEl=document.getElementById('habits-section-lbl');
+  if(!pending.length){
+    lblEl.style.display='none';
+    hEl.innerHTML='<div style="padding:0.75rem 0;font-size:13px;color:var(--green-text);font-weight:500">✓ Toutes les habitudes du jour cochées !</div>';
+  } else {
+    lblEl.style.display='block';
+    lblEl.textContent='habitudes ('+pending.length+' restantes)';
+    hEl.innerHTML=pending.map(function(h){
+      return '<div class="habit-row-small">'+
+        '<div class="hab-emoji">'+h.emoji+'</div>'+
+        '<div class="hab-name">'+h.name+'</div>'+
+        '<div class="tog-wrap">'+
+          '<button class="tog-btn" onclick="logH(\''+h.id+'\',true)">✓</button>'+
+          '<button class="tog-btn" onclick="logH(\''+h.id+'\',false)">✗</button>'+
+        '</div></div>';
+    }).join('');
+  }
+
+  var uEl=document.getElementById('today-urgent');
+  if(!urgent.length){uEl.innerHTML='<div style="padding:0.75rem 0;font-size:13px;color:#888888">Aucune tâche urgente 🎉</div>';return;}
+  uEl.innerHTML=urgent.slice().sort(function(a,b){if(a.due&&b.due)return a.due.localeCompare(b.due);if(a.due)return-1;if(b.due)return 1;return 0;}).map(function(t){return taskHTML(t);}).join('');
+}
+
+function renderList(elId,list,isDone){
+  var el=document.getElementById(elId);
+  if(!list.length){el.innerHTML='<div class="empty-state"><div class="es-icon">'+(isDone?'✨':'📋')+'</div>'+(isDone?'Rien pour l\'instant':'Aucune tâche ici')+'</div>';return;}
+  el.innerHTML=list.map(function(t){return taskHTML(t);}).join('');
+}
+
+function taskHTML(t){
+  var cat=CATS[t.cat]||CATS.au;
+  var today=todayISO();
+  var overdue=t.due&&t.due<today&&!t.done;
+  return '<div class="task-item prio-'+(t.prio||'someday')+'">'+
+    '<div class="task-check'+(t.done?' checked':'')+'" onclick="toggleDone(\''+t.id+'\')">'+(t.done?'✓':'')+'</div>'+
+    '<div class="task-body" onclick="openDetail(\''+t.id+'\')">'+
+      '<div class="task-text'+(t.done?' done':'')+'">'+esc(t.text)+'</div>'+
+      '<div class="task-meta"><div class="prio-dot"></div><span class="cat-tag '+cat.cls+'">'+cat.label+'</span>'+
+      (t.due?'<span class="due-lbl'+(overdue?' overdue':'')+'">'+fmtDate(t.due)+'</span>':'')+
+      '</div>'+(t.note?'<div style="font-size:12px;color:#BBBBBB;margin-top:3px;line-height:1.4">'+esc(t.note)+'</div>':'')+
+    '</div>'+
+    '<button class="task-del" onclick="delTask(\''+t.id+'\')">✕</button>'+
+  '</div>';
+}
+
+async function toggleDone(id){
+  var t=tasks.find(function(x){return x.id===id;});if(!t)return;
+  t.done=!t.done;t.done_at=t.done?todayISO():null;
+  renderAll();
+  await sbUpsert('tasks',{id:t.id,text:t.text,note:t.note,cat:t.cat,prio:t.prio,due:t.due,done:t.done,done_at:t.done_at,created_at:t.created_at});
+}
+async function delTask(id){
+  tasks=tasks.filter(function(t){return t.id!==id;});renderAll();
+  await sbDelete('tasks',id);
+}
+
+/* DETAIL DRAWER */
+function renderDetailCatRow(){
+  var el=document.getElementById('detail-cat-row');if(!el)return;
+  el.innerHTML=Object.keys(CATS).map(function(k){
+    return '<button class="cat-opt'+(selCatV===k?' selected':'')+'" data-cat="'+k+'" onclick="selCat(this)">'+esc(CATS[k].label)+'</button>';
+  }).join('');
+}
+
+function openDetail(id){
+  var t=tasks.find(function(x){return x.id===id;});if(!t)return;
+  detailId=id;selCatV=t.cat;selPrioV=t.prio;
+  document.getElementById('det-text').value=t.text||'';
+  document.getElementById('det-note').value=t.note||'';
+  document.getElementById('det-due').value=t.due||'';
+  document.querySelectorAll('.cat-opt').forEach(function(b){b.classList.toggle('selected',b.dataset.cat===selCatV);});
+  document.querySelectorAll('.prio-opt').forEach(function(b){b.className='prio-opt';if(b.dataset.prio===selPrioV)b.classList.add('sel-'+selPrioV);});
+  document.getElementById('detail-overlay').classList.add('open');
+  renderDetailCatRow();
+}
+function closeDetail(e){if(e&&e.target!==document.getElementById('detail-overlay'))return;document.getElementById('detail-overlay').classList.remove('open');}
+function selCat(btn){document.querySelectorAll('.cat-opt').forEach(function(b){b.classList.remove('selected');});btn.classList.add('selected');selCatV=btn.dataset.cat;}
+function selPrio(btn){document.querySelectorAll('.prio-opt').forEach(function(b){b.className='prio-opt';});selPrioV=btn.dataset.prio;btn.classList.add('sel-'+selPrioV);}
+async function saveDetail(){
+  var t=tasks.find(function(x){return x.id===detailId;});if(!t)return;
+  t.text=document.getElementById('det-text').value.trim()||t.text;
+  t.note=document.getElementById('det-note').value.trim();
+  t.cat=selCatV||'au';t.prio=selPrioV||'someday';
+  t.due=document.getElementById('det-due').value||null;
+  document.getElementById('detail-overlay').classList.remove('open');renderAll();
+  await sbUpsert('tasks',{id:t.id,text:t.text,note:t.note,cat:t.cat,prio:t.prio,due:t.due,done:t.done,done_at:t.done_at,created_at:t.created_at});
+}
+function deleteFromDetail(){delTask(detailId);document.getElementById('detail-overlay').classList.remove('open');}
+
+/* HABITS */
+async function logH(id,val){
+  if(!hdata[id])hdata[id]={};var fr=todayFR();
+  if(hdata[id][fr]===val){delete hdata[id][fr];}else{hdata[id][fr]=val;}
+  renderAll();renderPersoHabits();
+  await sbUpsert('habits',{id:id,data:hdata[id]});
+}
+
+function openHe(id,ds){
+  var h=HABITS.find(function(x){return x.id===id;});
+  heState={id:id,ds:ds};
+  document.getElementById('he-name').textContent=h.emoji+' '+h.name;
+  document.getElementById('he-date').textContent=ds;
+  document.getElementById('he-overlay').classList.add('open');
+}
+async function heLog(val){
+  var id=heState.id,ds=heState.ds;if(!id||!ds)return;
+  if(!hdata[id])hdata[id]={};
+  if(val===null){delete hdata[id][ds];}else{hdata[id][ds]=val;}
+  closeHe();renderAll();renderPersoHabits();
+  await sbUpsert('habits',{id:id,data:hdata[id]});
+}
+function closeHe(e){if(e&&e.target!==document.getElementById('he-overlay'))return;document.getElementById('he-overlay').classList.remove('open');}
+
+function buildWeeks(){
+  var today=new Date();today.setHours(0,0,0,0);
+  var end=new Date('2026-11-15');end.setHours(0,0,0,0);
+  var mo=today.getDay()===0?6:today.getDay()-1;
+  var start=new Date(today);start.setDate(today.getDate()-mo);
+  var weeks=[],cur=new Date(start);
+  while(cur<=end){var wk=[];for(var w=0;w<7;w++){wk.push(new Date(cur));cur.setDate(cur.getDate()+1);}weeks.push(wk);}
+  return weeks;
+}
+
+function renderHeatmap(id,el){
+  var data=hdata[id]||{};
+  var today=new Date();today.setHours(0,0,0,0);
+  var weeks=buildWeeks();
+  var keys=Object.keys(data);
+  var ok=keys.filter(function(k){return data[k]===true;}).length;
+  var rate=keys.length?Math.round((ok/keys.length)*100):null;
+  var lastM=-1,MN=['J','F','M','A','M','J','J','A','S','O','N','D'];
+  var grid=weeks.map(function(wk){
+    var ml='';
+    for(var k=0;k<wk.length;k++){var d=new Date(wk[k]);d.setHours(0,0,0,0);if(d>=today&&d.getMonth()!==lastM){lastM=d.getMonth();ml=MN[lastM];break;}}
+    return '<div class="hm-row"><div class="hm-ml">'+ml+'</div><div class="hm-wk">'+
+      wk.map(function(day){
+        var d=new Date(day);d.setHours(0,0,0,0);
+        var ds=d.toLocaleDateString('fr-FR');
+        var isFut=d>today;var v=data[ds];
+        var cls='hm-d'+(v===true?' ok':v===false?' ko':isFut?' fut':'')+(d.getTime()===today.getTime()?' tod':'');
+        return '<div class="'+cls+'"'+(!isFut?' onclick="openHe(\''+id+'\',\''+ds+'\')"':'')+' title="'+ds+'"></div>';
+      }).join('')+'</div></div>';
+  }).join('');
+  el.innerHTML='<div class="hm-hdr"><div class="hm-sp"></div><div class="hm-dlbls">'+['L','M','M','J','V','S','D'].map(function(d){return'<div class="hm-dlbl">'+d+'</div>';}).join('')+'</div></div>'+grid+
+    '<div class="hm-legend"><div class="hm-dot" style="background:var(--green-light);border:1px solid var(--green)"></div>réussi<div class="hm-dot" style="background:var(--red-light);border:1px solid var(--red);margin-left:6px"></div>raté'+(rate!==null?'<span style="margin-left:auto;font-size:11px;color:#BBBBBB">'+rate+'%</span>':'')+' </div>';
+}
+
+function renderPersoHabits(){
+  var today=todayFR();
+  var todayEl=document.getElementById('perso-habits-today');
+  var score=HABITS.filter(function(h){var v=(hdata[h.id]&&hdata[h.id][today]!==undefined)?hdata[h.id][today]:null;return v===true;}).length;
+  todayEl.innerHTML='<div style="font-size:11px;font-weight:600;color:#888888;letter-spacing:0.6px;text-transform:uppercase;margin-bottom:0.6rem">aujourd\'hui — '+score+'/'+HABITS.length+'</div>'+
+    '<div style="background:var(--bg);border-radius:var(--radius);padding:0.75rem 1rem;margin-bottom:1rem">'+
+    HABITS.map(function(h){
+      var val=(hdata[h.id]&&hdata[h.id][today]!==undefined)?hdata[h.id][today]:null;
+      return '<div class="habit-row-small">'+
+        '<div class="hab-emoji">'+h.emoji+'</div>'+
+        '<div class="hab-name">'+h.name+'</div>'+
+        '<div class="hab-status '+(val===true?'ok':val===false?'ko':'')+'">'+( val===true?'✓':val===false?'✗':'')+'</div>'+
+        '<div class="tog-wrap">'+
+          '<button class="tog-btn '+(val===true?'yes-on':'')+'" onclick="logH(\''+h.id+'\',true)">✓</button>'+
+          '<button class="tog-btn '+(val===false?'no-on':'')+'" onclick="logH(\''+h.id+'\',false)">✗</button>'+
+        '</div></div>';
+    }).join('')+'</div>';
+  var hmEl=document.getElementById('perso-habits-heatmaps');
+  hmEl.innerHTML=HABITS.map(function(h){
+    return '<div style="font-size:11px;font-weight:600;color:#888888;letter-spacing:0.5px;text-transform:uppercase;margin:1rem 0 0.4rem">'+h.emoji+' '+h.name+'</div>'+
+      '<div style="background:var(--bg);border-radius:var(--radius);padding:0.75rem;" id="hm-'+h.id+'"></div>';
+  }).join('');
+  HABITS.forEach(function(h){renderHeatmap(h.id,document.getElementById('hm-'+h.id));});
+}
+
+/* PERSO PANEL */
+function openPerso(){document.getElementById('perso-panel').classList.add('open');renderPersoHabits();renderBooks();renderLife();renderCatsList();}
+function closePerso(){document.getElementById('perso-panel').classList.remove('open');}
+function showPView(id,btn){
+  document.querySelectorAll('.pview').forEach(function(v){v.classList.remove('active');});
+  document.querySelectorAll('.pnav-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('pv-'+id).classList.add('active');btn.classList.add('active');
+}
+
+/* BOOKS */
+function openBookOverlay(){
+  selStar=0;
+  document.getElementById('b-title').value='';document.getElementById('b-author').value='';document.getElementById('b-date').value='';
+  document.getElementById('b-cat').value='dev';
+  document.querySelectorAll('#star-row span').forEach(function(s){s.classList.remove('on');});
+  document.getElementById('book-overlay').classList.add('open');
+  setTimeout(function(){document.getElementById('b-title').focus();},300);
+}
+function closeBookOverlay(e){if(e&&e.target!==document.getElementById('book-overlay'))return;document.getElementById('book-overlay').classList.remove('open');}
+function setStar(n){selStar=n;document.querySelectorAll('#star-row span').forEach(function(s,i){s.classList.toggle('on',i<n);});}
+async function submitBook(){
+  var title=document.getElementById('b-title').value.trim();if(!title)return;
+  var b={id:uid(),title:title,author:document.getElementById('b-author').value.trim(),cat:document.getElementById('b-cat').value||'dev',date:document.getElementById('b-date').value||null,stars:selStar};
+  books.unshift(b);
+  document.getElementById('book-overlay').classList.remove('open');renderBooks();
+  await sbUpsert('books',b);
+}
+async function deleteBook(id){
+  books=books.filter(function(b){return b.id!==id;});renderBooks();
+  await sbDelete('books',id);
+}
+
+function renderBooks(){
+  var catFilters=document.getElementById('book-cat-filters');
+  catFilters.innerHTML='<button class="cf-btn'+(bookFilter==='all'?' active':'')+'" onclick="setBF(\'all\',this)">Tous</button>'+
+    Object.keys(BOOK_CATS).map(function(k){return'<button class="cf-btn'+(bookFilter===k?' active':'')+'" onclick="setBF(\''+k+'\',this)">'+BOOK_CATS[k].label+'</button>';}).join('');
+  var list=bookFilter==='all'?books:books.filter(function(b){return b.cat===bookFilter;});
+  document.getElementById('book-count').textContent=list.length+' livre'+(list.length>1?'s':'');
+  if(!list.length){document.getElementById('books-list').innerHTML='<div class="empty-state"><div class="es-icon">📚</div>Aucun livre</div>';return;}
+  var grouped={};var ORDER=['dev','sport','thriller','roman','histoire','fantasy','bio'];
+  ORDER.forEach(function(c){grouped[c]=[];});
+  list.forEach(function(b){var c=b.cat||'dev';if(!grouped[c])grouped[c]=[];grouped[c].push(b);});
+  var html='';
+  ORDER.forEach(function(catKey){
+    var l=grouped[catKey];if(!l||!l.length)return;
+    var cat=BOOK_CATS[catKey];
+    html+='<div style="font-size:11px;font-weight:600;color:#888888;letter-spacing:0.5px;text-transform:uppercase;margin:1rem 0 0.4rem">'+cat.label+'</div>';
+    html+=l.map(function(b){
+      var stars=b.stars?'★'.repeat(b.stars):'';
+      return '<div class="book-item">'+
+        '<div class="book-spine" style="background:'+cat.color+'33;border-left:3px solid '+cat.color+'"></div>'+
+        '<div class="book-info"><div class="book-title">'+esc(b.title)+'</div>'+(b.author?'<div class="book-author">'+esc(b.author)+'</div>':'')+
+        '<div class="book-footer">'+(stars?'<span class="book-stars">'+stars+'</span>':'')+(b.date?'<span class="book-date">'+fmtDate(b.date)+'</span>':'')+
+        '</div></div><button class="book-del" onclick="deleteBook(\''+b.id+'\')">✕</button></div>';
+    }).join('');
+  });
+  document.getElementById('books-list').innerHTML=html;
+}
+function setBF(f,btn){bookFilter=f;renderBooks();}
+
+/* MILESTONES */
+function openMsOverlay(){document.getElementById('ms-label').value='';document.getElementById('ms-date').value='';document.getElementById('ms-overlay').classList.add('open');setTimeout(function(){document.getElementById('ms-label').focus();},300);}
+function closeMsOverlay(e){if(e&&e.target!==document.getElementById('ms-overlay'))return;document.getElementById('ms-overlay').classList.remove('open');}
+async function submitMs(){
+  var label=document.getElementById('ms-label').value.trim();var date=document.getElementById('ms-date').value;if(!label||!date)return;
+  var m={id:uid(),label:label,date:date};
+  milestones.push(m);milestones.sort(function(a,b){return a.date.localeCompare(b.date);});
+  document.getElementById('ms-overlay').classList.remove('open');renderLife();
+  await sbUpsert('milestones',m);
+}
+async function deleteMs(id){
+  milestones=milestones.filter(function(m){return m.id!==id;});renderLife();
+  await sbDelete('milestones',id);
+}
+
+/* LIFE IN WEEKS */
+function renderLife(){
+  var born=new Date('1986-02-12');var now=new Date();
+  var msPerWk=7*24*3600*1000;
+  var lived=Math.floor((now-born)/msPerWk);
+  var total=90*52;
+  var age=Math.floor((now-born)/(365.25*24*3600*1000));
+  document.getElementById('liw-age').textContent=age;
+  document.getElementById('liw-lived').textContent=lived.toLocaleString('fr-FR');
+  document.getElementById('liw-left').textContent=(total-lived).toLocaleString('fr-FR');
+  var msWeeks=new Set(milestones.map(function(m){return Math.floor((new Date(m.date+'T00:00:00')-born)/msPerWk);}));
+  var html='<div style="display:grid;grid-template-columns:repeat(52,1fr);gap:2px">';
+  for(var w=0;w<total;w++){
+    var cls='lw';
+    var ms=milestones.find(function(m){return Math.floor((new Date(m.date+'T00:00:00')-born)/msPerWk)===w;});
+    if(msWeeks.has(w))cls+=' ms';
+    else if(w===lived)cls+=' cur';
+    else if(w<lived)cls+=' past';
+    else cls+=' fut';
+    html+='<div class="'+cls+'"'+(ms?' title="'+esc(ms.label)+'"':'')+'></div>';
+  }
+  html+='</div>';
+  document.getElementById('liw-grid').innerHTML=html;
+  var msList=document.getElementById('ms-list');
+  if(!milestones.length){msList.innerHTML='<div style="text-align:center;padding:1rem;font-size:13px;color:#888888">Appuie sur + pour ajouter</div>';return;}
+  msList.innerHTML=milestones.map(function(m){
+    return '<div class="ms-item"><div class="ms-dot"></div><div class="ms-info"><div class="ms-label">'+esc(m.label)+'</div><div class="ms-date">'+fmtDate(m.date)+'</div></div><button class="ms-del" onclick="deleteMs(\''+m.id+'\')">✕</button></div>';
+  }).join('');
+}
+
+/* INIT */
+loadAll();
+</script>
+</body>
+</html>
