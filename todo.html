@@ -257,9 +257,10 @@ textarea{resize:none;height:68px;line-height:1.5}
 
 <!-- LOADING -->
 <div id="loading-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#0F0F0F;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
-  <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;color:var(--neon-dark)">mes <em style="font-style:italic">tâches</em></div>
+  <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;color:#00B857">mes <em style="font-style:italic">tâches</em></div>
   <div id="loading-msg" style="font-size:13px;color:#BBBBBB">Chargement...</div>
 </div>
+<script>setTimeout(function(){var o=document.getElementById('loading-overlay');if(o)o.style.display='none';},3000);</script>
 
 <!-- TASK DETAIL DRAWER -->
 <div class="overlay" id="detail-overlay" onclick="closeDetail(event)">
@@ -1080,11 +1081,19 @@ function renderLife(){
 
 /* INIT */
 loadAll();
-// startRealtime(); // temporairement désactivé
+// Polling toutes les 10 secondes pour sync ordi <-> téléphone
+setInterval(async function(){
+  try{
+    var [t,h]=await Promise.all([sbGet('tasks'),sbGet('habits')]);
+    if(Array.isArray(t)) tasks=t;
+    if(Array.isArray(h)){hdata={};h.forEach(function(row){hdata[row.id]=row.data||{};});}
+    renderAll();
+  }catch(e){}
+},10000);
 setTimeout(function(){
   var overlay=document.getElementById('loading-overlay');
   if(overlay) overlay.style.display='none';
-},5000);
+},3000);
 </script>
 </body>
 </html>
