@@ -1080,8 +1080,7 @@ function renderLife(){
 
 /* INIT */
 loadAll();
-startRealtime();
-// Safety timeout — hide loading after 5s no matter what
+// startRealtime(); // temporairement désactivé
 setTimeout(function(){
   var overlay=document.getElementById('loading-overlay');
   if(overlay) overlay.style.display='none';
