@@ -1081,15 +1081,25 @@ function renderLife(){
 
 /* INIT */
 loadAll();
-// Polling toutes les 10 secondes pour sync ordi <-> téléphone
-setInterval(async function(){
+// Polling toutes les 15 secondes — sync silencieux
+var _lastPoll=Date.now();
+var _polling=setInterval(async function(){
+  // Ne pas poller si un overlay est ouvert
+  var overlays=['detail-overlay','he-overlay','book-overlay','ms-overlay','cat-overlay','perso-panel'];
+  var anyOpen=overlays.some(function(id){
+    var el=document.getElementById(id);
+    return el&&(el.classList.contains('open')||el.style.display==='block');
+  });
+  if(anyOpen) return;
   try{
     var [t,h]=await Promise.all([sbGet('tasks'),sbGet('habits')]);
-    if(Array.isArray(t)) tasks=t;
-    if(Array.isArray(h)){hdata={};h.forEach(function(row){hdata[row.id]=row.data||{};});}
+    if(Array.isArray(t)&&t.length>=tasks.length) tasks=t;
+    if(Array.isArray(h)){
+      h.forEach(function(row){hdata[row.id]=row.data||{};});
+    }
     renderAll();
   }catch(e){}
-},10000);
+},15000);
 setTimeout(function(){
   var overlay=document.getElementById('loading-overlay');
   if(overlay) overlay.style.display='none';
