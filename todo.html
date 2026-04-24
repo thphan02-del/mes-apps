@@ -424,6 +424,96 @@ async function sbDelete(table,id){
   await fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}`,{method:'DELETE',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
 }
 
+/* ===== REALTIME ===== */
+function startRealtime(){
+  // Supabase Realtime via WebSocket
+  var wsUrl='wss://jqjkvlafjgdsnodsdzwz.supabase.co/realtime/v1/websocket?apikey='+SUPA_KEY+'&vsn=1.0.0';
+  var ws;
+  var heartbeat;
+  var reconnectDelay=3000;
+
+  function connect(){
+    try{
+      ws=new WebSocket(wsUrl);
+      ws.onopen=function(){
+        // Subscribe to all 4 tables
+        ['tasks','habits','milestones','books'].forEach(function(table,i){
+          setTimeout(function(){
+            ws.send(JSON.stringify({
+              topic:'realtime:public:'+table,
+              event:'phx_join',
+              payload:{config:{broadcast:{self:false},presence:{key:''},postgres_changes:[{event:'*',schema:'public',table:table}]}},
+              ref:''+( i+1)
+            }));
+          },i*200);
+        });
+        heartbeat=setInterval(function(){
+          if(ws.readyState===1) ws.send(JSON.stringify({topic:'phoenix',event:'heartbeat',payload:{},ref:'hb'}));
+        },25000);
+      };
+
+      ws.onmessage=function(e){
+        try{
+          var msg=JSON.parse(e.data);
+          if(msg.event==='postgres_changes'||( msg.payload&&msg.payload.data)){
+            var data=msg.payload&&msg.payload.data;
+            if(!data)return;
+            var table=data.table;
+            var type=data.type; // INSERT, UPDATE, DELETE
+            var rec=data.record;
+            var old=data.old_record;
+            handleRealtimeChange(table,type,rec,old);
+          }
+        }catch(err){}
+      };
+
+      ws.onclose=function(){
+        clearInterval(heartbeat);
+        setTimeout(connect,reconnectDelay);
+      };
+      ws.onerror=function(){ws.close();};
+    }catch(e){}
+  }
+  connect();
+}
+
+function handleRealtimeChange(table,type,rec,old){
+  if(table==='tasks'){
+    if(type==='INSERT'||type==='UPDATE'){
+      var idx=tasks.findIndex(function(t){return t.id===rec.id;});
+      if(idx>=0) tasks[idx]=rec; else tasks.unshift(rec);
+    } else if(type==='DELETE'){
+      tasks=tasks.filter(function(t){return t.id!==old.id;});
+    }
+    renderAll();
+  } else if(table==='habits'){
+    if(type==='INSERT'||type==='UPDATE'){
+      hdata[rec.id]=rec.data||{};
+    } else if(type==='DELETE'){
+      delete hdata[old.id];
+    }
+    renderAll();renderPersoHabits();
+  } else if(table==='milestones'){
+    if(type==='INSERT'||type==='UPDATE'){
+      var idx=milestones.findIndex(function(m){return m.id===rec.id;});
+      if(idx>=0) milestones[idx]=rec; else milestones.push(rec);
+      milestones.sort(function(a,b){return a.date.localeCompare(b.date);});
+    } else if(type==='DELETE'){
+      milestones=milestones.filter(function(m){return m.id!==old.id;});
+    }
+    renderLife();
+  } else if(table==='books'){
+    if(type==='INSERT'||type==='UPDATE'){
+      var idx=books.findIndex(function(b){return b.id===rec.id;});
+      if(idx>=0) books[idx]=rec; else books.unshift(rec);
+    } else if(type==='DELETE'){
+      books=books.filter(function(b){return b.id!==old.id;});
+    }
+    renderBooks();
+  }
+}
+}
+
 /* DATA */
 var tasks=[];
 var hdata={};
@@ -988,6 +1078,7 @@ function renderLife(){
 
 /* INIT */
 loadAll();
+startRealtime();
 </script>
 </body>
 </html>
