@@ -658,8 +658,10 @@ async function loadAll(){
     if(books.length===0||books.every(function(bk){return DEFAULT_BOOKS.find(function(d){return d.id===bk.id;});})){
       await initBooks();
     }
-  }catch(e){console.error(e);}
-  document.getElementById('loading-overlay').style.display='none';
+  }catch(e){console.error('loadAll error:',e);}
+  // Always hide loading, even on error
+  var overlay=document.getElementById('loading-overlay');
+  if(overlay) overlay.style.display='none';
   renderAll();
 }
 
@@ -1079,6 +1081,11 @@ function renderLife(){
 /* INIT */
 loadAll();
 startRealtime();
+// Safety timeout — hide loading after 5s no matter what
+setTimeout(function(){
+  var overlay=document.getElementById('loading-overlay');
+  if(overlay) overlay.style.display='none';
+},5000);
 </script>
 </body>
 </html>
