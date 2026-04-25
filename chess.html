@@ -5,280 +5,328 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="64 Cases">
-<meta name="theme-color" content="#121218">
+<meta name="theme-color" content="#F7F3EC">
 <title>64 Cases</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#121218;--bg2:#1C1C28;--bg3:#242434;
-  --border:rgba(255,255,255,0.06);--border-md:rgba(255,255,255,0.1);
-  --rose:#FF8FAB;--rose-dim:rgba(255,143,171,0.12);--rose-border:rgba(255,143,171,0.22);
-  --violet:#B8A9FF;--violet-dim:rgba(184,169,255,0.12);--violet-border:rgba(184,169,255,0.22);
-  --mint:#8FFFD4;--mint-dim:rgba(143,255,212,0.1);--mint-border:rgba(143,255,212,0.2);
-  --amber:#F5A623;--amber-dim:rgba(245,166,35,0.12);--amber-border:rgba(245,166,35,0.25);
-  --text:#F0F0F8;--text-muted:#9999BB;--text-hint:#CCCCDD;
-  --board-light:#E8D5C4;--board-dark:#3D2B1F;
-  --radius:16px;--radius-sm:10px;
+  --bg:#F7F3EC;
+  --bg2:#EDE8DF;
+  --bg3:#E3DDD3;
+  --card:#FDFAF5;
+  --border:rgba(60,45,20,0.1);
+  --border-md:rgba(60,45,20,0.18);
+  --amber:#B8732A;
+  --amber-light:#D4893A;
+  --amber-dim:rgba(184,115,42,0.08);
+  --amber-border:rgba(184,115,42,0.2);
+  --rose:#C4614A;
+  --rose-dim:rgba(196,97,74,0.08);
+  --rose-border:rgba(196,97,74,0.18);
+  --sage:#4A7A5A;
+  --sage-dim:rgba(74,122,90,0.08);
+  --sage-border:rgba(74,122,90,0.18);
+  --slate:#4A5F7A;
+  --slate-dim:rgba(74,95,122,0.08);
+  --slate-border:rgba(74,95,122,0.18);
+  --text:#1C1710;
+  --text-muted:#8A7A62;
+  --text-hint:#5A4E3A;
+  --board-light:#E8D5B4;
+  --board-dark:#4A3020;
+  --radius:12px;--radius-sm:8px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;background:var(--bg)}
-body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100vh;height:100dvh}
-@media(min-width:600px){html{background:#0A0A12}body{border-left:1px solid var(--border);border-right:1px solid var(--border)}}
 
-/* PROFILE */
-.pscreen{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem}
-.plogo{font-size:54px;margin-bottom:4px}
-.pappname{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--amber);letter-spacing:3px;text-transform:uppercase;margin-bottom:24px}
-.ptitle{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text);letter-spacing:-0.8px;margin-bottom:6px}
-.psub{font-size:13px;color:var(--text-muted);margin-bottom:28px;line-height:1.6}
-.plist{width:100%;max-width:320px;margin-bottom:14px}
-.pitem{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--bg2);border:1px solid var(--border-md);border-radius:var(--radius);margin-bottom:8px;cursor:pointer;transition:border-color .15s}
-.pitem:hover{border-color:var(--amber-border)}
-.pavatar{width:40px;height:40px;border-radius:50%;background:var(--amber-dim);border:2px solid var(--amber-border);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--amber);flex-shrink:0}
-.pname{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text)}
-.pxp{font-size:11px;color:var(--text-muted);margin-top:2px}
-.pnew{display:flex;align-items:center;gap:12px;padding:13px 16px;background:transparent;border:1px dashed var(--border-md);border-radius:var(--radius);cursor:pointer;width:100%;max-width:320px}
-.pnew-icon{width:40px;height:40px;border-radius:50%;background:var(--bg2);border:1px solid var(--border-md);display:flex;align-items:center;justify-content:center;font-size:18px}
-.pinput-wrap{width:100%;max-width:320px;display:none;margin-top:12px}
-.pinput{width:100%;font-family:'Inter',sans-serif;font-size:15px;padding:13px 16px;background:var(--bg2);border:1px solid var(--border-md);border-radius:var(--radius);color:var(--text);outline:none;margin-bottom:10px}
-.pinput:focus{border-color:var(--amber)}
-.pinput::placeholder{color:var(--text-muted)}
-.pbtn{width:100%;padding:13px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;background:var(--amber);color:#121218;border:none;border-radius:var(--radius-sm);cursor:pointer}
+/* MOBILE default */
+body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100vh;height:100dvh}
+
+/* DESKTOP sidebar layout */
+@media(min-width:900px){
+  html{background:var(--bg2)}
+  body{max-width:none;flex-direction:row;height:100vh;overflow:hidden}
+  .sidebar{width:220px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:2rem 0;height:100vh}
+  .sidebar-brand{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--amber);letter-spacing:5px;text-transform:uppercase;padding:0 1.8rem 2rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+  .sidebar-nav{display:flex;flex-direction:column;gap:2px;padding:0 1rem;flex:1}
+  .snav-btn{display:flex;align-items:center;gap:10px;padding:10px 14px;font-family:'Inter',sans-serif;font-size:11px;font-weight:400;color:var(--text-muted);border:none;background:transparent;cursor:pointer;border-radius:8px;text-align:left;letter-spacing:.6px;text-transform:uppercase;transition:all .15s;width:100%}
+  .snav-btn:hover{background:var(--bg2);color:var(--text-hint)}
+  .snav-btn.active{background:var(--amber-dim);color:var(--amber);font-weight:500}
+  .snav-dot{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:0;flex-shrink:0}
+  .snav-btn.active .snav-dot{opacity:1}
+  .sidebar-user{padding:1.5rem 1.8rem;border-top:1px solid var(--border);cursor:pointer;margin-top:auto}
+  .sidebar-uname{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+  .sidebar-uxp{font-size:10px;color:var(--text-muted);letter-spacing:.5px}
+  .desktop-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+  .header{display:none!important}
+  .nav{display:none!important}
+  .content{flex:1;overflow-y:auto;min-height:0}
+  .view{padding:2.5rem 3rem;max-width:1000px}
+  /* Bigger base font on desktop */
+  .ltitle{font-size:17px!important}
+  .ldesc{font-size:12px!important}
+  .bigtitle{font-size:36px!important}
+  .eyebrow{font-size:11px!important}
+  .subtitle{font-size:14px!important}
+  .catlabel{font-size:11px!important}
+  .badge{font-size:11px!important;padding:4px 11px!important}
+  .lbody{font-size:15px!important;line-height:2!important}
+  .anec-txt{font-size:14px!important}
+  .acard-title{font-size:18px!important}
+  .acard-body{font-size:14px!important}
+  .pill{font-size:11px!important;padding:7px 16px!important}
+  .nbtn,.snav-btn{font-size:12px!important}
+  .gterm{font-size:16px!important}
+  .gdef{font-size:13px!important}
+  .qptitle{font-size:20px!important}
+  .qpsub{font-size:14px!important}
+  .qopt{font-size:14px!important}
+  .licon{width:44px!important;height:44px!important;font-size:14px!important}
+  #llist{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  #llist .catlabel{grid-column:1/-1}
+  #prac-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  #prac-list .catlabel{grid-column:1/-1}
+  #qlist{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .lcard{padding:16px 18px!important}
+  .board{width:min(380px,40vw)!important}
+  .chat-outer{height:calc(100vh - 20px)}
+  .sgrid{grid-template-columns:repeat(4,1fr)}
+  .snum{font-size:60px!important}
+}
 
 /* HEADER */
-.header{padding:1rem 1.25rem 0.75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0}
-.hbrand{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--amber);letter-spacing:2.5px;text-transform:uppercase}
+.header{padding:1.1rem 1.4rem 0.8rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg)}
+.hbrand{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:300;color:var(--amber);letter-spacing:5px;text-transform:uppercase}
 .huser{display:flex;align-items:center;gap:10px;cursor:pointer}
-.havatar{width:32px;height:32px;border-radius:50%;background:var(--amber-dim);border:1px solid var(--amber-border);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:var(--amber)}
-.xpbar-wrap{background:var(--bg3);border-radius:3px;height:3px;width:56px;overflow:hidden}
-.xpbar{height:100%;background:var(--amber);border-radius:3px;transition:width .5s}
-.hxp{font-size:10px;color:var(--text-muted);margin-top:3px;text-align:right}
+.havatar{width:30px;height:30px;border-radius:50%;background:var(--amber-dim);border:1px solid var(--amber-border);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--amber)}
+.xpbar-wrap{background:var(--bg3);border-radius:2px;height:2px;width:50px;overflow:hidden}
+.xpbar{height:100%;background:var(--amber);border-radius:2px;transition:width .5s}
+.hxp{font-size:9px;color:var(--text-muted);margin-top:3px;text-align:right;letter-spacing:.5px;text-transform:uppercase}
 
 /* NAV */
-.nav{display:flex;background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto;scrollbar-width:none;padding:0 2px}
+.nav{display:flex;background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto;scrollbar-width:none;padding:0 6px}
 .nav::-webkit-scrollbar{display:none}
-.nbtn{flex-shrink:0;padding:11px 13px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;color:var(--text-muted);border:none;background:transparent;cursor:pointer;position:relative;white-space:nowrap;transition:color .15s}
-.nbtn.active{color:var(--amber);font-weight:600}
-.nbtn.active::after{content:'';position:absolute;bottom:0;left:13px;right:13px;height:2px;background:var(--amber);border-radius:2px 2px 0 0}
+.nbtn{flex-shrink:0;padding:11px 12px;font-family:'Inter',sans-serif;font-size:11px;font-weight:400;color:var(--text-muted);border:none;background:transparent;cursor:pointer;position:relative;white-space:nowrap;letter-spacing:.8px;text-transform:uppercase;transition:color .15s}
+.nbtn.active{color:var(--amber);font-weight:500}
+.nbtn.active::after{content:'';position:absolute;bottom:0;left:12px;right:12px;height:1px;background:var(--amber)}
 
 /* CONTENT */
 .content{flex:1;overflow-y:auto;scrollbar-width:thin;min-height:0}
-.view{display:none;padding:1.25rem}.view.active{display:block}
+.view{display:none;padding:1.4rem}.view.active{display:block}
 
-/* TYPE */
-.eyebrow{font-size:10px;color:var(--text-muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
-.bigtitle{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.8px;margin-bottom:4px}
-.subtitle{font-size:12px;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.5}
-.catlabel{font-size:10px;color:var(--text-muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin:1rem 0 7px}
+/* TYPOGRAPHY */
+.eyebrow{font-size:9px;color:var(--text-muted);font-weight:500;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.bigtitle{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--text);letter-spacing:-.3px;margin-bottom:5px;line-height:1.1}
+.subtitle{font-size:12px;color:var(--text-muted);margin-bottom:1.4rem;line-height:1.6;font-weight:300}
+.catlabel{font-size:9px;color:var(--text-muted);font-weight:500;letter-spacing:2px;text-transform:uppercase;margin:1.2rem 0 8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
 .catlabel:first-child{margin-top:0}
 
 /* PILLS */
-.pills{display:flex;gap:6px;margin-bottom:1.2rem;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.pills{display:flex;gap:5px;margin-bottom:1.2rem;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
 .pills::-webkit-scrollbar{display:none}
-.pill{flex-shrink:0;padding:6px 13px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border-md);background:rgba(255,255,255,0.04);color:var(--text-hint);transition:all .15s}
+.pill{flex-shrink:0;padding:5px 12px;border-radius:20px;font-size:10px;font-weight:500;cursor:pointer;border:1px solid var(--border-md);background:transparent;color:var(--text-muted);transition:all .15s;letter-spacing:.5px;text-transform:uppercase}
 .pill.pa{background:var(--amber-dim);border-color:var(--amber-border);color:var(--amber)}
 .pill.pr{background:var(--rose-dim);border-color:var(--rose-border);color:var(--rose)}
-.pill.pv{background:var(--violet-dim);border-color:var(--violet-border);color:var(--violet)}
-.pill.pm{background:var(--mint-dim);border-color:var(--mint-border);color:var(--mint)}
+.pill.pv{background:var(--slate-dim);border-color:var(--slate-border);color:var(--slate)}
+.pill.pm{background:var(--sage-dim);border-color:var(--sage-border);color:var(--sage)}
 
 /* ANECDOTE CARD */
-.acard{background:var(--bg2);border:1px solid var(--amber-border);border-radius:var(--radius);padding:14px;margin-bottom:1.2rem;cursor:pointer;transition:border-color .2s}
-.acard:hover{border-color:var(--amber)}
-.acard-top{display:flex;align-items:center;gap:12px}
-.acard-icon{width:40px;height:40px;border-radius:10px;background:var(--amber-dim);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.acard-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
-.acard-hint{font-size:10px;color:var(--amber);font-weight:600;letter-spacing:.4px}
-.acard-body{font-size:12px;color:var(--text-muted);line-height:1.7;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.acard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:1.4rem;cursor:pointer;transition:border-color .2s}
+.acard:hover{border-color:var(--amber-border)}
+.acard-top{display:flex;align-items:flex-start;gap:12px}
+.acard-icon{width:36px;height:36px;border-radius:8px;background:var(--amber-dim);border:1px solid var(--amber-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--amber);font-style:italic}
+.acard-title{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--text);margin-bottom:2px;line-height:1.2}
+.acard-hint{font-size:9px;color:var(--amber);font-weight:500;letter-spacing:.5px;text-transform:uppercase}
+.acard-body{font-size:12px;color:var(--text-muted);line-height:1.8;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-weight:300;font-style:italic}
 
 /* LESSON CARDS */
-.lcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:7px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:border-color .15s}
+.lcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:13px 14px;margin-bottom:6px;cursor:pointer;display:flex;align-items:center;gap:13px;transition:border-color .15s}
 .lcard:hover{border-color:var(--border-md)}
-.lcard.cr{border-color:var(--rose-border)}
-.lcard.cv{border-color:var(--violet-border)}
-.lcard.cm{border-color:var(--mint-border)}
-.lcard.ca{border-color:var(--amber-border)}
-.lcard.mastered{opacity:.5}
-.licon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:11px;font-weight:800;flex-shrink:0;letter-spacing:-.3px}
+.lcard.cr{border-left:2px solid var(--rose)}
+.lcard.cv{border-left:2px solid var(--slate)}
+.lcard.cm{border-left:2px solid var(--sage)}
+.lcard.ca{border-left:2px solid var(--amber)}
+.lcard.mastered{opacity:.45}
+.licon{width:34px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:12px;font-weight:600;flex-shrink:0;font-style:italic}
 .licon.cr{background:var(--rose-dim);color:var(--rose)}
-.licon.cv{background:var(--violet-dim);color:var(--violet)}
-.licon.cm{background:var(--mint-dim);color:var(--mint)}
+.licon.cv{background:var(--slate-dim);color:var(--slate)}
+.licon.cm{background:var(--sage-dim);color:var(--sage)}
 .licon.ca{background:var(--amber-dim);color:var(--amber)}
 .linfo{flex:1;min-width:0}
-.ltitle{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
-.ldesc{font-size:11px;color:var(--text-muted)}
-.badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:9px;flex-shrink:0;white-space:nowrap}
-.bnew{background:var(--rose-dim);color:var(--rose)}
-.bdone{background:var(--mint-dim);color:var(--mint)}
-.bmaster{background:var(--amber-dim);color:var(--amber)}
+.ltitle{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;line-height:1.2}
+.ldesc{font-size:10px;color:var(--text-muted);font-weight:300;letter-spacing:.2px}
+.badge{font-size:9px;font-weight:500;padding:3px 8px;border-radius:20px;flex-shrink:0;white-space:nowrap;letter-spacing:.5px;text-transform:uppercase}
+.bnew{background:var(--rose-dim);color:var(--rose);border:1px solid var(--rose-border)}
+.bdone{background:var(--sage-dim);color:var(--sage);border:1px solid var(--sage-border)}
+.bmaster{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-border)}
 
 /* LESSON DETAIL */
-.backbtn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);background:none;border:none;cursor:pointer;padding:0 0 1rem;font-family:'Inter',sans-serif}
-.lbody{font-size:13px;color:var(--text-hint);line-height:1.9;margin-bottom:1.2rem}
-.lbody b{color:var(--text)}
-.lbody em{color:var(--rose)}
-.anec-box{background:var(--bg2);border-left:3px solid var(--amber);border-radius:0 9px 9px 0;padding:13px 15px;margin-bottom:1rem}
-.anec-lbl{font-size:10px;color:var(--amber);font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:5px}
-.anec-txt{font-size:12px;color:var(--text-muted);line-height:1.7;font-style:italic}
-.masters-box{background:var(--bg2);border:1px solid var(--violet-border);border-radius:var(--radius);padding:13px;margin-bottom:1rem}
-.masters-lbl{font-size:10px;color:var(--violet);font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:7px}
-.mchip{display:inline-flex;background:var(--violet-dim);border-radius:20px;padding:4px 10px;margin:2px;font-size:11px;color:var(--violet);font-weight:500}
-.mastery-btn{width:100%;padding:12px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;background:transparent;border:1px solid var(--amber-border);color:var(--amber);border-radius:var(--radius-sm);cursor:pointer;margin-top:7px}
-.mastery-btn.mok{opacity:.55}
+.backbtn{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);background:none;border:none;cursor:pointer;padding:0 0 1.2rem;font-family:'Inter',sans-serif;letter-spacing:.5px;text-transform:uppercase}
+.lbody{font-size:13px;color:var(--text-hint);line-height:1.9;margin-bottom:1.2rem;font-weight:300}
+.lbody b{color:var(--text);font-weight:500}
+.lbody em{color:var(--amber);font-style:italic}
+.anec-box{background:var(--bg2);border-left:2px solid var(--amber);border-radius:0 8px 8px 0;padding:14px 16px;margin-bottom:1rem}
+.anec-lbl{font-size:9px;color:var(--amber);font-weight:500;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+.anec-txt{font-size:12px;color:var(--text-muted);line-height:1.8;font-style:italic;font-weight:300}
+.masters-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:13px;margin-bottom:1rem}
+.masters-lbl{font-size:9px;color:var(--slate);font-weight:500;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
+.mchip{display:inline-flex;background:var(--slate-dim);border:1px solid var(--slate-border);border-radius:20px;padding:3px 10px;margin:2px;font-size:10px;color:var(--slate);font-weight:400}
+.mastery-btn{width:100%;padding:11px;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;background:transparent;border:1px solid var(--amber-border);color:var(--amber);border-radius:var(--radius-sm);cursor:pointer;margin-top:7px;letter-spacing:.5px;text-transform:uppercase}
+.mastery-btn.mok{opacity:.5}
 
 /* BUTTONS */
-.btn{width:100%;padding:13px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;border:none;border-radius:var(--radius-sm);cursor:pointer;margin-top:7px}
-.btn.rose{background:var(--rose);color:#121218}
-.btn.violet{background:var(--violet);color:#121218}
-.btn.mint{background:var(--mint);color:#121218}
-.btn.amber{background:var(--amber);color:#121218}
-.btn.sec{background:transparent;border:1px solid var(--border-md);color:var(--text-hint)}
+.btn{width:100%;padding:13px;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;border:none;border-radius:var(--radius-sm);cursor:pointer;margin-top:7px;letter-spacing:.8px;text-transform:uppercase}
+.btn.amber{background:var(--amber);color:#FDF9F2}
+.btn.rose{background:var(--rose);color:#FDF9F2}
+.btn.sage{background:var(--sage);color:#FDF9F2}
+.btn.slate{background:var(--slate);color:#FDF9F2}
+.btn.sec{background:transparent;border:1px solid var(--border-md);color:var(--text-muted)}
 .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 
 /* PRACTICE */
-.prac-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:7px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:border-color .15s}
+.prac-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:13px 14px;margin-bottom:6px;cursor:pointer;display:flex;align-items:center;gap:13px;transition:border-color .15s}
 .prac-item:hover{border-color:var(--border-md)}
-.diff{font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;flex-shrink:0}
-.dd{background:var(--mint-dim);color:var(--mint)}
-.di{background:var(--amber-dim);color:var(--amber)}
-.da{background:var(--rose-dim);color:var(--rose)}
+.diff{font-size:9px;font-weight:500;padding:2px 8px;border-radius:20px;flex-shrink:0;letter-spacing:.5px;text-transform:uppercase;border:1px solid}
+.dd{background:var(--sage-dim);color:var(--sage);border-color:var(--sage-border)}
+.di{background:var(--amber-dim);color:var(--amber);border-color:var(--amber-border)}
+.da{background:var(--rose-dim);color:var(--rose);border-color:var(--rose-border)}
 
 /* BOARD */
 .bwrap{display:flex;flex-direction:column;align-items:center;margin:.75rem 0}
 .bwc{display:flex;align-items:stretch}
 .branks{display:flex;flex-direction:column;justify-content:space-around;padding:2px 4px 2px 0;width:16px;flex-shrink:0}
-.brank-lbl{font-size:9px;font-weight:600;color:var(--text-muted);text-align:center;line-height:1;font-family:'Inter',sans-serif}
+.brank-lbl{font-size:9px;color:var(--text-muted);text-align:center;line-height:1;font-family:'Inter',sans-serif}
 .bfiles{display:grid;grid-template-columns:16px repeat(8,1fr);padding-top:3px}
-.bfile-lbl{font-size:9px;font-weight:600;color:var(--text-muted);text-align:center;font-family:'Inter',sans-serif}
-.binner{border:2px solid var(--rose);border-radius:8px;overflow:hidden;box-shadow:0 0 28px rgba(255,143,171,.1)}
+.bfile-lbl{font-size:9px;color:var(--text-muted);text-align:center;font-family:'Inter',sans-serif}
+.binner{border:1px solid var(--border-md);border-radius:6px;overflow:hidden;box-shadow:0 4px 24px rgba(60,40,10,.12)}
 .board{display:grid;grid-template-columns:repeat(8,1fr);width:min(288px,calc(100vw - 80px));aspect-ratio:1}
 .sq{aspect-ratio:1;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;padding:3%}
 .sq svg{width:100%;height:100%;display:block;pointer-events:none}
 .sq.light{background:var(--board-light)}
 .sq.dark{background:var(--board-dark)}
-.sq.selected{background:#F6F669!important}
-.sq.vm::after{content:'';position:absolute;width:28%;height:28%;border-radius:50%;background:rgba(0,0,0,.22);pointer-events:none}
-.sq.vc{background:rgba(255,100,100,.45)!important}
-.sq.hint{background:#A8D8A8!important}
+.sq.selected{background:#D4C44A!important}
+.sq.vm::after{content:'';position:absolute;width:28%;height:28%;border-radius:50%;background:rgba(0,0,0,.2);pointer-events:none}
+.sq.vc{background:rgba(196,97,74,.4)!important}
 .mtags{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}
-.mtag{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 7px;font-size:10px;color:var(--text-muted)}
-.mtag.done{opacity:.35}
-.mtag.cur{background:var(--amber-dim);border-color:var(--amber-border);color:var(--amber);font-weight:600}
-.fb{background:var(--bg2);border-radius:var(--radius-sm);padding:11px 13px;margin-top:8px;font-size:13px;line-height:1.6;display:none}
+.mtag{background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:3px 7px;font-size:10px;color:var(--text-muted)}
+.mtag.done{opacity:.3;text-decoration:line-through}
+.mtag.cur{background:var(--amber-dim);border-color:var(--amber-border);color:var(--amber);font-weight:500}
+.fb{background:var(--card);border-radius:var(--radius-sm);padding:11px 13px;margin-top:8px;font-size:12px;line-height:1.6;display:none;font-weight:300}
 .fb.show{display:block}
-.fb.ok{border:1px solid var(--mint-border);color:var(--mint)}
+.fb.ok{border:1px solid var(--sage-border);color:var(--sage)}
 .fb.ko{border:1px solid var(--rose-border);color:var(--rose)}
 .fb.info{border:1px solid var(--border-md);color:var(--text-muted)}
 
 /* QUIZ */
-.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.2rem}
-.sbox{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center}
-.snum{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:var(--rose);line-height:1}
-.slbl{font-size:10px;color:var(--text-muted);margin-top:5px;letter-spacing:.5px;text-transform:uppercase}
-.qcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:7px;cursor:pointer;display:flex;align-items:center;gap:12px}
-.qprompt{background:var(--rose-dim);border:1px solid var(--rose-border);border-radius:var(--radius);padding:14px;margin-bottom:1rem}
-.qptitle{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
-.qpsub{font-size:12px;color:var(--text-muted);line-height:1.5}
-.qopt{width:100%;padding:12px 16px;text-align:left;font-family:'Inter',sans-serif;font-size:13px;background:var(--bg2);border:1px solid var(--border-md);border-radius:var(--radius-sm);color:var(--text-hint);cursor:pointer;margin-bottom:7px;transition:all .12s}
-.qopt:hover{border-color:var(--rose-border);color:var(--text)}
-.qopt.ok{border-color:var(--mint-border);background:var(--mint-dim);color:var(--mint)}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.4rem}
+.sbox{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px 12px 18px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
+.snum{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;color:var(--amber);line-height:1;display:block}
+.slbl{font-size:9px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;display:block}
+.qcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:13px 14px;margin-bottom:6px;cursor:pointer;display:flex;align-items:center;gap:13px;transition:border-color .15s}
+.qcard:hover{border-color:var(--border-md)}
+.qprompt{background:var(--card);border:1px solid var(--rose-border);border-radius:var(--radius);padding:16px;margin-bottom:1rem}
+.qptitle{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px}
+.qpsub{font-size:12px;color:var(--text-muted);line-height:1.6;font-weight:300;font-style:italic}
+.qopt{width:100%;padding:12px 16px;text-align:left;font-family:'Inter',sans-serif;font-size:12px;background:var(--card);border:1px solid var(--border-md);border-radius:var(--radius-sm);color:var(--text-hint);cursor:pointer;margin-bottom:6px;transition:all .12s;font-weight:300}
+.qopt:hover{border-color:var(--amber-border);color:var(--text)}
+.qopt.ok{border-color:var(--sage-border);background:var(--sage-dim);color:var(--sage)}
 .qopt.ko{border-color:var(--rose-border);background:var(--rose-dim);color:var(--rose)}
-.qres{background:var(--bg2);border-radius:var(--radius-sm);padding:14px;margin-top:8px;display:none;font-size:13px;line-height:1.6}
+.qres{background:var(--card);border-radius:var(--radius-sm);padding:14px;margin-top:8px;display:none;font-size:12px;line-height:1.7;font-weight:300}
 .qres.show{display:block}
-.qres.ok{border:1px solid var(--mint-border)}
+.qres.ok{border:1px solid var(--sage-border)}
 .qres.ko{border:1px solid var(--rose-border)}
 
 /* CHAT */
 .chat-outer{display:flex;flex-direction:column;height:calc(100dvh - 130px)}
-.chat-msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:1.25rem 1.25rem 0;scrollbar-width:thin}
+.chat-msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:1.4rem 1.4rem 0;scrollbar-width:thin}
 .msg{display:flex;gap:10px;align-items:flex-end}
 .msg.user{flex-direction:row-reverse}
-.mav{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;font-family:'Syne',sans-serif;background:var(--amber-dim);border:1px solid var(--amber-border);color:var(--amber)}
-.msg.user .mav{background:var(--bg3);border-color:var(--border-md);color:var(--text-muted)}
-.mbub{max-width:82%;padding:10px 14px;font-size:13px;line-height:1.65;color:var(--text)}
-.msg.ai .mbub{background:var(--bg2);border:1px solid var(--border);border-radius:4px 14px 14px 14px}
-.msg.user .mbub{background:var(--rose-dim);border:1px solid var(--rose-border);border-radius:14px 4px 14px 14px}
-.mbub b{color:var(--amber)}
+.mav{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;font-family:'Cormorant Garamond',serif;background:var(--amber-dim);border:1px solid var(--amber-border);color:var(--amber);font-style:italic}
+.msg.user .mav{background:var(--bg2);border-color:var(--border-md);color:var(--text-muted)}
+.mbub{max-width:82%;padding:10px 14px;font-size:13px;line-height:1.7;color:var(--text);font-weight:300}
+.msg.ai .mbub{background:var(--card);border:1px solid var(--border);border-radius:4px 12px 12px 12px}
+.msg.user .mbub{background:var(--amber-dim);border:1px solid var(--amber-border);border-radius:12px 4px 12px 12px}
+.mbub b{color:var(--amber);font-weight:500}
 .typing{color:var(--text-muted);font-size:12px;font-style:italic;padding:4px 14px}
-.chat-bar{display:flex;gap:8px;padding:.75rem 1.25rem 1.25rem;border-top:1px solid var(--border);flex-shrink:0}
-.chat-inp{flex:1;font-family:'Inter',sans-serif;font-size:13px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border-md);border-radius:24px;color:var(--text);outline:none}
-.chat-inp:focus{border-color:var(--amber)}
+.chat-bar{display:flex;gap:8px;padding:.75rem 1.4rem 1.4rem;border-top:1px solid var(--border);flex-shrink:0;background:var(--bg)}
+.chat-inp{flex:1;font-family:'Inter',sans-serif;font-size:13px;padding:10px 14px;background:var(--card);border:1px solid var(--border-md);border-radius:24px;color:var(--text);outline:none;font-weight:300}
+.chat-inp:focus{border-color:var(--amber-border)}
 .chat-inp::placeholder{color:var(--text-muted)}
-.chat-send{width:38px;height:38px;border-radius:50%;background:var(--amber);border:none;cursor:pointer;font-size:15px;color:#121218;flex-shrink:0;font-weight:800;font-family:'Syne',sans-serif}
+.chat-send{width:36px;height:36px;border-radius:50%;background:var(--amber);border:none;cursor:pointer;font-size:14px;color:#FDF9F2;flex-shrink:0;font-weight:500}
 
 /* GLOSSARY */
-.gsearch{width:100%;font-family:'Inter',sans-serif;font-size:13px;padding:11px 16px;background:var(--bg2);border:1px solid var(--border-md);border-radius:var(--radius-sm);color:var(--text);outline:none;margin-bottom:1rem}
-.gsearch:focus{border-color:var(--amber)}
+.gsearch{width:100%;font-family:'Inter',sans-serif;font-size:13px;padding:11px 16px;background:var(--card);border:1px solid var(--border-md);border-radius:var(--radius-sm);color:var(--text);outline:none;margin-bottom:1rem;font-weight:300}
+.gsearch:focus{border-color:var(--amber-border)}
 .gsearch::placeholder{color:var(--text-muted)}
-.gcat{font-size:10px;color:var(--text-muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin:1rem 0 7px}
-.gblock{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:0 14px;margin-bottom:9px}
+.gcat{font-size:9px;color:var(--text-muted);font-weight:500;letter-spacing:2px;text-transform:uppercase;margin:1.2rem 0 7px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.gblock{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:0 14px;margin-bottom:8px}
 .gitem{padding:11px 0;border-bottom:1px solid var(--border)}
 .gitem:last-child{border-bottom:none}
-.gterm{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--amber);margin-bottom:3px}
-.gdef{font-size:12px;color:var(--text-muted);line-height:1.6}
+.gterm{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;color:var(--amber);margin-bottom:3px}
+.gdef{font-size:12px;color:var(--text-muted);line-height:1.6;font-weight:300}
 
 /* OVERLAY */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:50;align-items:flex-end;justify-content:center}
+.overlay{display:none;position:fixed;inset:0;background:rgba(20,16,10,.5);z-index:50;align-items:flex-end;justify-content:center}
 .overlay.open{display:flex}
-.sheet{background:var(--bg2);border-radius:20px 20px 0 0;padding:1.25rem 1.25rem 2.5rem;width:100%;max-width:480px;border-top:1px solid var(--border-md);max-height:85vh;overflow-y:auto;animation:sup .22s cubic-bezier(.32,0,.15,1)}
+.sheet{background:var(--bg);border-radius:16px 16px 0 0;padding:1.4rem 1.4rem 3rem;width:100%;max-width:480px;border-top:1px solid var(--border-md);max-height:85vh;overflow-y:auto;animation:sup .22s cubic-bezier(.32,0,.15,1)}
 @keyframes sup{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.shandle{width:36px;height:4px;background:var(--border-md);border-radius:2px;margin:0 auto 1.25rem}
-.stitle{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--text);margin-bottom:1rem}
-.pheader{background:var(--bg3);border-radius:var(--radius);padding:16px;margin-bottom:1rem;display:flex;align-items:center;gap:14px}
-.phavatar{width:50px;height:50px;border-radius:50%;background:var(--amber-dim);border:2px solid var(--amber-border);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--amber);flex-shrink:0}
-.phname{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--text)}
-.phlvl{font-size:12px;color:var(--text-muted);margin-top:3px}
-.phbar-wrap{background:var(--bg);border-radius:4px;height:5px;overflow:hidden;margin-top:7px}
-.phbar{height:100%;background:var(--amber);border-radius:4px;transition:width .5s}
-.empty{text-align:center;padding:2rem 1rem;color:var(--text-muted);font-size:13px;line-height:1.6}
+.shandle{width:32px;height:3px;background:var(--border-md);border-radius:2px;margin:0 auto 1.4rem}
+.stitle{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--text);margin-bottom:1rem;letter-spacing:-.2px}
+.pheader{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:1rem;display:flex;align-items:center;gap:14px}
+.phavatar{width:46px;height:46px;border-radius:50%;background:var(--amber-dim);border:1px solid var(--amber-border);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--amber);flex-shrink:0;font-style:italic}
+.phname{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--text)}
+.phlvl{font-size:11px;color:var(--text-muted);margin-top:3px;font-weight:300}
+.phbar-wrap{background:var(--bg2);border-radius:2px;height:2px;overflow:hidden;margin-top:8px}
+.phbar{height:100%;background:var(--amber);border-radius:2px;transition:width .5s}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--text-muted);font-size:13px;line-height:1.8;font-style:italic;font-weight:300}
 </style>
 </head>
 <body>
-
-<div id="pscreen" class="pscreen">
-  <div class="plogo">♟</div>
-  <div class="pappname">64 Cases</div>
-  <div class="ptitle">Bienvenue</div>
-  <div class="psub">Apprends les échecs à ton rythme</div>
-  <div class="plist" id="plist"></div>
-  <button class="pnew" id="pnew-btn" onclick="showNewProfile()">
-    <div class="pnew-icon">+</div>
-    <div style="font-size:13px;color:var(--text-muted)">Nouveau joueur</div>
-  </button>
-  <div class="pinput-wrap" id="pinput-wrap">
-    <input class="pinput" id="pinput" placeholder="Ton prénom..." maxlength="20" onkeydown="if(event.key==='Enter')createProfile()">
-    <button class="pbtn" onclick="createProfile()">Créer mon profil →</button>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-brand">64 Cases</div>
+  <div class="sidebar-nav">
+    <button class="snav-btn active" onclick="showTab('apprendre',this,true)"><div class="snav-dot"></div>Apprendre</button>
+    <button class="snav-btn" onclick="showTab('pratiquer',this,true)"><div class="snav-dot"></div>Pratiquer</button>
+    <button class="snav-btn" onclick="showTab('quiz',this,true)"><div class="snav-dot"></div>Quiz</button>
+    <button class="snav-btn" onclick="showTab('prof',this,true)"><div class="snav-dot"></div>Professeur</button>
+    <button class="snav-btn" onclick="showTab('glossaire',this,true)"><div class="snav-dot"></div>Glossaire</button>
+  </div>
+  <div class="sidebar-user" onclick="showProgress()">
+    <div class="sidebar-uname" id="sidebar-uname">Joueur</div>
+    <div class="sidebar-uxp" id="sidebar-uxp">0 xp · Niv 1</div>
+    <div style="margin-top:6px"><div class="xpbar-wrap" style="width:100%"><div class="xpbar" id="sidebar-xpbar" style="width:0%"></div></div></div>
   </div>
 </div>
-
-<div class="header" id="main-header" style="display:none">
+<div class="desktop-main">
+<div class="header" id="main-header">
   <div class="hbrand">64 Cases</div>
   <div class="huser" onclick="showProgress()">
     <div>
       <div class="xpbar-wrap"><div class="xpbar" id="hdr-xpbar" style="width:0%"></div></div>
-      <div class="hxp" id="hdr-xp">0 XP</div>
+      <div class="hxp" id="hdr-xp">0 xp</div>
     </div>
-    <div class="havatar" id="hdr-av">?</div>
+    <div class="havatar" id="hdr-av">J</div>
   </div>
 </div>
 
-<div class="nav" id="main-nav" style="display:none">
+<div class="nav" id="main-nav">
   <button class="nbtn active" onclick="showTab('apprendre',this)">Apprendre</button>
   <button class="nbtn" onclick="showTab('pratiquer',this)">Pratiquer</button>
   <button class="nbtn" onclick="showTab('quiz',this)">Quiz</button>
-  <button class="nbtn" onclick="showTab('prof',this)">Professeur IA</button>
+  <button class="nbtn" onclick="showTab('prof',this)">Professeur</button>
   <button class="nbtn" onclick="showTab('glossaire',this)">Glossaire</button>
 </div>
 
-<div class="content" id="main-content" style="display:none">
+<div class="content" id="main-content">
 
   <div id="tab-apprendre" class="view active">
     <div id="learn-home">
       <div class="acard" onclick="nextAnecdote()">
         <div class="acard-top">
-          <div class="acard-icon">📖</div>
+          <div class="acard-icon">§</div>
           <div>
             <div class="acard-title" id="anec-title">Le saviez-vous ?</div>
-            <div class="acard-hint">Appuie pour changer →</div>
+            <div class="acard-hint">Toucher pour changer →</div>
           </div>
         </div>
         <div class="acard-body" id="anec-body">Chargement...</div>
@@ -303,7 +351,7 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-directio
     <div id="prac-home">
       <div class="eyebrow">Échiquier interactif</div>
       <div class="bigtitle">Pratiquer</div>
-      <div class="subtitle">Reproduis les ouvertures coup par coup</div>
+      <div class="subtitle">Reproduis les ouvertures coup par coup sur l'échiquier</div>
       <div id="prac-list"></div>
     </div>
     <div id="prac-board" style="display:none">
@@ -328,10 +376,16 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-directio
   <div id="tab-quiz" class="view">
     <div id="quiz-home">
       <div class="sgrid">
-        <div class="sbox"><div class="snum" id="q-score">0</div><div class="slbl">Réussis</div></div>
-        <div class="sbox"><div class="snum" id="q-streak" style="color:var(--mint)">0</div><div class="slbl">Streak 🔥</div></div>
+        <div class="sbox">
+          <span class="snum" id="q-score" style="color:var(--rose)">0</span>
+          <span class="slbl">Réussis</span>
+        </div>
+        <div class="sbox">
+          <span class="snum" id="q-streak" style="color:var(--sage)">0</span>
+          <span class="slbl">Série</span>
+        </div>
       </div>
-      <div class="eyebrow">Questions</div>
+      <div class="eyebrow">Exercices</div>
       <div id="qlist"></div>
     </div>
     <div id="quiz-active" style="display:none">
@@ -349,13 +403,13 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-directio
   <div id="tab-prof" class="view" style="padding:0">
     <div class="chat-outer">
       <div class="chat-msgs" id="chat-msgs">
-        <div style="padding:1.25rem 0 0">
+        <div style="padding:1.4rem 0 0">
           <div class="acard" style="cursor:default">
             <div class="acard-top">
-              <div class="acard-icon">🎓</div>
+              <div class="acard-icon">♟</div>
               <div>
                 <div class="acard-title">Professeur IA</div>
-                <div class="acard-hint" id="chat-lbl">Pose toutes tes questions sur les échecs</div>
+                <div class="acard-hint" id="chat-lbl">Toutes tes questions sur les échecs</div>
               </div>
             </div>
           </div>
@@ -371,18 +425,19 @@ body{font-family:'Inter',sans-serif;color:var(--text);display:flex;flex-directio
   <div id="tab-glossaire" class="view">
     <div class="eyebrow">Référence</div>
     <div class="bigtitle">Glossaire</div>
-    <div class="subtitle">50+ termes essentiels des échecs</div>
+    <div class="subtitle">Les termes essentiels des échecs expliqués simplement</div>
     <input class="gsearch" id="gsearch" placeholder="Rechercher un terme..." oninput="filterG(this.value)">
     <div id="gcontent"></div>
   </div>
 
 </div>
+</div><!-- /desktop-main -->
 
 <div class="overlay" id="prog-overlay" onclick="closeProgress(event)">
   <div class="sheet" onclick="event.stopPropagation()">
     <div class="shandle"></div>
     <div id="prog-content"></div>
-    <button class="btn sec" onclick="switchProfile()" style="margin-top:12px">Changer de joueur</button>
+    <button class="btn sec" onclick="resetProgress()" style="margin-top:16px">Réinitialiser la progression</button>
   </div>
 </div>
 
@@ -392,23 +447,24 @@ const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 const CLAUDE_KEY='';
 const ADMIN='hien';
 const MSG_LIMIT=10;
-
 async function sbGet(t){try{const r=await fetch(SUPA_URL+'/rest/v1/'+t+'?select=*',{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});return r.json();}catch(e){return[];}}
 async function sbUp(t,d){try{await fetch(SUPA_URL+'/rest/v1/'+t,{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},body:JSON.stringify(d)});}catch(e){}}
 
 const ANECDOTES=[
-  {t:'Fischer & les pigeons',b:'Bobby Fischer jouait si vite que ses adversaires lui prêtaient des capacités télépathiques. Son QI aux échecs dépassait tout calcul humain connu.'},
-  {t:'Le plus jeune GM',b:'Sergey Karjakin est devenu Grand Maître à 12 ans et 7 mois en 2002. Magnus Carlsen avait atteint ce titre à 13 ans.'},
-  {t:'Deep Blue 1997',b:'Kasparov a perdu contre Deep Blue d\'IBM en 1997. Il a affirmé avoir vu une "intelligence divine" dans certains coups de la machine.'},
-  {t:'Le Jeu de la Dame',b:'Après la série Netflix en 2020, les ventes de jeux d\'échecs ont augmenté de plus de 1000% en quelques semaines dans le monde entier.'},
-  {t:'Capablanca imbattable',b:'José Capablanca n\'a perdu qu\'une seule partie en 8 ans (1916-1924). Un record absolu dans toute l\'histoire du jeu.'},
-  {t:'Kasparov vs Karpov',b:'Le match de championnat du monde 1984 entre Kasparov et Karpov a duré 48 parties sur 5 mois avant d\'être controversé interrompu.'},
-  {t:'L\'origine du jeu',b:'Les échecs ont été inventés en Inde au VIe siècle. La dame était alors un faible conseiller. C\'est en Europe au XVe siècle qu\'elle devint la pièce la plus puissante.'},
-  {t:'L\'Elo de Magnus',b:'Carlsen a atteint un Elo de 2882 en 2014 — le record absolu. Il a appris les échecs à 8 ans en regardant son père.'},
-  {t:'La partie du siècle',b:'Bobby Fischer avait 13 ans quand il joua "la partie du siècle" contre Donald Byrne en 1956. Il sacrifia sa dame pour une combinaison gagnante spectaculaire.'},
-  {t:'Tal le Magicien',b:'Mikhail Tal, "le Magicien de Riga", était champion du monde à 23 ans. Ses sacrifices semblaient impossibles à analyser même après la partie.'},
-  {t:'Les pièces ont changé',b:'Le cavalier saute en L depuis le Moyen Âge, mais les fous antiques se déplaçaient seulement en diagonale de deux cases.'},
-  {t:'La notation algébrique',b:'Philip Stamma inventa la notation algébrique au XVIIIe siècle — les "e4", "d5" que tu utilises aujourd\'hui pour noter tes coups.'},
+  {t:'Fischer & les pigeons',b:'Bobby Fischer jouait si vite que ses adversaires lui prêtaient des capacités télépathiques. Il mémorisait des parties entières après une seule lecture.'},
+  {t:'Le plus jeune Grand Maître',b:'Sergey Karjakin est devenu Grand Maître à 12 ans et 7 mois en 2002. Magnus Carlsen a atteint ce titre à 13 ans, après avoir appris les échecs à 8 ans en regardant son père.'},
+  {t:'Deep Blue contre Kasparov',b:'En 1997, Kasparov a perdu contre Deep Blue d\'IBM. Il a affirmé avoir vu une "intelligence divine" dans certains coups. IBM a refusé de lui fournir les logs de calcul.'},
+  {t:'Le Jeu de la Dame',b:'Après la série Netflix en 2020, les ventes de jeux d\'échecs ont augmenté de plus de 1000% en quelques semaines. Des millions de nouveaux joueurs ont rejoint Chess.com.'},
+  {t:'Capablanca l\'imbattable',b:'José Capablanca n\'a perdu qu\'une seule partie en 8 ans de compétition (1916-1924). Il apprit les échecs à 4 ans en regardant son père jouer — et corrigea une erreur dès le premier jour.'},
+  {t:'Le match du siècle',b:'En 1972 à Reykjavik, le match Fischer-Spassky était autant un événement de Guerre Froide qu\'un tournoi d\'échecs. Fischer arriva en retard, exigea des changements, et domina le champion soviétique.'},
+  {t:'L\'origine indienne',b:'Les échecs ont été inventés en Inde au VIe siècle sous le nom de "Chaturanga". La dame n\'était alors qu\'un faible conseiller — c\'est en Europe au XVe siècle qu\'elle devint la pièce la plus puissante.'},
+  {t:'L\'Elo de Magnus',b:'Carlsen a atteint un Elo de 2882 en 2014 — le record absolu de l\'histoire. Il est le seul joueur à avoir été simultanément champion du monde en classique, rapide et blitz.'},
+  {t:'La partie du siècle',b:'Bobby Fischer avait 13 ans quand il joua "la partie du siècle" contre Donald Byrne en 1956. Il sacrifia sa dame pour une combinaison si brillante que les analystes la commentent encore aujourd\'hui.'},
+  {t:'Tal le Magicien de Riga',b:'Mikhail Tal est devenu champion du monde à 23 ans en 1960. Ses sacrifices semblaient impossibles à réfuter — même après la partie. Il disait : "Il faut que l\'adversaire soit toujours sous pression."'},
+  {t:'La dame toute-puissante',b:'Avant le XVe siècle, la dame (ou "ferz") ne se déplaçait que d\'une case en diagonale. C\'est en Espagne qu\'elle obtint ses pouvoirs actuels, peut-être en référence à Isabelle de Castille.'},
+  {t:'La notation algébrique',b:'Philip Stamma inventa la notation algébrique au XVIIIe siècle. Avant lui, les coups étaient décrits en langage naturel — "le cavalier du roi saute sur la troisième case du fou de la dame".'},
+  {t:'Morphy le génie américain',b:'Paul Morphy, prodige américain des années 1850, battit tous les meilleurs joueurs européens lors d\'une tournée triomphale. Il joua souvent en aveugle contre plusieurs adversaires simultanément, et se retira à 21 ans.'},
+  {t:'Les échecs en prison',b:'Nelson Mandela jouait aux échecs pendant son emprisonnement à Robben Island. Il disait que le jeu lui apprit la patience et la stratégie à long terme — qualités essentielles pour ses 27 années de captivité.'},
 ];
 var anecIdx=Math.floor(Math.random()*ANECDOTES.length);
 function nextAnecdote(){anecIdx=(anecIdx+1)%ANECDOTES.length;renderAnecdote();}
@@ -416,199 +472,758 @@ function renderAnecdote(){var a=ANECDOTES[anecIdx];document.getElementById('anec
 
 const CC={regle:'ca',ouverture:'cr',tactique:'cv',strategie:'cm',finale:'cm'};
 const CL={regle:'Règles',ouverture:'Ouvertures',tactique:'Tactiques',strategie:'Stratégie',finale:'Finales'};
-
+const colorMap={'ca':'amber','cr':'rose','cv':'slate','cm':'sage'};
 const LESSONS=[
-  {id:'basics',cat:'regle',abbr:'AB',title:'Les bases de l\'échiquier',desc:'Le plateau, les pièces et leurs valeurs',
-   content:'<b>L\'échiquier</b> est composé de 64 cases (8×8), alternant cases claires et sombres. Chaque joueur commence avec <em>16 pièces</em>.\n\n<b>Valeur des pièces :</b>\n• Pion = 1 point\n• Cavalier = 3 points\n• Fou = 3 points\n• Tour = 5 points\n• Dame = 9 points\n• Roi = infini\n\n<b>But du jeu :</b> mettre le roi adverse en échec et mat — une position où il est attaqué et ne peut pas s\'échapper.\n\n<b>Déplacements :</b>\n• Le Pion avance (ou deux au départ), capture en diagonale\n• Le Cavalier saute en L — passe par-dessus les autres pièces\n• Le Fou se déplace en diagonale à volonté\n• La Tour se déplace en ligne droite à volonté\n• La Dame combine Tour + Fou — la plus puissante\n• Le Roi se déplace d\'une case dans toutes les directions',
-   anecdote:'Les échecs ont été inventés en Inde au VIe siècle sous le nom de "Chaturanga". En voyageant vers la Perse il devint "Shatranj", avant de prendre sa forme moderne en Europe au XVe siècle. C\'est à cette époque que la dame obtint ses pouvoirs actuels.',
-   masters:['Garry Kasparov','Bobby Fischer','Magnus Carlsen'],hasPractice:false},
-  {id:'castling',cat:'regle',abbr:'RQ',title:'Le Roque',desc:'Mettre son roi en sécurité',
-   content:'Le <em>roque</em> est le seul coup où l\'on déplace deux pièces simultanément.\n\n<b>Roque côté roi (O-O) :</b>\n• Roi e1→g1, Tour h1→f1 (blancs)\n• Roi e8→g8, Tour h8→f8 (noirs)\n\n<b>Roque côté dame (O-O-O) :</b>\n• Roi e1→c1, Tour a1→d1 (blancs)\n\n<b>5 conditions (toutes requises) :</b>\n1. Roi et tour n\'ont pas encore bougé\n2. Aucune pièce entre roi et tour\n3. Le roi n\'est pas en échec\n4. Le roi ne traverse pas une case attaquée\n5. Le roi n\'arrive pas sur une case attaquée\n\n<b>Conseil :</b> Roque dans les 10 premiers coups — un roi non roqué est très vulnérable.',
-   anecdote:'Le roque a été introduit en Europe au XVe siècle pour accélérer le développement. Lors du match Fischer-Spassky en 1972, Fischer utilisa le roque côté dame dans une partie mémorable, surprenant totalement le champion soviétique.',
-   masters:['Bobby Fischer','Garry Kasparov'],hasPractice:false},
-  {id:'en_passant',cat:'regle',abbr:'EP',title:'La Prise en Passant',desc:'La règle mystérieuse des pions',
-   content:'La <em>prise en passant</em> permet à un pion de capturer un pion adverse qui vient d\'avancer de deux cases.\n\n<b>Comment ça marche :</b>\n1. Un pion adverse avance de 2 cases depuis sa position initiale\n2. Il passe à côté de ton pion (même rangée)\n3. Tu peux — IMMÉDIATEMENT et SEULEMENT au coup suivant — le capturer comme s\'il n\'avait avancé que d\'une case\n\n<b>Exemple :</b>\nPion blanc en e5, pion noir en d7 joue d5. Blanc peut jouer exd6 "en passant" — le pion va en d6 et capture le pion en d5.\n\n<b>Important :</b>\n• Optionnelle mais doit être jouée tout de suite\n• Si tu ne la joues pas immédiatement, tu perds ce droit définitivement',
-   anecdote:'La prise en passant a été introduite au XVe siècle en même temps que l\'avance de deux cases des pions. Elle évite que les pions contournent leurs adversaires "en courant". Beaucoup de débutants ignorent cette règle — c\'est souvent la première surprise désagréable qu\'un adversaire expérimenté réserve.',
-   masters:['José Raúl Capablanca'],hasPractice:false},
-  {id:'promotion',cat:'regle',abbr:'PR',title:'La Promotion du Pion',desc:'Transformer un pion en pièce puissante',
-   content:'La <em>promotion</em> transforme un pion atteignant la dernière rangée.\n\n<b>Règles :</b>\n• Pion blanc en rangée 8 (ou noir en rangée 1) → transformé immédiatement\n• Choix libre : dame, tour, fou ou cavalier\n• On peut avoir plusieurs dames !\n\n<b>La sous-promotion :</b>\nChoisir autre chose que la dame peut être meilleur :\n• <b>Cavalier</b> — fourchette ou échec inattendu\n• <b>Tour</b> — éviter le pat avec une dame\n\n<b>Conseil pratique :</b> Les finales de pions tournent souvent autour de la course à la promotion. Un pion passé est une arme redoutable.',
-   anecdote:'Magnus Carlsen a utilisé une sous-promotion en cavalier dans une finale de tournoi mondial en 2016 — ses adversaires n\'avaient pas calculé cette possibilité ! Richard Réti réalisa une sous-promotion mémorable en 1925 qui sauvait une nulle dans une position perdante.',
-   masters:['Magnus Carlsen','José Raúl Capablanca'],hasPractice:false},
-  {id:'stalemate',cat:'regle',abbr:'NT',title:'Le Pat et les Nulles',desc:'Quand la partie ne se termine pas',
-   content:'<b>Le Pat (Stalemate) :</b>\nLe joueur au trait n\'a aucun coup légal mais son roi N\'EST PAS en échec → match nul immédiat. Ressource de défense cruciale.\n\n<b>Triple Répétition :</b>\nMême position 3 fois avec le même joueur au trait → nulle sur demande.\n\n<b>Règle des 50 Coups :</b>\n50 coups sans capture ni pion joué → nulle possible.\n\n<b>Matériel Insuffisant :</b>\n• Roi vs Roi\n• Roi + Fou vs Roi\n• Roi + Cavalier vs Roi\n\n<b>Accord Mutuel :</b>\nLes deux joueurs peuvent se mettre d\'accord à tout moment.\n\n<b>Piège :</b> Si tu es perdant avec un roi seul, essaie de forcer le pat !',
-   anecdote:'Le pat est une des règles les plus controversées des échecs — certains pensent qu\'un joueur coincé devrait perdre. Dans le championnat du monde 1954, Smyslov a raté une occasion de forcer le pat dans une position perdante.',
-   masters:['Garry Kasparov','Magnus Carlsen'],hasPractice:false},
-  {id:'e4',cat:'ouverture',abbr:'e4',title:'L\'Ouverture du Roi (1.e4)',desc:'Le coup le plus populaire de l\'histoire',
-   content:'L\'ouverture <em>1.e4</em> est le coup le plus joué dans l\'histoire. Bobby Fischer l\'appelait "le meilleur coup de l\'échiquier".\n\n<b>Pourquoi 1.e4 ?</b>\n• Contrôle du centre (cases d4 et f4)\n• Libère la dame et le fou du roi\n• Prépare le roque rapidement\n• Jeu tactique ouvert\n\n<b>Réponses principales de noir :</b>\n• 1...e5 — Défense ouverte symétrique\n• 1...c5 — La Sicilienne (la plus jouée au monde)\n• 1...e6 — La Défense Française\n• 1...c6 — La Caro-Kann\n• 1...d6 — La Défense Pirc',
-   anecdote:'Fischer ne jouait que e4 "parce que c\'est objectivement le meilleur". En 1972 à Reykjavik contre Spassky, Fischer a joué e4 dans toutes ses parties avec les blancs. Sa préparation révolutionnaire a totalement déstabilisé le champion soviétique.',
-   masters:['Bobby Fischer','Garry Kasparov','Magnus Carlsen'],
-   hasPractice:true,practiceColor:'white',difficulty:'debutant',
-   moves:['e2e4','e7e5','g1f3','b8c6','f1c4','g8f6','e1g1'],
-   labels:['1. e4','1...e5','2. Cf3','2...Cc6','3. Fc4','3...Cf6','4. O-O'],
-   practiceDesc:'Partie Italienne · 7 coups'},
-  {id:'sicilian',cat:'ouverture',abbr:'Sic',title:'La Défense Sicilienne',desc:'L\'ouverture la plus jouée au monde',
-   content:'La <em>Sicilienne</em> commence par <b>1.e4 c5</b>. Noir refuse la symétrie et crée un déséquilibre stratégique immédiat.\n\n<b>Pourquoi la Sicilienne ?</b>\n• Noir joue pour la victoire, pas le nul\n• Structures asymétriques\n• Contre-jeu actif sur l\'aile dame\n\n<b>Variantes principales :</b>\n• <b>Najdorf</b> (5...a6) — la plus populaire, jouée par Fischer et Kasparov\n• <b>Dragon</b> (5...g6) — très agressive\n• <b>Scheveningen</b> (5...e6) — solide\n• <b>Classique</b> (5...Cc6)',
-   anecdote:'La Sicilienne représente plus de 25% de toutes les parties de tournoi au niveau GM. Kasparov l\'a utilisée avec les noirs pendant toute sa carrière. Deep Blue avait été spécialement préparé contre la Sicilienne Najdorf de Kasparov pour le match de 1997.',
-   masters:['Garry Kasparov','Bobby Fischer','Mikhail Tal'],
-   hasPractice:true,practiceColor:'black',difficulty:'intermediaire',
-   moves:['e2e4','c7c5','g1f3','d7d6','d2d4','c5d4','f3d4','g8f6','b1c3'],
-   labels:['1. e4','1...c5','2. Cf3','2...d6','3. d4','3...cxd4','4. Cxd4','4...Cf6','5. Cc3'],
-   practiceDesc:'Sicilienne ouverte · 9 coups'},
-  {id:'queens_gambit',cat:'ouverture',abbr:'GD',title:'Le Gambit Dame',desc:'L\'ouverture des grandes batailles',
-   content:'Le <em>Gambit Dame</em> commence par <b>1.d4 d5 2.c4</b>. Les blancs offrent un pion pour contrôler le centre.\n\n<b>Réponses :</b>\n• <em>Gambit Dame Accepté</em> (2...dxc4) — noir prend mais cède le centre\n• <em>Gambit Dame Refusé</em> (2...e6) — la plus solide\n• <em>Défense Slave</em> (2...c6) — très solide\n\n<b>Idées de blanc :</b>\n• Contrôle du centre avec d4 et c4\n• Développement rapide\n• Avantage d\'espace\n\nNote : ce n\'est pas un vrai gambit — blanc récupère généralement le pion.',
-   anecdote:'Le Gambit Dame a été rendu célèbre par la série Netflix "Le Jeu de la Dame" en 2020 — les ventes de jeux d\'échecs ont augmenté de 1000% ! Capablanca en a fait sa signature dans les années 1920.',
-   masters:['José Raúl Capablanca','Garry Kasparov','Magnus Carlsen'],
-   hasPractice:true,practiceColor:'white',difficulty:'intermediaire',
-   moves:['d2d4','d7d5','c2c4','e7e6','b1c3','g8f6','c1g5','f8e7','e2e3','e8g8'],
-   labels:['1. d4','1...d5','2. c4','2...e6','3. Cc3','3...Cf6','4. Fg5','4...Fe7','5. e3','5...O-O'],
-   practiceDesc:'Gambit Dame Refusé · 10 coups'},
-  {id:'ruy_lopez',cat:'ouverture',abbr:'RL',title:'La Partie Espagnole (Ruy Lopez)',desc:'L\'ouverture la plus analysée',
-   content:'La <em>Partie Espagnole</em> : <b>1.e4 e5 2.Cf3 Cc6 3.Fb5</b>. L\'une des ouvertures les plus profondes.\n\n<b>Idée du Fou en b5 :</b>\nPression indirecte sur e5 en menaçant le cavalier défenseur.\n\n<b>Défenses principales :</b>\n• <b>Morphy</b> (3...a6) — la plus jouée\n• <b>Berlinoise</b> (3...Cf6) — très solide, populaire en élite\n• <b>Classique</b> (3...Fc5) — active',
-   anecdote:'Ruy López de Segura était un prêtre espagnol du XVIe siècle. La variante berlinoise a été popularisée par Kramnik lors de son match contre Kasparov en 2000 — il l\'utilisa pour des nuls solides et finalement remporter le titre mondial.',
-   masters:['Garry Kasparov','Bobby Fischer','Magnus Carlsen'],
-   hasPractice:true,practiceColor:'white',difficulty:'intermediaire',
-   moves:['e2e4','e7e5','g1f3','b8c6','f1b5','a7a6','b5a4','g8f6','e1g1','f8e7'],
-   labels:['1. e4','1...e5','2. Cf3','2...Cc6','3. Fb5','3...a6','4. Fa4','4...Cf6','5. O-O','5...Fe7'],
-   practiceDesc:'Ruy Lopez Morphy · 10 coups'},
-  {id:'french',cat:'ouverture',abbr:'Fr',title:'La Défense Française',desc:'Solide et stratégique',
-   content:'La <em>Défense Française</em> : <b>1.e4 e6</b>. Noir prépare la contre-attaque d5.\n\n<b>Variantes :</b>\n• <b>Avancée</b> (3.e5) — espace pour blanc\n• <b>Tarrasch</b> (3.Cd2) — flexible\n• <b>Winawer</b> (3.Cc3 Fb4) — complexe\n• <b>Échange</b> (3.exd5) — simplifiée\n\n<b>Avantages :</b> Très solide, bon pour les joueurs qui préfèrent le jeu de position. Le fou c8 est parfois passif — la principale faiblesse.',
-   anecdote:'La Défense Française porte ce nom depuis un match par correspondance de 1834 entre Paris et Londres. Victor Korchnoi en était un expert absolu, l\'utilisant dans ses deux matches de championnat du monde contre Karpov.',
-   masters:['Viktor Korchnoi','Magnus Carlsen'],
-   hasPractice:true,practiceColor:'black',difficulty:'intermediaire',
-   moves:['e2e4','e7e6','d2d4','d7d5','b1c3','g8f6','c1g5','f8e7','e4e5','f6d7'],
-   labels:['1. e4','1...e6','2. d4','2...d5','3. Cc3','3...Cf6','4. Fg5','4...Fe7','5. e5','5...Cd7'],
-   practiceDesc:'Française Classique · 10 coups'},
-  {id:'caro',cat:'ouverture',abbr:'CK',title:'La Caro-Kann',desc:'Solidité absolue contre e4',
-   content:'La <em>Caro-Kann</em> : <b>1.e4 c6</b>. Prépare d5 avec soutien.\n\n<b>Avantages vs Française :</b>\n• Le fou c8 reste actif\n• Structure de pions plus saine\n• Très solide et difficile à attaquer\n\n<b>Variantes :</b>\n• <b>Classique</b> (3...dxe4) — la plus jouée\n• <b>Avance</b> (3.e5) — espace blanc\n• <b>Panov</b> (3.exd5 cxd5 4.c4) — pions isolés\n\n<b>Profil idéal :</b> Joueurs qui préfèrent la solidité à la complexité tactique.',
-   anecdote:'La Caro-Kann porte le nom de Horatio Caro et Marcus Kann qui l\'ont analysée en 1886. Anatoli Karpov en était un expert absolu. Magnus Carlsen y revient lors de championnats du monde pour sa solidité légendaire.',
-   masters:['Anatoli Karpov','Magnus Carlsen'],
-   hasPractice:true,practiceColor:'black',difficulty:'intermediaire',
-   moves:['e2e4','c7c6','d2d4','d7d5','b1c3','d5e4','c3e4','g8f6','e4f6','g7f6'],
-   labels:['1. e4','1...c6','2. d4','2...d5','3. Cc3','3...dxe4','4. Cxe4','4...Cf6','5. Cxf6+','5...gxf6'],
-   practiceDesc:'Caro-Kann Classique · 10 coups'},
-  {id:'kings_indian',cat:'ouverture',abbr:'KI',title:'La Défense Est-Indienne',desc:'L\'arme secrète de Fischer',
-   content:'La <em>Défense Est-Indienne</em> : <b>1.d4 Cf6 2.c4 g6</b>. Noir laisse blanc occuper le centre pour mieux l\'attaquer.\n\n<b>Concept hypermoderne :</b>\nContrôler le centre à distance avec le fou en g7 et les cavaliers.\n\n<b>Plan typique de noir :</b>\n• Fianchetto du fou roi (g7)\n• Roque côté roi\n• Attaque avec f5, e5 ou c5\n\n<b>Variantes :</b>\n• <b>Classique</b> (5.Cf3 O-O 6.Fe2 e5)\n• <b>Quatre pions</b> (5.f4) — agressive',
-   anecdote:'Fischer aimait tellement la Défense Est-Indienne qu\'il la joua dans presque toutes ses parties importantes. Kasparov en a fait sa signature pendant des décennies. La position génère encore de nouvelles théories après des siècles d\'analyse.',
-   masters:['Bobby Fischer','Garry Kasparov','Mikhail Tal'],
-   hasPractice:true,practiceColor:'black',difficulty:'avance',
-   moves:['d2d4','g8f6','c2c4','g7g6','b1c3','f8g7','e2e4','d7d6','g1f3','e8g8'],
-   labels:['1. d4','1...Cf6','2. c4','2...g6','3. Cc3','3...Fg7','4. e4','4...d6','5. Cf3','5...O-O'],
-   practiceDesc:'Défense Est-Indienne · 10 coups'},
-  {id:'scots',cat:'ouverture',abbr:'Ec',title:'La Partie Écossaise',desc:'Jeu ouvert et tactique',
-   content:'La <em>Partie Écossaise</em> : <b>1.e4 e5 2.Cf3 Cc6 3.d4</b>. Blanc ouvre le centre immédiatement.\n\n<b>Après 3...exd4 4.Cxd4 :</b>\n• <b>Gambit Écossais</b> (4...Fc5) — classique\n• <b>Quatre cavaliers</b> (4...Cf6) — actif\n\n<b>Plans typiques :</b>\n• Cavalier actif en d4\n• Développement rapide\n• Jeu de pièces actif\n\n<b>Bon choix pour :</b> joueurs qui veulent du jeu ouvert et tactique sans mémoriser des kilomètres de théorie.',
-   anecdote:'La Partie Écossaise a été jouée lors d\'un match par correspondance entre Édimbourg et Londres en 1824. Kasparov l\'a ressuscitée dans les années 1990 lors de ses matches de championnat contre Karpov, remportant plusieurs parties brillantes.',
-   masters:['Garry Kasparov','Magnus Carlsen'],
-   hasPractice:true,practiceColor:'white',difficulty:'debutant',
-   moves:['e2e4','e7e5','g1f3','b8c6','d2d4','e5d4','f3d4','f8c5','c1e3','d8f6'],
-   labels:['1. e4','1...e5','2. Cf3','2...Cc6','3. d4','3...exd4','4. Cxd4','4...Fc5','5. Fe3','5...Df6'],
-   practiceDesc:'Partie Écossaise · 10 coups'},
-  {id:'scandinavian',cat:'ouverture',abbr:'Sc',title:'La Défense Scandinave',desc:'Contre-attaque immédiate',
-   content:'La <em>Scandinave</em> : <b>1.e4 d5</b>. Contre-attaque immédiate au centre.\n\n<b>Après 2.exd5 Dxd5 3.Cc3 Da5 :</b>\n• Position claire et solide\n• Peu de théorie obligatoire\n• Pratique et efficace\n\n<b>Variantes :</b>\n• <b>Classique</b> (2...Dxd5 3.Cc3 Da5) — solide\n• <b>Moderne</b> (2...Cf6) — sacrifie le pion\n\n<b>Avantage :</b> Difficile de surprendre un joueur de Scandinave avec une préparation.',
-   anecdote:'La Défense Scandinave a été analysée depuis le XVe siècle. Elle a connu un regain grâce à Bent Larsen (Danemark) dans les années 1960-70. Sergei Tiviakov en a fait son arme principale avec des succès remarquables au plus haut niveau.',
-   masters:['Bent Larsen'],
-   hasPractice:true,practiceColor:'black',difficulty:'debutant',
-   moves:['e2e4','d7d5','e4d5','d8d5','b1c3','d5a5','d2d4','g8f6','g1f3','c7c6'],
-   labels:['1. e4','1...d5','2. exd5','2...Dxd5','3. Cc3','3...Da5','4. d4','4...Cf6','5. Cf3','5...c6'],
-   practiceDesc:'Scandinave Classique · 10 coups'},
-  {id:'fork',cat:'tactique',abbr:'FR',title:'La Fourchette',desc:'Attaquer deux pièces simultanément',
-   content:'La <em>fourchette</em> est une attaque simultanée sur deux pièces ou plus.\n\n<b>Le cavalier — roi de la fourchette :</b>\nSa trajectoire en L lui permet d\'attaquer des cases non adjacentes — difficile à anticiper.\n\n<b>La fourchette royale :</b>\nCavalier en e5 attaque simultanément roi en f7 et dame en d7 !\n\n<b>Autres pièces :</b>\n• Pion — attaque deux cases en diagonale\n• Dame — fourchette en ligne ou diagonale\n• Tour — fourchette sur une ligne\n\n<b>Méthode :</b>\n1. Identifier deux pièces précieuses\n2. Trouver la case d\'où votre pièce les attaque toutes les deux\n3. Préparer cette case si nécessaire',
-   anecdote:'La fourchette du cavalier la plus célèbre est celle de Fischer contre Donald Byrne en 1956 — Fischer avait 13 ans ! Il sacrifia sa dame pour créer une fourchette dévastatrice. Cette partie est connue comme "La Partie du Siècle".',
-   masters:['Bobby Fischer','Mikhail Tal'],hasPractice:false},
-  {id:'pin',cat:'tactique',abbr:'CL',title:'Le Clouage',desc:'Immobiliser une pièce adverse',
-   content:'Le <em>clouage</em> : une pièce ne peut bouger sans exposer quelque chose de plus précieux derrière elle.\n\n<b>Deux types :</b>\n• <em>Absolu</em> — la pièce protège le roi et ne peut JAMAIS bouger légalement\n• <em>Relatif</em> — la pièce pourrait bouger mais perdrait quelque chose de précieux\n\n<b>Pièces qui clouent :</b>\nFous, Tours et Dame (pièces à longue portée).\n\n<b>Exploiter un clouage :</b>\n1. Attaquer la pièce clouée avec des pièces moins précieuses\n2. Empiler les attaques\n3. Créer des menaces pendant que la pièce est immobile',
-   anecdote:'Mikhail Tal, "le Magicien de Riga", était maître dans l\'art des clouages menant à des sacrifices. Champion du monde à 23 ans, il disait : "Il faut que l\'adversaire soit toujours sous pression." Ses combinaisons semblaient impossibles à analyser même après la partie.',
-   masters:['Mikhail Tal','Garry Kasparov'],hasPractice:false},
-  {id:'discovered',cat:'tactique',abbr:'AD',title:'L\'Attaque Découverte',desc:'Libérer une pièce cachée',
-   content:'L\'<em>attaque découverte</em> : déplacer une pièce pour révèler l\'attaque d\'une autre derrière elle.\n\n<b>Principe :</b>\nPièce A cache B. En déplaçant A (avec une menace propre), B attaque soudainement.\n\n<b>L\'échec découvert :</b>\nDéplacer une pièce révèle un échec. L\'adversaire doit parer l\'échec — la pièce déplacée capture librement.\n\n<b>Le double échec — l\'arme atomique :</b>\nLes deux pièces donnent échec simultanément. La seule défense est de bouger le roi.',
-   anecdote:'Dans la partie Légal vs Saint-Brie (Paris, 1750), Légal réalisa le premier sacrifice de dame de l\'histoire menant à un échec découvert et mat — si belle que ça porte son nom : le "Mat de Légal".',
-   masters:['Magnus Carlsen','Mikhail Tal'],hasPractice:false},
-  {id:'center',cat:'strategie',abbr:'CT',title:'Le Contrôle du Centre',desc:'Le principe stratégique fondamental',
-   content:'Le <em>centre</em> : les 4 cases e4, d4, e5, d5 sont le cœur du jeu.\n\n<b>Pourquoi c\'est crucial :</b>\n• Une pièce au centre contrôle plus de cases\n• Le cavalier central attaque jusqu\'à 8 cases vs 2 en coin\n• Le centre donne mobilité et flexibilité\n\n<b>Deux approches :</b>\n• <b>Classique</b> — occuper avec des pions (e4+d4)\n• <b>Hypermoderne</b> — contrôler à distance avec des pièces\n\n<b>École hypermoderne</b> (Nimzowitch, Réti) : attaquer le centre adverse plus tard plutôt que l\'occuper immédiatement.',
-   anecdote:'Nimzowitsch a révolutionné la théorie des échecs dans "Mon Système" (1925) en montrant que les pions du centre pouvaient être des cibles. Magnus Carlsen combine les deux approches avec une subtilité remarquable.',
-   masters:['Garry Kasparov','Magnus Carlsen'],hasPractice:false},
-  {id:'zugzwang',cat:'strategie',abbr:'ZZ',title:'Le Zugzwang',desc:'Quand jouer devient une malédiction',
-   content:'Le <em>Zugzwang</em> (allemand : "obligation de jouer") : tout coup joué détériore la position. Le joueur voudrait passer son tour mais ne le peut pas.\n\n<b>En pratique :</b>\n• Très fréquent dans les finales de pions\n• Rare en milieu de partie\n\n<b>La Triangulation :</b>\nTechnique pour forcer l\'adversaire en zugzwang en utilisant le roi pour "perdre un tempo" tout en maintenant la même position relative.',
-   anecdote:'En 2007, Magnus Carlsen a utilisé un zugzwang brillant contre Levon Aronian dans un tournoi super-élite, forçant son adversaire à détruire sa propre position. Ce fut l\'une des finales les plus admirées de la décennie.',
-   masters:['Magnus Carlsen','José Raúl Capablanca'],hasPractice:false},
-  {id:'endgame',cat:'finale',abbr:'RF',title:'Le Roi en Finale',desc:'Activer le roi pour gagner',
-   content:'En finale, le <em>roi devient une pièce active</em> et puissante.\n\n<b>Pourquoi activer le roi :</b>\n• Moins de pièces = moins de risque de mat\n• Aide à escorter les pions\n• Peut attaquer les pions adverses\n• Un roi centralisé vaut ~4 points\n\n<b>L\'Opposition :</b>\nDeux rois face à face avec une case entre eux. Celui qui doit jouer est désavantagé.\n\n<b>La règle du carré :</b>\nDessine un carré du pion jusqu\'à la promotion. Si le roi adverse entre dans ce carré, il peut arrêter le pion.',
-   anecdote:'Capablanca était surnommé "la Machine à Échecs" pour sa maîtrise absolue des finales. Sa technique était si précise qu\'il gagnait des positions "nulles" par pure technique. Il apprit les échecs à 4 ans en regardant son père.',
-   masters:['José Raúl Capablanca','Magnus Carlsen'],hasPractice:false},
+  {
+    "id": "basics",
+    "cat": "regle",
+    "abbr": "I",
+    "title": "L'échiquier & les pièces",
+    "desc": "Le plateau, les pièces, leurs valeurs et leurs mouvements",
+    "content": "<b>L'échiquier</b> est composé de <em>64 cases</em> (8×8). Les colonnes sont nommées a à h, les rangées 1 à 8.\n\n<b>Les 6 pièces et leur valeur :</b>\n• <b>Pion (1 pt)</b> — avance d'une case (deux au départ), capture en diagonale\n• <b>Cavalier (3 pts)</b> — se déplace en L, saute par-dessus les pièces\n• <b>Fou (3 pts)</b> — diagonale à volonté, toujours sur la même couleur\n• <b>Tour (5 pts)</b> — ligne droite à volonté, très puissante en finale\n• <b>Dame (9 pts)</b> — combine Tour + Fou, pièce la plus puissante\n• <b>Roi (∞)</b> — une case dans toutes les directions, sa perte = fin de partie\n\n<b>But du jeu :</b>\nMettre le roi adverse en <em>échec et mat</em> — il est attaqué et ne peut s'échapper. Si le roi est en échec, on doit obligatoirement le résoudre.\n\n<b>Les 3 phases d'une partie :</b>\n• <em>Ouverture</em> — développer les pièces, contrôler le centre, roquer\n• <em>Milieu de jeu</em> — plans stratégiques, combinaisons tactiques\n• <em>Finale</em> — le roi s'active, on pousse les pions vers la promotion",
+    "anecdote": "Les règles modernes ont été fixées en Espagne au XVe siècle. Avant cela, la dame ne se déplaçait que d'une case en diagonale et une partie pouvait durer des jours. La révolution du XVe siècle a tout changé — la dame est devenue la reine absolue du jeu, peut-être en référence à Isabelle de Castille.",
+    "masters": [
+      "Garry Kasparov",
+      "Bobby Fischer",
+      "Magnus Carlsen"
+    ],
+    "hasPractice": false
+  },
+  {
+    "id": "castling",
+    "cat": "regle",
+    "abbr": "O",
+    "title": "Le Roque",
+    "desc": "Le seul coup qui déplace deux pièces simultanément",
+    "content": "Le <em>roque</em> est le seul coup aux échecs où l'on déplace roi et tour en même temps. Essentiel pour mettre le roi en sécurité.\n\n<b>Roque côté roi — O-O (court) :</b>\n• Blancs : roi e1 → g1, tour h1 → f1\n• Noirs : roi e8 → g8, tour h8 → f8\n\n<b>Roque côté dame — O-O-O (long) :</b>\n• Blancs : roi e1 → c1, tour a1 → d1\n\n<b>Les 5 conditions obligatoires :</b>\n1. Ni le roi ni la tour n'ont encore bougé\n2. Aucune pièce entre roi et tour\n3. Le roi n'est pas en échec\n4. Le roi ne traverse pas une case attaquée\n5. Le roi n'arrive pas sur une case attaquée\n\n<b>Comment jouer dans l'app :</b>\nClique sur le roi puis sur g1/g8 (roque court) ou c1/c8 (roque long). Tu peux aussi cliquer directement sur la tour.\n\n<b>Stratégie :</b>\nLe roque côté roi est plus rapide et plus sûr. Roque dans les 10 premiers coups !",
+    "anecdote": "Le roque a été introduit au XVe siècle pour accélérer le jeu. Sans cette règle, les joueurs devaient mener leur roi vers un coin case par case. Bobby Fischer utilisa un roque côté dame inattendu contre Spassky en 1972, déstabilisant totalement le champion soviétique.",
+    "masters": [
+      "Bobby Fischer",
+      "Magnus Carlsen"
+    ],
+    "hasPractice": false
+  },
+  {
+    "id": "en_passant",
+    "cat": "regle",
+    "abbr": "EP",
+    "title": "La Prise en Passant",
+    "desc": "La règle spéciale la plus surprenante pour les débutants",
+    "content": "La <em>prise en passant</em> — son nom est en français dans toutes les langues du monde — est la règle la plus méconnue.\n\n<b>La situation :</b>\nTon pion est en e5. Le pion adverse avance de d7 à d5 (deux cases), passant par d6 sans s'y arrêter.\n\n<b>La règle :</b>\nTu peux capturer ce pion en d5, comme s'il n'avait avancé que d'une case. Ton pion va en d6 et capture le pion en d5.\n\n<b>Les règles critiques :</b>\n• La capture est <em>optionnelle</em>\n• Elle doit être jouée <em>immédiatement</em> au coup suivant\n• Si tu joues un autre coup, tu perds définitivement ce droit\n\n<b>Pourquoi cette règle existe :</b>\nElle a été créée en même temps que l'avance de deux cases. Sans elle, un pion pourrait sauter par-dessus un pion adverse en position de capture — ce qui semblait injuste.",
+    "anecdote": "Introduite au XVe siècle, la prise en passant reste la règle la plus souvent ignorée par les débutants. Dans une partie célèbre de 1914 entre Lasker et Capablanca à Saint-Pétersbourg, une prise en passant au moment critique influença le résultat final.",
+    "masters": [
+      "José Raúl Capablanca"
+    ],
+    "hasPractice": false
+  },
+  {
+    "id": "promotion",
+    "cat": "regle",
+    "abbr": "Pr",
+    "title": "La Promotion du Pion",
+    "desc": "Transformer un pion en pièce puissante — même une seconde dame",
+    "content": "La <em>promotion</em> est l'une des règles les plus spectaculaires : un pion atteignant la dernière rangée se transforme immédiatement.\n\n<b>La règle :</b>\n• Pion blanc en rangée 8 (ou noir en rangée 1) → transformation immédiate\n• Choix : Dame, Tour, Fou ou Cavalier\n• On ne peut pas rester pion ni devenir roi\n• On peut avoir 2, 3 ou même 9 dames !\n\n<b>La sous-promotion :</b>\nDans 99% des cas, on choisit la dame. Mais parfois...\n• <em>Cavalier</em> : pour une fourchette inattendue ou éviter le pat\n• <em>Tour</em> : pour éviter le pat qui surviendrait avec une dame\n\n<b>La règle du carré :</b>\nPour savoir si votre roi peut arrêter un pion passé adverse : dessine un carré imaginaire du pion jusqu'à la rangée de promotion. Si votre roi peut y entrer au prochain coup, il l'attrape.",
+    "anecdote": "Magnus Carlsen a utilisé une sous-promotion en cavalier lors d'un tournoi mondial en 2016. La composition Saavedra (1895) montre qu'une sous-promotion en tour peut battre une dame — étudiée dans tous les manuels d'échecs.",
+    "masters": [
+      "Magnus Carlsen",
+      "José Raúl Capablanca"
+    ],
+    "hasPractice": false
+  },
+  {
+    "id": "stalemate",
+    "cat": "regle",
+    "abbr": "N",
+    "title": "Le Pat & les Nulles",
+    "desc": "Les 5 façons de terminer une partie sans vainqueur",
+    "content": "Il existe cinq façons d'obtenir une partie nulle.\n\n<b>1. Le Pat (Stalemate) :</b>\nLe joueur au trait n'a aucun coup légal, mais son roi N'EST PAS en échec → nul immédiat. Cherchez le pat quand vous êtes en grande infériorité !\n\n<b>2. La Triple Répétition :</b>\nMême position exacte 3 fois avec le même joueur au trait → nul sur demande.\n\n<b>3. La Règle des 50 Coups :</b>\n50 coups sans capture ni mouvement de pion → nul possible.\n\n<b>4. Matériel Insuffisant :</b>\nRoi seul vs Roi, Roi+Fou vs Roi, Roi+Cavalier vs Roi → nul automatique.\n\n<b>5. Accord Mutuel :</b>\nLes deux joueurs peuvent accepter la nulle à tout moment.\n\n<b>Astuce :</b>\nSi vous êtes en position perdante avec un roi seul, cherchez toujours s'il est possible de forcer le pat !",
+    "anecdote": "Le pat est la règle la plus controversée des échecs. Certains proposent de le changer depuis des années — le joueur coincé perdrait au lieu de faire nulle. Les pats accidentels en blitz arrivent même entre Grands Maîtres sous la pression du temps.",
+    "masters": [
+      "Garry Kasparov",
+      "Magnus Carlsen"
+    ],
+    "hasPractice": false
+  },
+  {
+    "id": "e4",
+    "cat": "ouverture",
+    "abbr": "e4",
+    "title": "L'Ouverture du Roi (1.e4)",
+    "desc": "Le coup le plus joué de l'histoire — Fischer le considérait objectivement le meilleur",
+    "content": "<b>1.e4</b> est le coup le plus populaire de l'histoire. Fischer l'appelait simplement 'le meilleur coup de l'échiquier'.\n\n<b>Pourquoi 1.e4 est si fort :</b>\n• Occupe le centre immédiatement\n• Libère la dame et le fou du roi\n• Prépare le roque côté roi rapidement\n• Crée les conditions pour un jeu ouvert et tactique\n\n<b>Les réponses principales de noir :</b>\n• <em>1...e5</em> — symétrique, Parties ouvertes (Italienne, Espagnole, Écossaise)\n• <em>1...c5</em> — la Sicilienne, la plus jouée au monde (25%+ des tournois)\n• <em>1...e6</em> — la Défense Française, solide et stratégique\n• <em>1...c6</em> — la Caro-Kann, structure de pions impeccable\n• <em>1...d5</em> — la Scandinave, contre-attaque directe\n\n<b>Les 3 principes d'ouverture :</b>\n1. Développer toutes vos pièces vers des cases actives\n2. Contrôler le centre\n3. Roquer pour mettre votre roi en sécurité",
+    "anecdote": "Fischer ne jouait que 1.e4 parce que c'est objectivement le meilleur. En 1972 à Reykjavik, lors du match du siècle contre Spassky, il joua 1.e4 dans toutes ses parties avec les blancs. Kasparov a dit qu'il faut comprendre 1.e4 pour comprendre 80% de la stratégie aux échecs.",
+    "masters": [
+      "Bobby Fischer",
+      "Garry Kasparov",
+      "Magnus Carlsen",
+      "Paul Morphy"
+    ],
+    "hasPractice": true,
+    "practiceColor": "white",
+    "difficulty": "debutant",
+    "moves": [
+      "e2e4",
+      "e7e5",
+      "g1f3",
+      "b8c6",
+      "f1c4",
+      "g8f6",
+      "e1g1"
+    ],
+    "labels": [
+      "1. e4",
+      "1...e5",
+      "2. Cf3",
+      "2...Cc6",
+      "3. Fc4",
+      "3...Cf6",
+      "4. O-O"
+    ],
+    "practiceDesc": "Partie Italienne · 7 coups · Blancs"
+  },
+  {
+    "id": "italian",
+    "cat": "ouverture",
+    "abbr": "It",
+    "title": "La Partie Italienne",
+    "desc": "L'ouverture idéale pour comprendre tous les principes fondamentaux",
+    "content": "La <em>Partie Italienne</em> : <b>1.e4 e5 2.Cf3 Cc6 3.Fc4</b>. Le fou vise f7, le point le plus faible de la position noire.\n\n<b>Variante Giuoco Piano (3...Fc5) :</b>\nNoir répond symétriquement. Après 4.c3 Cf6 5.d4, blanc cherche à établir un centre puissant e4+d4. C'est la variante la plus logique.\n\n<b>Défense des deux Cavaliers (3...Cf6) :</b>\nNoir attaque e4 directement. Après 4.Cg5 menaçant f7, le jeu devient tactique et complexe.\n\n<b>Evans Gambit (4.b4) :</b>\nSacrifice du pion b4 pour accélérer le développement. Très agressif, populaire au XIXe siècle.\n\n<b>Ce qu'elle enseigne :</b>\nTous les principes fondamentaux : développement rapide, contrôle du centre, roque précoce. La meilleure ouverture pour apprendre.",
+    "anecdote": "La Partie Italienne est documentée depuis les traités italiens du XVIe siècle. L'Evans Gambit (4.b4), inventé par le capitaine Evans en 1824, était si tranchant que Morphy et Anderssen l'adoraient. Kasparov l'a ressuscité en 1995 contre Anand lors du championnat du monde, remportant une partie magnifique.",
+    "masters": [
+      "Paul Morphy",
+      "Garry Kasparov",
+      "Magnus Carlsen"
+    ],
+    "hasPractice": true,
+    "practiceColor": "white",
+    "difficulty": "debutant",
+    "moves": [
+      "e2e4",
+      "e7e5",
+      "g1f3",
+      "b8c6",
+      "f1c4",
+      "f8c5",
+      "c2c3",
+      "g8f6",
+      "d2d4",
+      "e5d4"
+    ],
+    "labels": [
+      "1. e4",
+      "1...e5",
+      "2. Cf3",
+      "2...Cc6",
+      "3. Fc4",
+      "3...Fc5",
+      "4. c3",
+      "4...Cf6",
+      "5. d4",
+      "5...exd4"
+    ],
+    "practiceDesc": "Giuoco Piano · 10 coups · Blancs"
+  },
+  {
+    "id": "sicilian",
+    "cat": "ouverture",
+    "abbr": "Sic",
+    "title": "La Défense Sicilienne",
+    "desc": "La défense la plus jouée au monde — noir joue pour gagner, pas le nul",
+    "content": "La <em>Sicilienne</em> : <b>1.e4 c5</b>. Noir refuse la symétrie et crée un déséquilibre stratégique profond dès le premier coup.\n\n<b>L'idée fondamentale :</b>\nEn jouant c5, noir contrôle d4 sans symétrie, préparant un contre-jeu actif sur l'aile dame. Les structures asymétriques donnent des chances des deux côtés.\n\n<b>Les variantes principales :</b>\n• <em>Najdorf</em> (5...a6) — préférée de Fischer et Kasparov. Flexible, prépare b5.\n• <em>Dragon</em> (5...g6) — fianchetto agressif, positions de feu des deux côtés\n• <em>Scheveningen</em> (5...e6) — solide et flexible\n• <em>Classique</em> (5...Cc6) — développement naturel\n\n<b>Pourquoi la Sicilienne :</b>\nNoir joue pour la victoire. Les positions complexes et déséquilibrées offrent des chances des deux camps. C'est pourquoi elle représente 25%+ de tous les tournois.",
+    "anecdote": "La Sicilienne représente plus de 25% des parties de tournoi au niveau GM. Kasparov l'a utilisée toute sa carrière. Deep Blue avait mémorisé des milliers de variantes de la Najdorf pour neutraliser Kasparov lors de leur match de 1997. Fischer disait que c'était la défense la plus honnête contre 1.e4.",
+    "masters": [
+      "Garry Kasparov",
+      "Bobby Fischer",
+      "Mikhail Tal",
+      "Magnus Carlsen"
+    ],
+    "hasPractice": true,
+    "practiceColor": "black",
+    "difficulty": "intermediaire",
+    "moves": [
+      "e2e4",
+      "c7c5",
+      "g1f3",
+      "d7d6",
+      "d2d4",
+      "c5d4",
+      "f3d4",
+      "g8f6",
+      "b1c3"
+    ],
+    "labels": [
+      "1. e4",
+      "1...c5",
+      "2. Cf3",
+      "2...d6",
+      "3. d4",
+      "3...cxd4",
+      "4. Cxd4",
+      "4...Cf6",
+      "5. Cc3"
+    ],
+    "practiceDesc": "Sicilienne ouverte · 9 coups · Noirs"
+  },
+  {
+    "id": "queens_gambit",
+    "cat": "ouverture",
+    "abbr": "GD",
+    "title": "Le Gambit Dame",
+    "desc": "L'ouverture des grandes batailles stratégiques — rendu célèbre par Netflix en 2020",
+    "content": "Le <em>Gambit Dame</em> : <b>1.d4 d5 2.c4</b>. Blanc offre un pion pour contrôler le centre.\n\n<b>Pourquoi ce n'est pas vraiment un gambit :</b>\nSi noir prend avec 2...dxc4, blanc récupère rapidement avec une meilleure position. Le sacrifice ne coûte rien.\n\n<b>Gambit Dame Refusé (GDR) — 2...e6 :</b>\nLa réponse la plus jouée. Noir maintient d5 et développe prudemment. Très riche stratégiquement.\n\n<b>Gambit Dame Accepté (GDA) — 2...dxc4 :</b>\nNoir prend mais cède le centre. Il devra restituer le pion plus tard.\n\n<b>Défense Slave — 2...c6 :</b>\nTrès solide. Noir soutient d5 sans bloquer le fou c8.\n\n<b>L'idée stratégique de blanc :</b>\nContrôle du centre c4+d4, pression sur les colonnes centrales, avantage d'espace à long terme.",
+    "anecdote": "Le Gambit Dame a explosé en popularité grâce à la série Netflix 'Le Jeu de la Dame' en 2020 — les ventes de jeux d'échecs ont bondi de 1000% en quelques semaines. Capablanca en faisait sa signature dans les années 1920. Les championnats Kasparov-Karpov ont produit des GDR d'une profondeur stratégique extraordinaire.",
+    "masters": [
+      "José Raúl Capablanca",
+      "Garry Kasparov",
+      "Magnus Carlsen"
+    ],
+    "hasPractice": true,
+    "practiceColor": "white",
+    "difficulty": "intermediaire",
+    "moves": [
+      "d2d4",
+      "d7d5",
+      "c2c4",
+      "e7e6",
+      "b1c3",
+      "g8f6",
+      "c1g5",
+      "f8e7",
+      "e2e3",
+      "e8g8"
+    ],
+    "labels": [
+      "1. d4",
+      "1...d5",
+      "2. c4",
+      "2...e6",
+      "3. Cc3",
+      "3...Cf6",
+      "4. Fg5",
+      "4...Fe7",
+      "5. e3",
+      "5...O-O"
+    ],
+    "practiceDesc": "Gambit Dame Refusé · 10 coups · Blancs"
+  },
+  {
+    "id": "ruy_lopez",
+    "cat": "ouverture",
+    "abbr": "RL",
+    "title": "La Partie Espagnole (Ruy Lopez)",
+    "desc": "L'ouverture la plus analysée de toute l'histoire — 500 ans de théorie",
+    "content": "La <em>Partie Espagnole</em> : <b>1.e4 e5 2.Cf3 Cc6 3.Fb5</b>. Avec 500 ans de théorie, c'est l'ouverture la plus profonde de l'histoire.\n\n<b>L'idée du Fou en b5 :</b>\nLe fou attaque le cavalier qui défend e5 — une pression stratégique subtile à long terme.\n\n<b>Défense Morphy (3...a6) :</b>\nNoir challenge le fou. Après 4.Fa4 Cf6 5.O-O, des milliers de parties ont analysé cette position.\n\n<b>Variante Berlinoise (3...Cf6) — le Mur de Berlin :</b>\nAprès 4.O-O Cxe4 5.d4, on arrive à une finale légèrement favorable à blanc mais difficile à convertir. Kramnik l'utilisa pour battre Kasparov en 2000.\n\n<b>Profondeur :</b>\nCertaines variantes ont des analyses au-delà du 40e coup. L'ouverture qui a produit le plus de parties de championnat du monde.",
+    "anecdote": "Ruy López de Segura, prêtre espagnol, analysa cette ouverture dans son traité de 1561. Kramnik baptisa la Berlinoise 'Mur de Berlin' après avoir battu Kasparov avec — ironiquement, le mur était tombé en 1989 mais la Berlinoise tient toujours.",
+    "masters": [
+      "Garry Kasparov",
+      "Bobby Fischer",
+      "Magnus Carlsen",
+      "Vladimir Kramnik"
+    ],
+    "hasPractice": true,
+    "practiceColor": "white",
+    "difficulty": "intermediaire",
+    "moves": [
+      "e2e4",
+      "e7e5",
+      "g1f3",
+      "b8c6",
+      "f1b5",
+      "a7a6",
+      "b5a4",
+      "g8f6",
+      "e1g1",
+      "f8e7"
+    ],
+    "labels": [
+      "1. e4",
+      "1...e5",
+      "2. Cf3",
+      "2...Cc6",
+      "3. Fb5",
+      "3...a6",
+      "4. Fa4",
+      "4...Cf6",
+      "5. O-O",
+      "5...Fe7"
+    ],
+    "practiceDesc": "Ruy Lopez Morphy · 10 coups · Blancs"
+  },
+  {
+    "id": "french",
+    "cat": "ouverture",
+    "abbr": "Fr",
+    "title": "La Défense Française",
+    "desc": "Solidité, contre-jeu structuré et le défi du fou c8",
+    "content": "La <em>Défense Française</em> : <b>1.e4 e6</b>. Noir prépare la contre-attaque d5 en construisant une structure solide.\n\n<b>La structure caractéristique :</b>\nAprès 1.e4 e6 2.d4 d5, blanc a souvent un avantage d'espace, noir un contre-jeu bien défini sur les colonnes c et b.\n\n<b>Le défi du fou c8 :</b>\nLe pion e6 bloque souvent le développement du fou c8. Le joueur de Française doit résoudre ce problème : ...b6+Fb7, ou ...Fd7 suivi d'une manœuvre.\n\n<b>Les variantes :</b>\n• <em>Avancée</em> (3.e5) — blanc avance, noir contre-attaque c5\n• <em>Winawer</em> (3.Cc3 Fb4) — complexe, double tranchant\n• <em>Classique</em> (3.Cc3 Cf6) — logique et solide\n• <em>Tarrasch</em> (3.Cd2) — flexible, évite le clouage",
+    "anecdote": "La Défense Française porte son nom depuis un match par correspondance de 1834 Paris-Londres. Victor Korchnoi l'utilisa dans ses deux matches de championnat du monde contre Karpov (1978, 1981). Aaron Nimzowitsch en a fortement développé la théorie dans les années 1920.",
+    "masters": [
+      "Viktor Korchnoi",
+      "Aaron Nimzowitsch",
+      "Magnus Carlsen"
+    ],
+    "hasPractice": true,
+    "practiceColor": "black",
+    "difficulty": "intermediaire",
+    "moves": [
+      "e2e4",
+      "e7e6",
+      "d2d4",
+      "d7d5",
+      "b1c3",
+      "g8f6",
+      "c1g5",
+      "f8e7",
+      "e4e5",
+      "f6d7"
+    ],
+    "labels": [
+      "1. e4",
+      "1...e6",
+      "2. d4",
+      "2...d5",
+      "3. Cc3",
+      "3...Cf6",
+      "4. Fg5",
+      "4...Fe7",
+      "5. e5",
+      "5...Cd7"
+    ],
+    "practiceDesc": "Française Classique · 10 coups · Noirs"
+  },
+  {
+    "id": "caro",
+    "cat": "ouverture",
+    "abbr": "CK",
+    "title": "La Caro-Kann",
+    "desc": "La défense la plus solide contre 1.e4 — structure de pions impeccable",
+    "content": "La <em>Caro-Kann</em> : <b>1.e4 c6</b>. Noir prépare d5 — une réponse solide avec une structure de pions supérieure à la Française.\n\n<b>La grande différence avec la Française :</b>\nDans la Française, le fou c8 est bloqué par e6. Dans la Caro-Kann, après dxe4 et Cxe4, noir développe son fou en f5 ou g4 directement — structure beaucoup plus saine.\n\n<b>Les variantes :</b>\n• <em>Classique</em> (3...dxe4 4.Cxe4) — la plus populaire\n• <em>Avance</em> (3.e5) — blanc s'étend agressivement\n• <em>Panov-Botvinnik</em> (4.c4) — pions isolés, jeu de pièces actif\n\n<b>Le profil idéal :</b>\nJoueurs qui préfèrent la solidité à la complexité tactique. Karpov l'a illustrée à la perfection.",
+    "anecdote": "La Caro-Kann porte les noms de Horatio Caro et Marcus Kann qui l'analysèrent en 1886. Anatoli Karpov en était l'expert absolu. Magnus Carlsen y revient lors de championnats du monde pour sa solidité éprouvée — c'est l'ouverture qu'on choisit quand on a besoin d'un résultat précis.",
+    "masters": [
+      "Anatoli Karpov",
+      "Magnus Carlsen"
+    ],
+    "hasPractice": true,
+    "practiceColor": "black",
+    "difficulty": "intermediaire",
+    "moves": [
+      "e2e4",
+      "c7c6",
+      "d2d4",
+      "d7d5",
+      "b1c3",
+      "d5e4",
+      "c3e4",
+      "g8f6",
+      "e4f6",
+      "g7f6"
+    ],
+    "labels": [
+      "1. e4",
+      "1...c6",
+      "2. d4",
+      "2...d5",
+      "3. Cc3",
+      "3...dxe4",
+      "4. Cxe4",
+      "4...Cf6",
+      "5. Cxf6+",
+      "5...gxf6"
+    ],
+    "practiceDesc": "Caro-Kann Classique · 10 coups · Noirs"
+  },
+  {
+    "id": "scots",
+    "cat": "ouverture",
+    "abbr": "Ec",
+    "title": "La Partie Écossaise",
+    "desc": "Ouverture ouverte et tactique — parfaite pour les joueurs qui aiment attaquer",
+    "content": "La <em>Partie Écossaise</em> : <b>1.e4 e5 2.Cf3 Cc6 3.d4</b>. Blanc ouvre le centre immédiatement — pas de temporisation à la Ruy Lopez.\n\n<b>L'idée :</b>\nEn jouant d4 dès le 3e coup, blanc crée une tension centrale immédiate. Après 3...exd4 4.Cxd4, le cavalier est actif. Position ouverte et dynamique.\n\n<b>Avantages :</b>\n• Moins de théorie que la Ruy Lopez\n• Positions ouvertes favorisant le jeu tactique\n• Excellent pour attaquer\n\n<b>Les continuations :</b>\n• <em>Gambit Écossais</em> (4...Fc5) — classique, jeu de pièces actif\n• <em>Quatre Cavaliers</em> (4...Cf6) — développement logique\n\n<b>Plan de blanc :</b>\nDévelopper rapidement, maintenir le cavalier actif en d4, lancer une attaque avant le roque adverse.",
+    "anecdote": "La Partie Écossaise vient d'un match par correspondance Édimbourg-Londres en 1824. Kasparov l'a ressuscitée dans les années 1990 contre Karpov — ses parties brillantes sont encore étudiées aujourd'hui. Magnus Carlsen l'utilise pour sortir ses adversaires de leurs profondes préparations.",
+    "masters": [
+      "Garry Kasparov",
+      "Magnus Carlsen"
+    ],
+    "hasPractice": true,
+    "practiceColor": "white",
+    "difficulty": "debutant",
+    "moves": [
+      "e2e4",
+      "e7e5",
+      "g1f3",
+      "b8c6",
+      "d2d4",
+      "e5d4",
+      "f3d4",
+      "f8c5",
+      "c1e3",
+      "d8f6"
+    ],
+    "labels": [
+      "1. e4",
+      "1...e5",
+      "2. Cf3",
+      "2...Cc6",
+      "3. d4",
+      "3...exd4",
+      "4. Cxd4",
+      "4...Fc5",
+      "5. Fe3",
+      "5...Df6"
+    ],
+    "practiceDesc": "Partie Écossaise · 10 coups · Blancs"
+  },
+  {
+    "id": "kings_indian",
+    "cat": "ouverture",
+    "abbr": "KI",
+    "title": "La Défense Est-Indienne",
+    "desc": "L'arme hypermoderne de Fischer et Kasparov — positions de combat extrêmes",
+    "content": "La <em>Défense Est-Indienne</em> : <b>1.d4 Cf6 2.c4 g6</b>. Noir laisse blanc construire un grand centre pour mieux l'attaquer ensuite.\n\n<b>La philosophie hypermoderne :</b>\nContrôler le centre à distance avec le fou en g7. Le plan de noir : e5 ou c5 pour attaquer le centre adverse une fois les pièces développées.\n\n<b>La race Est-Indienne :</b>\nSouvent une course d'attaques — blanc sur l'aile dame, noir sur l'aile roi. La première attaque qui aboutit gagne. Ultra-tendu.\n\n<b>Les variantes :</b>\n• <em>Classique</em> (5.Cf3 O-O 6.Fe2 e5) — fondamentale\n• <em>Quatre pions</em> (5.f4) — ultra-agressive de blanc\n• <em>Sämisch</em> (5.f3) — solide mais risquée",
+    "anecdote": "Fischer jouait la Défense Est-Indienne dans presque toutes ses parties avec les noirs. Kasparov en a fait sa signature pendant des décennies, produisant des combinaisons d'une beauté extraordinaire. La position est si riche qu'elle génère encore de nouvelles idées théoriques après des siècles d'analyse.",
+    "masters": [
+      "Bobby Fischer",
+      "Garry Kasparov",
+      "Mikhail Tal"
+    ],
+    "hasPractice": true,
+    "practiceColor": "black",
+    "difficulty": "avance",
+    "moves": [
+      "d2d4",
+      "g8f6",
+      "c2c4",
+      "g7g6",
+      "b1c3",
+      "f8g7",
+      "e2e4",
+      "d7d6",
+      "g1f3",
+      "e8g8"
+    ],
+    "labels": [
+      "1. d4",
+      "1...Cf6",
+      "2. c4",
+      "2...g6",
+      "3. Cc3",
+      "3...Fg7",
+      "4. e4",
+      "4...d6",
+      "5. Cf3",
+      "5...O-O"
+    ],
+    "practiceDesc": "Défense Est-Indienne · 10 coups · Noirs"
+  },
+  {
+    "id": "english",
+    "cat": "ouverture",
+    "abbr": "Eng",
+    "title": "L'Ouverture Anglaise",
+    "desc": "Flexibilité maximale — idéale pour éviter les préparations adverses",
+    "content": "L'<em>Ouverture Anglaise</em> : <b>1.c4</b>. Blanc contrôle d5 à distance et laisse noir choisir son système.\n\n<b>L'idée hypermoderne :</b>\nAu lieu d'avancer e4 ou d4, blanc joue c4 — flexible, contrôle sans occuper. Peut transposer dans de nombreuses ouvertures.\n\n<b>Avantage stratégique :</b>\nTrès peu de théorie forcée. Excellent pour éviter les préparations adverses — vos adversaires connaissent 40 coups dans la Ruy Lopez mais seulement 10 dans l'Anglaise.\n\n<b>Les réponses :</b>\n• <em>1...e5</em> — Anglaise inverse, structures riches\n• <em>1...c5</em> — symétrique\n• <em>1...Cf6</em> — flexible\n\n<b>Plan typique :</b>\nCc3, g3, Fg2 (fianchetto), puis attaquer le centre adverse avec d3+e4.",
+    "anecdote": "L'Anglaise doit son nom à Howard Staunton qui la popularisa vers 1843. Botvinnik, champion du monde, en a fait un système complet. Magnus Carlsen l'utilise pour sortir ses adversaires de leurs préparations — une stratégie très efficace quand l'adversaire a mémorisé 40 coups dans la Ruy Lopez mais seulement 10 dans l'Anglaise.",
+    "masters": [
+      "Mikhail Botvinnik",
+      "Magnus Carlsen",
+      "Anatoli Karpov"
+    ],
+    "hasPractice": true,
+    "practiceColor": "white",
+    "difficulty": "avance",
+    "moves": [
+      "c2c4",
+      "e7e5",
+      "b1c3",
+      "g8f6",
+      "g1f3",
+      "b8c6",
+      "g2g3",
+      "f8c5",
+      "f1g2",
+      "d7d6"
+    ],
+    "labels": [
+      "1. c4",
+      "1...e5",
+      "2. Cc3",
+      "2...Cf6",
+      "3. Cf3",
+      "3...Cc6",
+      "4. g3",
+      "4...Fc5",
+      "5. Fg2",
+      "5...d6"
+    ],
+    "practiceDesc": "Anglaise · 10 coups · Blancs"
+  },
+  {
+    "id": "scandinavian",
+    "cat": "ouverture",
+    "abbr": "Sc",
+    "title": "La Défense Scandinave",
+    "desc": "Contre-attaque directe au premier coup — positions claires, peu théoriques",
+    "content": "La <em>Défense Scandinave</em> : <b>1.e4 d5</b>. Contre-attaque centrale immédiate.\n\n<b>Après 2.exd5 :</b>\n• <em>2...Dxd5</em> — classique. Dame sort tôt (désavantage) mais position solide et claire. Après 3.Cc3 Da5, la dame contrôle des cases importantes.\n• <em>2...Cf6</em> — moderne. Sacrifice temporaire du pion pour le développement.\n\n<b>Avantages :</b>\n• Position claire et facile à comprendre\n• Peu de théorie obligatoire\n• Difficile de surprendre un joueur de Scandinave\n\n<b>Inconvénients :</b>\n• La dame sort tôt et perd un tempo\n• Blanc a un léger avantage\n\n<b>Stratégie de noir :</b>\nDévelopper Cf6, Fg4 ou Ff5, consolider avec c6. Position solide et pratique.",
+    "anecdote": "La Scandinave est analysée depuis le XVe siècle. Bent Larsen (Danemark) l'a popularisée dans les années 1960-70. Sergei Tiviakov en a fait son arme principale avec des succès remarquables. C'est l'ouverture que choisissent les joueurs qui préfèrent la clarté à la mémorisation.",
+    "masters": [
+      "Bent Larsen",
+      "Sergei Tiviakov"
+    ],
+    "hasPractice": true,
+    "practiceColor": "black",
+    "difficulty": "debutant",
+    "moves": [
+      "e2e4",
+      "d7d5",
+      "e4d5",
+      "d8d5",
+      "b1c3",
+      "d5a5",
+      "d2d4",
+      "g8f6",
+      "g1f3",
+      "c7c6"
+    ],
+    "labels": [
+      "1. e4",
+      "1...d5",
+      "2. exd5",
+      "2...Dxd5",
+      "3. Cc3",
+      "3...Da5",
+      "4. d4",
+      "4...Cf6",
+      "5. Cf3",
+      "5...c6"
+    ],
+    "practiceDesc": "Scandinave Classique · 10 coups · Noirs"
+  },
+  {
+    "id": "fork",
+    "cat": "tactique",
+    "abbr": "F",
+    "title": "La Fourchette",
+    "desc": "Attaquer deux pièces simultanément — le thème tactique le plus fréquent",
+    "content": "La <em>fourchette</em> est le thème tactique le plus courant : une pièce attaque simultanément deux adversaires, forçant l'adversaire à en abandonner une.\n\n<b>Le cavalier — roi de la fourchette :</b>\nSa trajectoire en L permet d'attaquer des cases non adjacentes et non alignées — difficile à anticiper.\n\n<b>La fourchette royale :</b>\nUn cavalier attaque simultanément roi et dame. Le roi doit s'échapper (obligatoire), la dame est perdue.\n\n<b>Comment créer une fourchette :</b>\n1. Identifier deux pièces précieuses adverses\n2. Trouver une case d'où votre pièce les attaque toutes les deux\n3. Si impossible directement, chercher un coup préliminaire (souvent un sacrifice)\n\n<b>Les autres pièces :</b>\n• Pion : fourchette sur les deux cases diagonales\n• Dame, Tour, Fou : fourchettes sur leurs lignes respectives",
+    "anecdote": "La fourchette la plus célèbre est celle de Fischer contre Donald Byrne en 1956, lors de la Partie du Siècle. Fischer avait 13 ans. Il sacrifia sa dame pour créer une position où son cavalier réalisa une fourchette dévastatrice. Cette partie a été analysée des milliers de fois.",
+    "masters": [
+      "Bobby Fischer",
+      "Mikhail Tal",
+      "Magnus Carlsen"
+    ],
+    "hasPractice": false
+  },
+  {
+    "id": "pin",
+    "cat": "tactique",
+    "abbr": "Cl",
+    "title": "Le Clouage",
+    "desc": "Immobiliser une pièce adverse — absolu ou relatif, toujours dangereux",
+    "content": "Le <em>clouage</em> : une pièce adverse ne peut (ou ne devrait) pas bouger car cela exposerait une pièce plus précieuse derrière elle.\n\n<b>Clouage absolu :</b>\nLa pièce clouée protège le roi. Elle ne peut jamais légalement bouger — ce serait exposer le roi à un échec. Contrainte absolue.\n\n<b>Clouage relatif :</b>\nLa pièce clouée protège quelque chose de précieux (dame, tour). Elle pourrait bouger mais ce serait une erreur coûteuse.\n\n<b>Comment exploiter un clouage :</b>\n1. Attaquer la pièce clouée avec des pièces moins précieuses\n2. Empiler les attaques — elle ne peut pas répondre\n3. Créer d'autres menaces pendant qu'elle est immobile\n\n<b>Comment rompre un clouage :</b>\n• Interposer une pièce entre le cloueur et la cible\n• Déplacer la pièce protégée hors de la ligne\n• Attaquer le cloueur",
+    "anecdote": "Mikhail Tal était maître des clouages menant à des sacrifices impossibles à réfuter. Champion du monde à 23 ans en 1960, il disait : 'Les échecs demandent de la passion, non de la science — de la fièvre, non du froid calcul.'",
+    "masters": [
+      "Mikhail Tal",
+      "Garry Kasparov",
+      "Paul Morphy"
+    ],
+    "hasPractice": false
+  },
+  {
+    "id": "discovered",
+    "cat": "tactique",
+    "abbr": "Ad",
+    "title": "L'Attaque Découverte",
+    "desc": "Libérer une pièce cachée pour créer deux menaces simultanées impossibles à parer",
+    "content": "L'<em>attaque découverte</em> : déplacer une pièce pour révéler l'attaque d'une pièce cachée derrière elle — deux menaces simultanées impossibles à parer ensemble.\n\n<b>La mécanique :</b>\nPièce A est devant la pièce B. En déplaçant A (vers une case active avec sa propre menace), B révèle une attaque. L'adversaire gère deux menaces à la fois.\n\n<b>L'échec découvert :</b>\nEn déplaçant A, la pièce B donne un échec. Le roi doit être sauvé (obligatoire), donc A peut capturer librement.\n\n<b>Le double échec — l'arme ultime :</b>\nLes deux pièces donnent échec simultanément. La seule défense : déplacer le roi. Mène souvent directement au mat.\n\n<b>Comment repérer ces attaques :</b>\nCherchez une de vos pièces qui bloque la ligne d'une autre pièce puissante. Peut-elle se déplacer vers une case active ?",
+    "anecdote": "Dans la partie Légal vs Saint-Brie (Paris, 1750), Légal réalisa le premier sacrifice de dame menant à une série d'échecs découverts et au mat. Ce 'Mat de Légal' est enseigné dans tous les manuels de tactique.",
+    "masters": [
+      "Magnus Carlsen",
+      "Mikhail Tal",
+      "Garry Kasparov"
+    ],
+    "hasPractice": false
+  },
+  {
+    "id": "skewer",
+    "cat": "tactique",
+    "abbr": "En",
+    "title": "L'Enfilage & la Surcharge",
+    "desc": "Deux thèmes complémentaires — forcer les pièces à abandonner leur poste",
+    "content": "<b>L'Enfilage</b> est l'inverse du clouage : la pièce précieuse est devant, et en la forçant à bouger, on capture ce qui est derrière.\n\n<b>Comment fonctionne l'enfilage :</b>\n1. Attaquer directement la pièce précieuse (roi, dame ou tour)\n2. Elle est forcée de se déplacer\n3. La pièce derrière est capturée\n\n<b>La Surcharge (overloading) :</b>\nForcer une pièce à défendre plus qu'elle ne peut.\n\n<b>Exploiter une surcharge :</b>\n1. Identifier une pièce qui défend deux cibles simultanément\n2. Attaquer les deux cibles\n3. Quelle que soit la réponse, une cible est perdue\n\n<b>Lien entre les deux :</b>\nLa surcharge peut créer un enfilage. Ces deux thèmes apparaissent souvent ensemble dans les combinaisons complexes.",
+    "anecdote": "Capablanca était redoutable pour créer des enfilages en finale — sa technique était si précise qu'on disait qu'il voyait les finales plutôt qu'il ne les calculait. Il n'a perdu qu'une seule partie en 8 ans (1916-1924). Tal était expert des surcharges en milieu de jeu.",
+    "masters": [
+      "José Raúl Capablanca",
+      "Mikhail Tal",
+      "Magnus Carlsen"
+    ],
+    "hasPractice": false
+  },
+  {
+    "id": "center",
+    "cat": "strategie",
+    "abbr": "C",
+    "title": "Le Contrôle du Centre",
+    "desc": "Le principe stratégique le plus important — à la base de toute la théorie",
+    "content": "Le <em>contrôle du centre</em> est le concept fondamental de la stratégie aux échecs. Les quatre cases e4, d4, e5, d5 sont le coeur du jeu.\n\n<b>Pourquoi le centre est capital :</b>\n• Un cavalier central attaque 8 cases, en coin seulement 2\n• Le centre donne de la mobilité — vos pièces rejoignent n'importe quelle zone rapidement\n• Contrôler le centre restreint la mobilité adverse\n\n<b>L'approche classique (Steinitz, Tarrasch) :</b>\nOccuper physiquement le centre avec des pions e4+d4.\n\n<b>L'approche hypermoderne (Nimzowitsch, Réti) :</b>\nContrôler à distance avec des pièces, puis attaquer les pions centraux adverses.\n\n<b>La synthèse moderne :</b>\nLes meilleurs joueurs combinent les deux approches. La flexibilité est la clé.\n\n<b>Règle pratique :</b>\nDans vos 10 premiers coups, chaque coup doit soit occuper, soit contrôler, soit développer vers le centre.",
+    "anecdote": "Nimzowitsch a révolutionné la théorie dans 'Mon Système' (1925) en montrant que les pions du centre peuvent être des cibles. Cela a créé des ouvertures entières : Nimzo-Indienne, Grünfeld, Est-Indienne. Kasparov incarne la synthèse parfaite entre approche classique et hypermoderne.",
+    "masters": [
+      "Aaron Nimzowitsch",
+      "Garry Kasparov",
+      "Magnus Carlsen"
+    ],
+    "hasPractice": false
+  },
+  {
+    "id": "pawn_structure",
+    "cat": "strategie",
+    "abbr": "Sp",
+    "title": "La Structure de Pions",
+    "desc": "Les pions ne reculent jamais — ils définissent le plan stratégique pour toute la partie",
+    "content": "La <em>structure de pions</em> est permanente — les pions ne reculent pas. Elle détermine le plan stratégique à long terme.\n\n<b>Les pions faibles — à éviter :</b>\n• <em>Pion isolé</em> : pas de pion ami adjacent. Difficile à défendre mais peut contrôler des cases importantes.\n• <em>Pions doublés</em> : deux pions sur la même colonne. Réduisent la mobilité.\n• <em>Pion arriéré</em> : ne peut avancer, cases devant contrôlées par l'adversaire.\n• <em>Pion arriéré sur colonne ouverte</em> : la combinaison la plus dangereuse.\n\n<b>Les pions forts :</b>\n• <em>Pion passé</em> : aucun pion adverse ne peut l'arrêter. Arme redoutable en finale.\n• <em>Pions connectés</em> : se défendent mutuellement, très solides.\n\n<b>La règle d'or :</b>\nNe créez jamais de faiblesse structurelle sans une compensation claire.",
+    "anecdote": "Karpov était le maître de l'exploitation des faiblesses de pions adverses. Sa méthode : créer une légère faiblesse, l'accentuer progressivement sur 40 coups, gagner la finale. Ses parties étaient souvent décrites comme 'la mort par asphyxie progressive'.",
+    "masters": [
+      "Anatoli Karpov",
+      "Aaron Nimzowitsch",
+      "Magnus Carlsen"
+    ],
+    "hasPractice": false
+  },
+  {
+    "id": "zugzwang",
+    "cat": "strategie",
+    "abbr": "Zz",
+    "title": "Le Zugzwang",
+    "desc": "Quand jouer est une malédiction — le concept le plus élégant des finales",
+    "content": "Le <em>Zugzwang</em> (allemand : obligation de jouer) : le joueur voudrait passer son tour mais ne le peut pas. Tout coup détériore sa position.\n\n<b>Le paradoxe :</b>\nNormalement, avoir un coup à jouer est un avantage. En Zugzwang, c'est une malédiction.\n\n<b>Quand le Zugzwang apparaît :</b>\n• Très fréquent dans les finales de pions\n• Rare en milieu de jeu mais dévastateur\n\n<b>L'opposition des rois :</b>\nDeux rois face à face avec une case entre eux. Celui qui doit jouer est désavantagé — il doit reculer.\n\n<b>La Triangulation :</b>\nTechnique pour forcer l'adversaire en Zugzwang. Votre roi fait un triangle en 3 coups pour revenir à la même position, mais en changeant qui doit jouer.\n\n<b>Exemple simple :</b>\nRoi blanc e5, roi noir e7, pion blanc e6. Si blanc doit jouer : il ne peut pas avancer le pion et tout déplacement cède du terrain.",
+    "anecdote": "La composition Saavedra (1895) cache un Zugzwang d'une subtilité extraordinaire — étudiée dans tous les manuels. En 2007, Carlsen a placé Aronian dans un Zugzwang brillant lors d'un tournoi super-élite. Aronian n'avait aucun coup jouable sans se détruire.",
+    "masters": [
+      "Magnus Carlsen",
+      "José Raúl Capablanca",
+      "Anatoli Karpov"
+    ],
+    "hasPractice": false
+  },
+  {
+    "id": "endgame_king",
+    "cat": "finale",
+    "abbr": "Rf",
+    "title": "Le Roi en Finale",
+    "desc": "Le roi n'est plus à protéger — c'est une arme à activer",
+    "content": "En finale, <em>le roi doit être activé</em>. Il n'est plus vulnérable — il devient une pièce puissante de ~4 points de force.\n\n<b>Pourquoi activer le roi :</b>\n• Peu de pièces = peu de danger de mat\n• Peut attaquer les pions adverses\n• Peut escorter ses pions vers la promotion\n• Un roi centralisé contrôle 8 cases\n\n<b>L'opposition :</b>\nDeux rois face à face avec une case entre eux. Celui qui DOIT jouer est désavantagé — il doit reculer.\n\n<b>La règle du carré :</b>\nDessine mentalement un carré du pion passé adverse jusqu'à sa rangée de promotion. Si votre roi peut entrer dans ce carré au prochain coup, il rattrape le pion.\n\n<b>Principe fondamental :</b>\nDès les premiers signes de simplification, centralisez votre roi immédiatement.",
+    "anecdote": "Capablanca disait : 'Pour améliorer votre jeu aux échecs, étudiez les finales avant tout — si vous ne connaissez pas les finales, vous ne connaissez pas les échecs.' Magnus Carlsen est l'héritier direct de cette tradition.",
+    "masters": [
+      "José Raúl Capablanca",
+      "Magnus Carlsen"
+    ],
+    "hasPractice": false
+  },
+  {
+    "id": "rook_endings",
+    "cat": "finale",
+    "abbr": "Ft",
+    "title": "Les Finales de Tours",
+    "desc": "Les finales les plus fréquentes et complexes — 25% de toutes les parties",
+    "content": "Les <em>finales de tours</em> sont les plus courantes (environ 25% des parties de tournoi) et parmi les plus complexes.\n\n<b>Le principe de Tarrasch :</b>\n'Les tours doivent être placées derrière les pions passés.' Derrière vos pions pour les pousser, derrière ceux de l'adversaire pour les bloquer.\n\n<b>Tour active vs tour passive :</b>\n• Active : attaque, crée des menaces, contrôle des colonnes ouvertes\n• Passive : défend derrière un pion. À éviter absolument.\n\n<b>La position de Lucena (gagnante) :</b>\nRoi+Pion+Tour vs Tour. Technique du 'pont' pour protéger le roi des échecs.\n\n<b>La défense de Philidor (nulle) :</b>\nRoi+Tour vs Roi+Pion+Tour. Placer la tour sur la 3e rangée pour couper le roi adverse.",
+    "anecdote": "Akiba Rubinstein était considéré comme le plus grand spécialiste des finales de tours. Magnus Carlsen a dit publiquement que comprendre les finales de tours de Rubinstein est indispensable pour progresser au-delà de 2000 Elo.",
+    "masters": [
+      "Akiba Rubinstein",
+      "Magnus Carlsen",
+      "José Raúl Capablanca"
+    ],
+    "hasPractice": false
+  }
 ];
 const QUIZZES=[
-  {id:'q1',t:'Règle du Roque',q:'Dans quelle situation NE PEUT-ON PAS roquer ?',opts:['Le roi est en échec','Une pièce est entre roi et tour','Le roi a déjà bougé','Toutes ces situations'],sol:3,exp:'On ne peut pas roquer si : le roi est en échec, si une pièce bloque le chemin, si le roi ou la tour a déjà bougé, ou si le roi traverse ou arrive sur une case attaquée.'},
-  {id:'q2',t:'Valeur des pièces',q:'Quelle pièce est la plus précieuse ?',opts:['La Tour (5 pts)','Le Cavalier (3 pts)','La Dame (9 pts)','Le Fou (3 pts)'],sol:2,exp:'La Dame est la pièce la plus puissante avec 9 points — elle combine les mouvements de la Tour et du Fou.'},
-  {id:'q3',t:'Le Pat',q:'Qu\'est-ce que le pat (stalemate) ?',opts:['Le roi est maté','Aucun coup légal mais pas en échec → nul','50 coups sans capture','Trois fois la même position'],sol:1,exp:'Le pat est un match nul : le joueur au trait n\'a aucun coup légal mais son roi N\'EST PAS en échec. Ressource de défense précieuse.'},
-  {id:'q4',t:'Prise en Passant',q:'La prise en passant doit être jouée...',opts:['N\'importe quand','Dans les 3 coups suivants','Immédiatement au coup suivant uniquement','C\'est optionnel sans délai'],sol:2,exp:'La prise en passant doit être jouée IMMÉDIATEMENT au coup suivant l\'avance du pion adverse de 2 cases. Sinon tu perds ce droit.'},
-  {id:'q5',t:'Promotion du Pion',q:'En quelle pièce peut-on promouvoir un pion ?',opts:['Seulement en Dame','Dame, Tour, Fou ou Cavalier','Dame ou Tour uniquement','N\'importe quelle pièce sauf le Roi'],sol:3,exp:'Un pion peut être promu en Dame, Tour, Fou ou Cavalier. La sous-promotion en Cavalier est parfois la meilleure option.'},
-  {id:'q6',t:'La Sicilienne',q:'Par quel coup noir commence la Défense Sicilienne ?',opts:['1...e5','1...c5','1...d5','1...e6'],sol:1,exp:'La Sicilienne commence par 1...c5 en réponse à 1.e4. C\'est la défense la plus jouée au monde car elle crée des déséquilibres.'},
-  {id:'q7',t:'Fourchette du Cavalier',q:'Pourquoi le cavalier est-il fort pour les fourchettes ?',opts:['Il saute par-dessus les pièces','Il attaque des cases non adjacentes en L','Il peut attaquer en diagonale','Il est difficile à capturer'],sol:1,exp:'Le cavalier se déplace en L (2+1 cases) ce qui lui permet d\'attaquer des cases non adjacentes — rendant ses fourchettes difficiles à anticiper.'},
-  {id:'q8',t:'Clouage Absolu',q:'Un clouage est "absolu" quand...',opts:['Il implique la dame','La pièce clouée protège le roi et ne peut JAMAIS bouger','La pièce clouée est un pion','Deux pièces sont clouées'],sol:1,exp:'Un clouage absolu : la pièce clouée protège le roi — elle ne peut JAMAIS légalement bouger car cela exposerait le roi à un échec.'},
-  {id:'q9',t:'Zugzwang',q:'Le Zugzwang est le plus fréquent dans...',opts:['Les ouvertures','Le milieu de partie','Les finales de pions','Les parties rapides'],sol:2,exp:'Le Zugzwang est particulièrement fréquent dans les finales de pions. En milieu de partie, il existe mais est beaucoup plus rare.'},
-  {id:'q10',t:'Record Elo',q:'Qui détient le record du plus haut Elo historique ?',opts:['Garry Kasparov','Bobby Fischer','Magnus Carlsen','Anatoli Karpov'],sol:2,exp:'Magnus Carlsen a atteint un Elo de 2882 en 2014 — le plus haut jamais enregistré. Il a dominé les échecs de 2010 à 2023.'},
-  {id:'q11',t:'Le Gambit Dame',q:'Après 1.d4 d5 2.c4, que propose blanc ?',opts:['Un sacrifice de tour','Un sacrifice de pion pour le centre','Une attaque directe du roi','Un développement rapide sans idée'],sol:1,exp:'Le Gambit Dame offre un pion en c4 pour obtenir un meilleur contrôle du centre. Ce n\'est pas un vrai gambit car blanc récupère généralement.'},
-  {id:'q12',t:'Pièces de départ',q:'Combien de pièces chaque joueur a-t-il au départ ?',opts:['12 pièces','14 pièces','16 pièces','20 pièces'],sol:2,exp:'Chaque joueur commence avec 16 pièces : 8 pions, 2 tours, 2 cavaliers, 2 fous, 1 dame et 1 roi.'},
+  {id:'q1',t:'Le Roque',q:'Dans quelle situation NE PEUT-ON PAS roquer ?',opts:['Le roi est en échec','Une pièce est entre roi et tour','Le roi ou la tour a déjà bougé','Toutes ces situations empêchent le roque'],sol:3,exp:'Toutes ces situations empêchent le roque. On ne peut pas roquer si : le roi est en échec, une pièce bloque le chemin, le roi ou la tour utilisée a déjà bougé, le roi traverse ou arrive sur une case attaquée.'},
+  {id:'q2',t:'Valeur des pièces',q:'Quel échange est avantageux pour les blancs ?',opts:['Donner une tour pour un cavalier','Donner une dame pour une tour','Donner un cavalier pour un pion','Donner un fou pour un pion'],sol:0,exp:'Donner une tour (5 pts) pour un cavalier (3 pts) est désavantageux pour les blancs — ils perdent 2 points de matériel. Les autres échanges sont encore plus défavorables.'},
+  {id:'q3',t:'Le Pat',q:'Qu\'est-ce que le pat (stalemate) ?',opts:['Le roi est maté — fin de la partie','Aucun coup légal mais pas en échec — match nul','50 coups sans capture — nulle possible','Triple répétition — nulle sur demande'],sol:1,exp:'Le pat est un match nul immédiat : le joueur au trait n\'a aucun coup légal mais son roi N\'EST PAS en échec. C\'est la ressource de défense ultime pour un joueur en position perdante.'},
+  {id:'q4',t:'Prise en Passant',q:'La prise en passant doit être jouée...',opts:['N\'importe quand pendant la partie','Dans les 3 coups suivants l\'avance','Immédiatement au coup suivant uniquement','Elle est toujours obligatoire'],sol:2,exp:'La prise en passant doit être jouée IMMÉDIATEMENT au coup suivant l\'avance du pion adverse de 2 cases. Si tu ne la joues pas tout de suite, tu perds définitivement ce droit.'},
+  {id:'q5',t:'Promotion',q:'Un pion peut se promouvoir en...',opts:['Seulement en Dame','Dame, Tour, Fou ou Cavalier — au choix','Dame, Tour ou Fou uniquement','N\'importe quelle pièce sauf le Roi'],sol:3,exp:'Un pion peut être promu en Dame, Tour, Fou ou Cavalier. On ne peut jamais rester pion ni devenir roi. La sous-promotion en Cavalier est parfois meilleure pour créer une fourchette ou éviter un pat.'},
+  {id:'q6',t:'La Sicilienne',q:'Quelle est l\'idée principale de la Défense Sicilienne (1.e4 c5) ?',opts:['Copier les mouvements blancs symétriquement','Créer un déséquilibre dès le départ et jouer pour gagner','Défendre passivement et attendre les erreurs adverses','Développer rapidement les cavaliers au centre'],sol:1,exp:'La Sicilienne crée un déséquilibre immédiat — noir ne joue pas symétriquement. L\'idée est de jouer pour la victoire avec des chances des deux côtés, pas pour le nul.'},
+  {id:'q7',t:'La Fourchette',q:'Le cavalier est particulièrement efficace pour les fourchettes car...',opts:['Il se déplace plus vite que les autres pièces','Il attaque des cases non adjacentes en L — difficile à anticiper','Il peut capturer toutes les pièces sans risque','Il est la seule pièce à pouvoir attaquer le roi'],sol:1,exp:'Le cavalier se déplace en L (2+1 cases) ce qui lui permet d\'attaquer des cases non adjacentes et non alignées. C\'est cette trajectoire unique qui rend ses fourchettes si difficiles à anticiper — même pour des joueurs expérimentés.'},
+  {id:'q8',t:'Le Clouage',q:'Quelle est la différence entre clouage absolu et relatif ?',opts:['Le clouage absolu concerne toujours la dame','Le clouage absolu concerne le roi — la pièce ne peut jamais bouger légalement','Le clouage relatif est plus fort que le clouage absolu','Le clouage absolu est uniquement réalisé par les fous'],sol:1,exp:'Le clouage absolu : la pièce clouée protège le roi — elle ne peut JAMAIS légalement bouger. Le clouage relatif : la pièce pourrait bouger mais perdrait quelque chose de précieux. Le clouage absolu est contraignant par la loi du jeu, le relatif est contraignant par la logique.'},
+  {id:'q9',t:'Le Zugzwang',q:'Le Zugzwang signifie que...',opts:['Le joueur gagne en jouant rapidement','Tout coup joué détériore sa position — il préférerait passer','Le joueur doit sacrifier du matériel pour gagner','La partie est inévitablement nulle'],sol:1,exp:'Le Zugzwang (allemand : obligation de jouer) : le joueur voudrait passer son tour mais ne le peut pas. Tout coup qu\'il joue détériore sa position. C\'est particulièrement fréquent dans les finales de pions.'},
+  {id:'q10',t:'Record Elo',q:'Qui détient le record du plus haut Elo de l\'histoire ?',opts:['Garry Kasparov (2851)','Bobby Fischer (2785)','Magnus Carlsen (2882)','Fabiano Caruana (2844)'],sol:2,exp:'Magnus Carlsen a atteint un Elo de 2882 en 2014 — le record absolu de l\'histoire des échecs. Kasparov a longtemps tenu le record avec 2851. Carlsen est le seul joueur à avoir été simultanément champion du monde en classique, rapide et blitz.'},
+  {id:'q11',t:'Gambit Dame',q:'Après 1.d4 d5 2.c4, qu\'est-ce que blanc propose ?',opts:['Un sacrifice de cavalier pour l\'initiative','Un échange de fous en b5','Un pion en échange d\'un meilleur contrôle du centre','Une attaque directe sur le roi adverse'],sol:2,exp:'Le Gambit Dame offre le pion c4 pour obtenir un meilleur contrôle du centre. Ce n\'est pas vraiment un gambit car blanc récupère généralement le pion avec un léger avantage positionnel.'},
+  {id:'q12',t:'Pièces de départ',q:'Combien de pièces chaque joueur possède-t-il au départ ?',opts:['12','14','16','20'],sol:2,exp:'Chaque joueur commence avec 16 pièces : 8 pions, 2 tours, 2 cavaliers, 2 fous, 1 dame et 1 roi. Total 32 pièces sur l\'échiquier au départ.'},
+  {id:'q13',t:'L\'Opposition',q:'En finale, l\'opposition entre deux rois désavantage...',opts:['Le joueur qui a plus de pions','Le joueur dont c\'est le tour de jouer','Le joueur qui est le plus éloigné du centre','Le joueur qui a moins de pièces'],sol:1,exp:'L\'opposition désavantage le joueur qui DOIT jouer. Quand deux rois se font face avec une case entre eux, le joueur au trait est forcé de reculer. Obtenir l\'opposition et forcer l\'adversaire à jouer est crucial dans les finales de pions.'},
+  {id:'q14',t:'La Tour de Philidor',q:'Dans une finale Tour+Roi vs Tour+Roi+Pion, la défense de Philidor consiste à...',opts:['Attaquer le pion adverse immédiatement','Placer la tour sur la 3e rangée pour couper le roi adverse','Sacrifier la tour pour le pion','Placer le roi devant le pion adverse'],sol:1,exp:'La défense de Philidor : placer la tour sur la 3e rangée (ou 6e pour les noirs) pour couper le roi adverse. Quand le pion avance, la tour bascule en attaque de côté — une technique de nulle fondamentale.'},
+  {id:'q15',t:'Le Centre',q:'Pourquoi le contrôle du centre est-il si important ?',opts:['Les pièces centrales sont plus difficiles à capturer','Une pièce centrale contrôle plus de cases et est plus mobile','Le roi est toujours plus en sécurité au centre','Les pions centraux valent plus de points'],sol:1,exp:'Une pièce centrale contrôle plus de cases — un cavalier au centre attaque jusqu\'à 8 cases, contre seulement 2 en coin. Le centre donne mobilité et flexibilité pour déployer les pièces sur tout l\'échiquier.'},
 ];
 
 const GLOSSARY=[
   {cat:'Tactiques',terms:[
-    {t:'Fourchette',d:'Attaque simultanée sur deux pièces ou plus avec une seule pièce. Le cavalier en est le roi.'},
-    {t:'Clouage',d:'Une pièce ne peut bouger sans exposer une pièce plus précieuse derrière. Absolu (roi) ou relatif.'},
-    {t:'Enfilage',d:'L\'inverse du clouage — la pièce précieuse est en avant et expose une pièce moins précieuse derrière.'},
-    {t:'Attaque découverte',d:'Déplacer une pièce révèle l\'attaque d\'une pièce cachée derrière elle.'},
-    {t:'Double échec',d:'Deux pièces donnent échec simultanément — seul le déplacement du roi est possible.'},
-    {t:'Sacrifice',d:'Offrir délibérément du matériel pour un avantage positionnel, tactique ou pour mater.'},
-    {t:'Surcharge',d:'Une pièce adverse doit défendre deux choses à la fois — on l\'oblige à en abandonner une.'},
-    {t:'Déviation',d:'Forcer une pièce défensive à quitter sa case pour exposer quelque chose d\'important.'},
+    {t:'Fourchette',d:'Attaque simultanée sur deux pièces ou plus. Le cavalier est le roi de la fourchette grâce à sa trajectoire en L.'},
+    {t:'Clouage',d:'Une pièce ne peut bouger sans exposer quelque chose de plus précieux. Absolu (roi) ou relatif (pièce précieuse).'},
+    {t:'Enfilage',d:'L\'inverse du clouage — la pièce précieuse est en avant, en bougeant elle expose ce qui est derrière.'},
+    {t:'Attaque découverte',d:'Déplacer une pièce pour révéler l\'attaque d\'une pièce cachée derrière elle.'},
+    {t:'Double échec',d:'Deux pièces donnent échec simultanément. La seule défense : déplacer le roi.'},
+    {t:'Sacrifice',d:'Offrir délibérément du matériel pour un avantage positionnel, tactique ou pour forcer le mat.'},
+    {t:'Surcharge',d:'Une pièce adverse doit défendre deux cibles à la fois — on l\'oblige à en abandonner une.'},
+    {t:'Déviation',d:'Forcer une pièce défensive à quitter sa case protectrice pour exposer ce qu\'elle défendait.'},
+    {t:'Interférence',d:'Bloquer une ligne de communication entre deux pièces adverses en interposant une pièce.'},
+    {t:'Décoyage',d:'Attirer une pièce adverse vers une case défavorable pour elle, souvent par un sacrifice.'},
   ]},
   {cat:'Stratégie',terms:[
-    {t:'Centre',d:'Les quatre cases e4,d4,e5,d5 sont le cœur stratégique de l\'échiquier.'},
-    {t:'Pion isolé',d:'Pion sans pion ami adjacent. Faiblesse potentielle mais peut contrôler des cases importantes.'},
-    {t:'Pions doublés',d:'Deux pions de même couleur sur la même colonne. Réduisent la mobilité.'},
-    {t:'Pion passé',d:'Pion qu\'aucun pion adverse ne peut empêcher d\'atteindre la promotion.'},
-    {t:'Paire de fous',d:'Deux fous contre fou+cavalier. Avantage dans les positions ouvertes.'},
-    {t:'Tempo',d:'Unité de temps aux échecs. Gagner un tempo = forcer l\'adversaire à "perdre" un coup.'},
-    {t:'Initiative',d:'Créer des menaces qui forcent l\'adversaire à réagir passivement.'},
+    {t:'Centre',d:'Les quatre cases e4,d4,e5,d5 — le cœur stratégique de l\'échiquier.'},
+    {t:'Pion isolé',d:'Pion sans pion ami sur les colonnes adjacentes. Faiblesse potentielle mais peut contrôler des cases importantes.'},
+    {t:'Pions doublés',d:'Deux pions de même couleur sur la même colonne. Réduisent la mobilité et la force.'},
+    {t:'Pion passé',d:'Pion qu\'aucun pion adverse ne peut empêcher d\'atteindre la promotion. Arme redoutable.'},
+    {t:'Pion arriéré',d:'Pion qui ne peut avancer car les cases devant lui sont contrôlées par l\'adversaire.'},
+    {t:'Case faible',d:'Case qui ne peut plus être défendue par un pion — une pièce adverse peut s\'y installer durablement.'},
+    {t:'Paire de fous',d:'Deux fous contre fou+cavalier ou deux cavaliers. Avantage dans les positions ouvertes.'},
+    {t:'Tempo',d:'Unité de temps aux échecs. Gagner un tempo = forcer l\'adversaire à "perdre" un coup de développement.'},
+    {t:'Initiative',d:'Créer des menaces qui forcent l\'adversaire à réagir passivement. Très précieuse.'},
     {t:'Zugzwang',d:'Tout coup joué détériore la position — le joueur voudrait passer son tour.'},
-    {t:'Fianchetto',d:'Développer un fou en g2/b2 après g3/b3 — contrôle du centre à distance.'},
+    {t:'Triangulation',d:'Technique pour perdre un tempo avec le roi afin de forcer l\'adversaire en zugzwang.'},
+    {t:'Fianchetto',d:'Développer un fou en g2/b2 après g3/b3 — contrôle du centre à longue distance.'},
+    {t:'Colonne ouverte',d:'Colonne sans pions. Les tours y sont particulièrement puissantes.'},
+    {t:'Colonne semi-ouverte',d:'Colonne avec un seul pion (adverse). Idéale pour installer une pression de tour.'},
   ]},
   {cat:'Ouvertures',terms:[
-    {t:'Gambit',d:'Sacrifice de matériel pour obtenir développement, initiative ou compensation.'},
+    {t:'Gambit',d:'Sacrifice de matériel (souvent un pion) pour obtenir développement, initiative ou compensation positionnelle.'},
     {t:'Transposition',d:'Arriver à la même position via différents ordres de coups.'},
-    {t:'Nouveauté théorique',d:'Un coup jamais joué dans une position connue — souvent préparé en secret.'},
-    {t:'Centre hypermoderne',d:'Contrôler le centre avec des pièces à distance plutôt que d\'occuper avec des pions.'},
-    {t:'Développement',d:'Sortir ses pièces de leur position initiale vers des cases actives.'},
+    {t:'Variante',d:'Ligne spécifique d\'une ouverture, souvent nommée d\'après un joueur ou une ville.'},
+    {t:'Nouveauté théorique',d:'Un coup jamais joué dans une position connue — souvent préparé en secret pour surprendre.'},
+    {t:'Centre hypermoderne',d:'Contrôler le centre avec des pièces à distance plutôt que l\'occuper avec des pions.'},
+    {t:'Développement',d:'Sortir ses pièces de leur position initiale vers des cases actives. Principe fondamental d\'ouverture.'},
+    {t:'Roque',d:'Coup spécial roi+tour simultanément. Court O-O (côté roi) ou long O-O-O (côté dame).'},
   ]},
   {cat:'Finales',terms:[
     {t:'Opposition',d:'Deux rois face à face avec une case entre eux. Celui qui doit jouer est désavantagé.'},
-    {t:'Règle du carré',d:'Méthode pour savoir si un roi peut rattraper un pion passé.'},
+    {t:'Règle du carré',d:'Méthode pour savoir si un roi peut rattraper un pion passé en dessinant un carré imaginaire.'},
+    {t:'Pion passé connecté',d:'Deux pions passés adjacents — très difficiles à stopper ensemble.'},
     {t:'Tour active',d:'Tour qui attaque et crée des menaces plutôt que défendre passivement.'},
-    {t:'Roi actif',d:'En finale, le roi doit être centralisé et participer activement.'},
+    {t:'Roi actif',d:'En finale, le roi doit être centralisé et participer activement à l\'attaque.'},
+    {t:'Défense de Philidor',d:'Technique de nulle en finale Tour+Roi vs Tour+Roi+Pion. La tour est placée sur la 3e rangée.'},
+    {t:'Position de Lucena',d:'Technique pour gagner en finale Tour+Pion+Roi vs Tour+Roi. Nécessite de "construire un pont".'},
   ]},
   {cat:'Règles',terms:[
     {t:'Échec',d:'Le roi est attaqué. Le joueur doit impérativement parer l\'échec.'},
     {t:'Échec et mat',d:'Le roi est en échec et ne peut s\'en sortir. Fin de la partie.'},
     {t:'Pat',d:'Le joueur au trait n\'a aucun coup légal mais n\'est pas en échec. Match nul.'},
-    {t:'Roque',d:'Coup spécial déplaçant roi et tour simultanément. O-O (côté roi) ou O-O-O (côté dame).'},
     {t:'Prise en passant',d:'Capture spéciale d\'un pion qui vient d\'avancer de deux cases — seulement au coup suivant.'},
-    {t:'Promotion',d:'Un pion en 8e rangée se transforme en dame, tour, fou ou cavalier.'},
-    {t:'Triple répétition',d:'Même position 3 fois → nulle sur demande.'},
-    {t:'Règle des 50 coups',d:'50 coups sans capture ni pion joué → nulle possible.'},
-    {t:'Touché-joué',d:'En tournoi, toucher une pièce oblige à la jouer si le coup est légal.'},
-    {t:'J\'adoube',d:'Formule à dire avant de toucher une pièce pour l\'ajuster sans être obligé de la jouer.'},
+    {t:'Promotion',d:'Un pion en dernière rangée se transforme en dame, tour, fou ou cavalier.'},
+    {t:'Triple répétition',d:'Même position 3 fois avec le même joueur au trait → nulle sur demande.'},
+    {t:'Règle des 50 coups',d:'50 coups sans capture ni pion joué → nulle possible sur demande.'},
+    {t:'Touché-joué',d:'En tournoi officiel, toucher une pièce oblige à la jouer si le coup est légal.'},
+    {t:'J\'adoube',d:'Formule à dire avant de toucher une pièce pour l\'ajuster sans obligation de la jouer.'},
   ]},
-  {cat:'Culture',terms:[
-    {t:'Elo',d:'Système de classement créé par Arpad Elo. Moyenne ~1500, GMs >2500.'},
+  {cat:'Culture & Titres',terms:[
+    {t:'Elo',d:'Système de classement créé par Arpad Elo. Moyenne mondiale ~1500, GMs >2500, Magnus Carlsen 2882 (record).'},
     {t:'Grand Maître (GM)',d:'Plus haut titre FIDE. Requiert 3 normes de GM et Elo ≥2500.'},
-    {t:'FIDE',d:'Fédération Internationale des Échecs, fondée en 1924.'},
-    {t:'Blitz',d:'Parties rapides avec 3-5 minutes par joueur.'},
-    {t:'Bullet',d:'Parties ultra-rapides avec 1 minute ou moins par joueur.'},
-    {t:'Analyse post-mortem',d:'Analyse de la partie après sa conclusion pour comprendre les erreurs.'},
+    {t:'Maître International (MI)',d:'Titre FIDE intermédiaire. Requiert 3 normes de MI et Elo ≥2400.'},
+    {t:'FIDE',d:'Fédération Internationale des Échecs, fondée en 1924 à Paris. Organise les championnats du monde.'},
+    {t:'Classique',d:'Partie avec contrôle de temps long — souvent 2h+ par joueur. Format officiel du championnat du monde.'},
+    {t:'Rapide',d:'Partie avec 10-60 minutes par joueur.'},
+    {t:'Blitz',d:'Partie avec 3-5 minutes par joueur. Très populaire en ligne.'},
+    {t:'Bullet',d:'Partie avec 1-2 minutes par joueur. Ultra-rapide.'},
+    {t:'Analyse post-mortem',d:'Analyse de la partie après sa conclusion pour comprendre les erreurs et les idées manquées.'},
+    {t:'Simul',d:'Simultanée : un joueur joue contre plusieurs adversaires en même temps.'},
   ]},
 ];
-/* === SVG PIECES === */
 function mkSVG(c,s){
-  var f=c==='w'?'#F2EDD7':'#1A1A2E',st=c==='w'?'#18182A':'#E8E4FF';
+  var f=c==='w'?'#F2EDD7':'#1A1A2E',st=c==='w'?'#2A1A0A':'#D4C8A8';
   var d={
     P:'<ellipse cx="16" cy="9" rx="5" ry="5.5"/><path d="M10 25 Q10 16 16 15 Q22 16 22 25Z"/><rect x="8" y="23" width="16" height="3.5" rx="1.7"/>',
     R:'<rect x="9" y="22" width="14" height="3" rx="1.5"/><rect x="10" y="10" width="12" height="12" rx="1"/><rect x="8" y="6" width="16" height="4" rx="1"/><rect x="8" y="5" width="3.5" height="5" rx="1"/><rect x="14" y="5" width="4" height="5" rx="1"/><rect x="21" y="5" width="3.5" height="5" rx="1"/>',
@@ -621,14 +1236,12 @@ function mkSVG(c,s){
 }
 var PIECES={};['w','b'].forEach(function(c){['K','Q','R','B','N','P'].forEach(function(s){PIECES[c+s]=mkSVG(c,s);});});
 
-/* === CHESS ENGINE === */
 var BS={board:null,sel:null,turn:'w',moves:[],onMove:null,flipped:false,frozen:false};
 function initBoard(){return[['bR','bN','bB','bQ','bK','bB','bN','bR'],['bP','bP','bP','bP','bP','bP','bP','bP'],[null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null],['wP','wP','wP','wP','wP','wP','wP','wP'],['wR','wN','wB','wQ','wK','wB','wN','wR']];}
 
 function renderBoard(id){
   var el=document.getElementById(id);if(!el)return;
-  el.innerHTML='';
-  var b=BS.board;
+  el.innerHTML='';var b=BS.board;
   for(var ri=0;ri<8;ri++){for(var ci=0;ci<8;ci++){
     var r=BS.flipped?7-ri:ri,c=BS.flipped?7-ci:ci;
     var sq=document.createElement('div');
@@ -639,11 +1252,9 @@ function renderBoard(id){
     sq.addEventListener('click',function(){sqClick(parseInt(this.dataset.r),parseInt(this.dataset.c),id);});
     el.appendChild(sq);
   }}
-  if(id==='main-board'){
-    var re=document.getElementById('branks'),fe=document.getElementById('bfiles');
-    if(re){var rk=BS.flipped?['1','2','3','4','5','6','7','8']:['8','7','6','5','4','3','2','1'];re.innerHTML=rk.map(function(x){return'<div class="brank-lbl">'+x+'</div>';}).join('');}
-    if(fe){var fl=BS.flipped?['h','g','f','e','d','c','b','a']:['a','b','c','d','e','f','g','h'];fe.innerHTML='<div style="width:16px"></div>'+fl.map(function(x){return'<div class="bfile-lbl">'+x+'</div>';}).join('');}
-  }
+  var re=document.getElementById('branks'),fe=document.getElementById('bfiles');
+  if(re){var rk=BS.flipped?['1','2','3','4','5','6','7','8']:['8','7','6','5','4','3','2','1'];re.innerHTML=rk.map(function(x){return'<div class="brank-lbl">'+x+'</div>';}).join('');}
+  if(fe){var fl=BS.flipped?['h','g','f','e','d','c','b','a']:['a','b','c','d','e','f','g','h'];fe.innerHTML='<div style="width:16px"></div>'+fl.map(function(x){return'<div class="bfile-lbl">'+x+'</div>';}).join('');}
 }
 
 function sqClick(r,c,id){
@@ -656,13 +1267,7 @@ function sqClick(r,c,id){
   if(p&&p[0]===BS.turn){BS.sel=[r,c];renderBoard(id);markV(r,c,id);return;}
   BS.sel=null;renderBoard(id);
 }
-
-function markV(r,c,id){
-  document.getElementById(id).querySelectorAll('.sq').forEach(function(sq){
-    var sr=parseInt(sq.dataset.r),sc=parseInt(sq.dataset.c);
-    if(isValid(r,c,sr,sc))sq.classList.add(BS.board[sr][sc]?'vc':'vm');
-  });
-}
+function markV(r,c,id){document.getElementById(id).querySelectorAll('.sq').forEach(function(sq){var sr=parseInt(sq.dataset.r),sc=parseInt(sq.dataset.c);if(isValid(r,c,sr,sc))sq.classList.add(BS.board[sr][sc]?'vc':'vm');});}
 
 function castle(fr,fc,tr,tc){
   var b=BS.board,p=b[fr][fc];if(!p||p[1]!=='K')return false;
@@ -671,7 +1276,6 @@ function castle(fr,fc,tr,tc){
   if(tr===row&&(tc===2||tc===0)){if(b[row][1]||b[row][2]||b[row][3])return false;if(!b[row][0]||b[row][0]!==(col+'R'))return false;return'Q';}
   return false;
 }
-
 function isValid(fr,fc,tr,tc){
   var b=BS.board,p=b[fr][fc];if(!p)return false;
   var tp=b[tr][tc];if(tp&&tp[0]===p[0])return false;
@@ -686,95 +1290,68 @@ function isValid(fr,fc,tr,tc){
   for(var i=1;i<Math.max(Math.abs(dr),Math.abs(dc));i++){if(b[fr+i*sr][fc+i*sc])return false;}
   return true;
 }
-
 function doMove(fr,fc,tr,tc){
   var b=BS.board,cs=castle(fr,fc,tr,tc);
-  if(cs){
-    var row=fr;
-    if(cs==='K'){b[row][6]=b[row][4];b[row][4]=null;b[row][5]=b[row][7];b[row][7]=null;BS.moves.push({fr,fc,tr:row,tc:6,castle:'K'});}
-    else{b[row][2]=b[row][4];b[row][4]=null;b[row][3]=b[row][0];b[row][0]=null;BS.moves.push({fr,fc,tr:row,tc:2,castle:'Q'});}
-  } else {b[tr][tc]=b[fr][fc];b[fr][fc]=null;BS.moves.push({fr,fc,tr,tc});}
+  if(cs){var row=fr;if(cs==='K'){b[row][6]=b[row][4];b[row][4]=null;b[row][5]=b[row][7];b[row][7]=null;BS.moves.push({fr,fc,tr:row,tc:6,castle:'K'});}else{b[row][2]=b[row][4];b[row][4]=null;b[row][3]=b[row][0];b[row][0]=null;BS.moves.push({fr,fc,tr:row,tc:2,castle:'Q'});}}
+  else{b[tr][tc]=b[fr][fc];b[fr][fc]=null;BS.moves.push({fr,fc,tr,tc});}
   BS.turn=BS.turn==='w'?'b':'w';
 }
-
 function coords(mv){var f={a:0,b:1,c:2,d:3,e:4,f:5,g:6,h:7};return[8-parseInt(mv[1]),f[mv[0]],8-parseInt(mv[3]),f[mv[2]]];}
 
-/* === APP STATE === */
-var CU=null,UP={xp:0,lessonsCompleted:[],lessonsMastered:[],quizCorrect:0,quizStreak:0,msgToday:0,msgDate:''},profiles=[],chatHist=[],curPractice=null,curQuizIdx=0,lFilter='all';
+var CU='Joueur',UP={xp:0,lessonsCompleted:[],lessonsMastered:[],quizCorrect:0,quizStreak:0,msgToday:0,msgDate:''},chatHist=[],curPractice=null,curQuizIdx=0,lFilter='all';
 
-/* === PROFILES === */
-function loadProfiles(){try{profiles=JSON.parse(localStorage.getItem('chess64_p')||'[]');}catch(e){profiles=[];}renderPList();}
-function renderPList(){
-  document.getElementById('plist').innerHTML=profiles.map(function(p){
-    var lvl=Math.floor((p.xp||0)/100)+1;
-    return'<div class="pitem" onclick="selProfile(\''+p.id+'\')">'+
-      '<div class="pavatar">'+p.name[0].toUpperCase()+'</div>'+
-      '<div style="flex:1"><div class="pname">'+p.name+'</div><div class="pxp">Niveau '+lvl+' · '+(p.xp||0)+' XP</div></div>'+
-      '<div style="font-size:18px;color:var(--amber)">→</div></div>';
-  }).join('');
-}
-function showNewProfile(){document.getElementById('pinput-wrap').style.display='block';document.getElementById('pnew-btn').style.display='none';setTimeout(function(){document.getElementById('pinput').focus();},200);}
-function createProfile(){
-  var name=document.getElementById('pinput').value.trim();if(!name)return;
-  var id=name.toLowerCase().replace(/\s+/g,'_')+'_'+Date.now();
-  var p={id,name,xp:0,lessonsCompleted:[],lessonsMastered:[],quizCorrect:0,quizStreak:0,msgToday:0,msgDate:''};
-  profiles.push(p);save();localStorage.setItem('chess64_last',id);startApp(p);
-}
-function selProfile(id){var p=profiles.find(function(x){return x.id===id;});if(p){localStorage.setItem('chess64_last',id);startApp(p);}}
-function switchProfile(){closeProgress();['main-header','main-nav','main-content'].forEach(function(i){document.getElementById(i).style.display='none';});document.getElementById('pscreen').style.display='flex';}
-
-function startApp(p){
-  CU=p.id;
-  UP={xp:p.xp||0,lessonsCompleted:p.lessonsCompleted||[],lessonsMastered:p.lessonsMastered||[],quizCorrect:p.quizCorrect||0,quizStreak:p.quizStreak||0,msgToday:p.msgToday||0,msgDate:p.msgDate||''};
-  document.getElementById('pscreen').style.display='none';
-  document.getElementById('main-header').style.display='flex';
-  document.getElementById('main-nav').style.display='flex';
-  document.getElementById('main-content').style.display='block';
-  updHdr(p.name);
-  loadSupa(p.id);
+function startApp(){
+  try{var s=JSON.parse(localStorage.getItem('chess64_up')||'null');if(s)Object.assign(UP,s);}catch(e){}
+  CU=localStorage.getItem('chess64_name')||'Joueur';
+  if(!UP.lessonsCompleted)UP.lessonsCompleted=[];
+  if(!UP.lessonsMastered)UP.lessonsMastered=[];
+  updHdr();loadSupa();
   renderAnecdote();renderLessons();renderPracList();renderQuizList();renderGlossary();updChatLbl();
-  document.getElementById('q-score').textContent=UP.quizCorrect;
-  document.getElementById('q-streak').textContent=UP.quizStreak;
+  document.getElementById('q-score').textContent=UP.quizCorrect||0;
+  document.getElementById('q-streak').textContent=UP.quizStreak||0;
 }
-
-function updHdr(name){
-  document.getElementById('hdr-av').textContent=(name||'?')[0].toUpperCase();
-  var xp=UP.xp;
-  document.getElementById('hdr-xp').textContent=xp+' XP · Niv '+(Math.floor(xp/100)+1);
+function updHdr(){
+  document.getElementById('hdr-av').textContent=CU[0].toUpperCase();
+  var xp=UP.xp||0,lvl=Math.floor(xp/100)+1;
+  document.getElementById('hdr-xp').textContent=xp+' xp · niv '+lvl;
   document.getElementById('hdr-xpbar').style.width=(xp%100)+'%';
+  var su=document.getElementById('sidebar-uname'),sx=document.getElementById('sidebar-uxp'),sb=document.getElementById('sidebar-xpbar');
+  if(su)su.textContent=CU;
+  if(sx)sx.textContent=xp+' xp · Niv '+lvl;
+  if(sb)sb.style.width=(xp%100)+'%';
 }
-
-async function loadSupa(uid){
-  try{var d=await sbGet('chess_progress?user_id=eq.'+uid);if(d&&d[0]&&d[0].progress){Object.assign(UP,d[0].progress);save();var p=profiles.find(function(x){return x.id===uid;});if(p)updHdr(p.name);document.getElementById('q-score').textContent=UP.quizCorrect||0;document.getElementById('q-streak').textContent=UP.quizStreak||0;}}catch(e){}
-}
-
-function save(){
-  var idx=profiles.findIndex(function(p){return p.id===CU;});
-  if(idx>=0){Object.assign(profiles[idx],UP);localStorage.setItem('chess64_p',JSON.stringify(profiles));}
-}
+function save(){localStorage.setItem('chess64_up',JSON.stringify(UP));localStorage.setItem('chess64_name',CU);}
 async function saveProgress(){save();await sbUp('chess_progress',{user_id:CU,progress:UP,updated_at:new Date().toISOString()});}
+async function loadSupa(){
+  try{var d=await sbGet('chess_progress?user_id=eq.'+CU);if(d&&d[0]&&d[0].progress){Object.assign(UP,d[0].progress);if(!UP.lessonsCompleted)UP.lessonsCompleted=[];if(!UP.lessonsMastered)UP.lessonsMastered=[];save();updHdr();document.getElementById('q-score').textContent=UP.quizCorrect||0;document.getElementById('q-streak').textContent=UP.quizStreak||0;}}catch(e){}
+}
+function addXP(n){UP.xp=(UP.xp||0)+n;updHdr();saveProgress();}
+function resetProgress(){if(!confirm('Réinitialiser toute ta progression ?'))return;UP={xp:0,lessonsCompleted:[],lessonsMastered:[],quizCorrect:0,quizStreak:0,msgToday:0,msgDate:''};save();updHdr();document.getElementById('q-score').textContent=0;document.getElementById('q-streak').textContent=0;renderLessons();closeProgress();}
+function isAdmin(){return CU.toLowerCase()===ADMIN;}
 
-function addXP(n){UP.xp=(UP.xp||0)+n;var p=profiles.find(function(x){return x.id===CU;});if(p)updHdr(p.name);saveProgress();}
-
-/* === TABS === */
-function showTab(id,btn){
+function showTab(id,btn,isSidebar){
   document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
   document.querySelectorAll('.nbtn').forEach(function(b){b.classList.remove('active');});
-  document.getElementById('tab-'+id).classList.add('active');btn.classList.add('active');
+  document.querySelectorAll('.snav-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  // Sync the other nav (mobile<->desktop)
+  var idx=['apprendre','pratiquer','quiz','prof','glossaire'].indexOf(id);
+  if(isSidebar){
+    var mbtns=document.querySelectorAll('.nbtn');
+    if(mbtns[idx])mbtns[idx].classList.add('active');
+  } else {
+    var sbtns=document.querySelectorAll('.snav-btn');
+    if(sbtns[idx])sbtns[idx].classList.add('active');
+  }
 }
 
-/* === LESSONS === */
 function filterL(cat,btn){
   lFilter=cat;
   document.querySelectorAll('#learn-pills .pill').forEach(function(p){p.className='pill';});
-  btn.className='pill pa';
-  renderLessons();
+  btn.className='pill pa';renderLessons();
 }
-
-function getStatus(id){
-  var m=(UP.lessonsMastered||[]).includes(id),d=(UP.lessonsCompleted||[]).includes(id);
-  return m?'mastered':d?'done':'new';
-}
+function getStatus(id){var m=(UP.lessonsMastered||[]).includes(id),d=(UP.lessonsCompleted||[]).includes(id);return m?'mastered':d?'done':'new';}
 
 function renderLessons(){
   var el=document.getElementById('llist');
@@ -782,8 +1359,7 @@ function renderLessons(){
   var active=list.filter(function(l){return getStatus(l.id)!=='mastered';});
   var mastered=list.filter(function(l){return getStatus(l.id)==='mastered';});
   var sorted=active.concat(mastered);
-  var grouped={};
-  sorted.forEach(function(l){if(!grouped[l.cat])grouped[l.cat]=[];grouped[l.cat].push(l);});
+  var grouped={};sorted.forEach(function(l){if(!grouped[l.cat])grouped[l.cat]=[];grouped[l.cat].push(l);});
   var order=['regle','ouverture','tactique','strategie','finale'];
   var html='';
   order.forEach(function(cat){
@@ -791,66 +1367,62 @@ function renderLessons(){
     html+='<div class="catlabel">'+CL[cat]+'</div>';
     grouped[cat].forEach(function(l){
       var st=getStatus(l.id),cc=CC[l.cat]||'cr';
-      var badge=st==='mastered'?'<div class="badge bmaster">Maîtrisé</div>':st==='done'?'<div class="badge bdone">✓ Vu</div>':'<div class="badge bnew">Nouveau</div>';
+      var badge=st==='mastered'?'<span class="badge bmaster">Maîtrisé</span>':st==='done'?'<span class="badge bdone">Vu</span>':'<span class="badge bnew">Nouveau</span>';
       html+='<div class="lcard '+cc+(st==='mastered'?' mastered':'')+'" onclick="openLesson(\''+l.id+'\')">'+
-        '<div class="licon '+cc+'">'+l.abbr+'</div>'+
+        '<div class="licon '+cc+'"><em>'+l.abbr+'</em></div>'+
         '<div class="linfo"><div class="ltitle">'+l.title+'</div><div class="ldesc">'+l.desc+'</div></div>'+
         badge+'</div>';
     });
   });
-  el.innerHTML=html||'<div class="empty">Aucune leçon ici</div>';
+  el.innerHTML=html||'<div class="empty">Aucune leçon dans cette catégorie</div>';
 }
 
 function openLesson(id){
   var l=LESSONS.find(function(x){return x.id===id;});if(!l)return;
   document.getElementById('learn-home').style.display='none';
   document.getElementById('learn-detail').style.display='block';
-  var cc=CC[l.cat]||'cr';
+  var cc=CC[l.cat]||'cr',col=colorMap[cc]||'rose';
   var st=getStatus(id);
   var lines=l.content.split('\n').filter(function(x){return x.trim();});
-  var body=lines.map(function(ln){return'<p style="margin-bottom:10px">'+ln+'</p>';}).join('');
-  var html='<div class="eyebrow">'+l.abbr+' — '+CL[l.cat]+'</div>'+
-    '<div class="bigtitle" style="margin-bottom:14px">'+l.title+'</div>'+
+  var body=lines.map(function(ln){return'<p style="margin-bottom:12px">'+ln+'</p>';}).join('');
+  var html='<div class="eyebrow">'+CL[l.cat]+'</div>'+
+    '<div class="bigtitle" style="margin-bottom:16px">'+l.title+'</div>'+
     '<div class="lbody">'+body+'</div>'+
-    '<div class="anec-box"><div class="anec-lbl">Anecdote historique</div><div class="anec-txt">'+l.anecdote+'</div></div>';
+    '<div class="anec-box"><div class="anec-lbl">Anecdote</div><div class="anec-txt">'+l.anecdote+'</div></div>';
   if(l.masters&&l.masters.length)html+='<div class="masters-box"><div class="masters-lbl">Grands maîtres associés</div>'+l.masters.map(function(m){return'<span class="mchip">'+m+'</span>';}).join('')+'</div>';
-  if(l.hasPractice)html+='<button class="btn '+cc.replace('c','')+'" onclick="launchPrac(\''+l.id+'\')" style="background:var(--'+cc.replace('c','').replace('a','amber').replace('r','rose').replace('v','violet').replace('m','mint')+')">Pratiquer cette ouverture</button>';
-  html+='<button class="btn sec" onclick="askProf(\''+l.id+'\')" style="margin-top:8px">Demander au Professeur IA</button>';
-  var mBtn=st==='mastered'?'<button class="mastery-btn mok" id="mbtn-'+id+'" onclick="toggleMastery(\''+id+'\')">✓ Leçon maîtrisée</button>':'<button class="mastery-btn" id="mbtn-'+id+'" onclick="toggleMastery(\''+id+'\')">Je maîtrise cette leçon</button>';
-  html+=mBtn;
+  if(l.hasPractice)html+='<button class="btn '+col+'" onclick="launchPrac(\''+l.id+'\')">Pratiquer cette ouverture</button>';
+  html+='<button class="btn sec" onclick="askProf(\''+l.id+'\')" style="margin-top:8px">Demander au Professeur</button>';
+  var mState=st==='mastered';
+  html+='<button class="mastery-btn'+(mState?' mok':'')+'" id="mbtn-'+id+'" onclick="toggleMastery(\''+id+'\')">'+( mState?'✓ Leçon maîtrisée':'Je maîtrise cette leçon')+'</button>';
   document.getElementById('detail-content').innerHTML=html;
-  if(!(UP.lessonsCompleted||[]).includes(id)){if(!UP.lessonsCompleted)UP.lessonsCompleted=[];UP.lessonsCompleted.push(id);addXP(20);renderLessons();}
+  if(!(UP.lessonsCompleted||[]).includes(id)){UP.lessonsCompleted.push(id);addXP(20);renderLessons();}
 }
-
 function toggleMastery(id){
-  if(!UP.lessonsMastered)UP.lessonsMastered=[];
-  var idx=UP.lessonsMastered.indexOf(id);
+  var idx=(UP.lessonsMastered||[]).indexOf(id);
   if(idx>=0){UP.lessonsMastered.splice(idx,1);var b=document.getElementById('mbtn-'+id);if(b){b.textContent='Je maîtrise cette leçon';b.className='mastery-btn';}}
-  else{UP.lessonsMastered.push(id);var b=document.getElementById('mbtn-'+id);if(b){b.textContent='✓ Leçon maîtrisée';b.className='mastery-btn mok';}addXP(10);}
+  else{if(!UP.lessonsMastered)UP.lessonsMastered=[];UP.lessonsMastered.push(id);var b=document.getElementById('mbtn-'+id);if(b){b.textContent='✓ Leçon maîtrisée';b.className='mastery-btn mok';}addXP(10);}
   saveProgress();renderLessons();
 }
 function closeLesson(){document.getElementById('learn-home').style.display='block';document.getElementById('learn-detail').style.display='none';}
 
-/* === PRACTICE === */
 function renderPracList(){
   var list=LESSONS.filter(function(l){return l.hasPractice;});
-  var dl={debutant:'dd',intermediaire:'di',avance:'da'};
-  var dn={debutant:'Débutant',intermediaire:'Intermédiaire',avance:'Avancé'};
-  var grouped={};list.forEach(function(l){if(!grouped[l.cat])grouped[l.cat]=[];grouped[l.cat].push(l);});
+  var groups=[{k:'debutant',l:'Débutant'},{k:'intermediaire',l:'Intermédiaire'},{k:'avance',l:'Avancé'}];
   var html='';
-  Object.keys(grouped).forEach(function(cat){
-    html+='<div class="catlabel">'+CL[cat]+'</div>';
-    grouped[cat].forEach(function(l){
-      var cc=CC[l.cat]||'cr',diff=l.difficulty||'debutant';
+  groups.forEach(function(g){
+    var items=list.filter(function(l){return(l.difficulty||'debutant')===g.k;});
+    if(!items.length)return;
+    html+='<div class="catlabel">'+g.l+'</div>';
+    items.forEach(function(l){
+      var cc=CC[l.cat]||'cr',dc={debutant:'dd',intermediaire:'di',avance:'da'}[g.k];
       html+='<div class="prac-item" onclick="startPractice(\''+l.id+'\')">'+
-        '<div class="licon '+cc+'">'+l.abbr+'</div>'+
+        '<div class="licon '+cc+'"><em>'+l.abbr+'</em></div>'+
         '<div style="flex:1;min-width:0"><div class="ltitle">'+l.title+'</div><div class="ldesc">'+l.practiceDesc+'</div></div>'+
-        '<div class="diff '+dl[diff]+'">'+dn[diff]+'</div></div>';
+        '<div class="diff '+dc+'">'+g.l+'</div></div>';
     });
   });
   document.getElementById('prac-list').innerHTML=html;
 }
-
 function launchPrac(id){
   closeLesson();
   document.querySelectorAll('.nbtn').forEach(function(b,i){b.classList.toggle('active',i===1);});
@@ -858,17 +1430,14 @@ function launchPrac(id){
   document.getElementById('tab-pratiquer').classList.add('active');
   startPractice(id);
 }
-
 function startPractice(id){
   var l=LESSONS.find(function(x){return x.id===id&&x.hasPractice;});if(!l)return;
-  curPractice=l;
-  BS.board=initBoard();BS.turn='w';BS.moves=[];BS.sel=null;BS.frozen=false;
+  curPractice=l;BS.board=initBoard();BS.turn='w';BS.moves=[];BS.sel=null;BS.frozen=false;
   BS.flipped=l.practiceColor==='black';
   document.getElementById('prac-home').style.display='none';
   document.getElementById('prac-board').style.display='block';
-  var cc=CC[l.cat]||'cr';
   document.getElementById('prac-header').innerHTML=
-    '<div class="acard-top"><div class="acard-icon" style="background:var(--'+cc.slice(1)+'-dim)">'+l.abbr+'</div>'+
+    '<div class="acard-top"><div class="acard-icon" style="background:var(--amber-dim);border-color:var(--amber-border)"><em>'+l.abbr+'</em></div>'+
     '<div><div class="acard-title">'+l.title+'</div><div class="acard-hint">'+l.practiceDesc+'</div></div></div>';
   var fb=document.getElementById('prac-fb');fb.className='fb';fb.style.display='none';
   document.getElementById('hint-btn').style.display='none';
@@ -876,23 +1445,21 @@ function startPractice(id){
   BS.onMove=handleMove;
   if(l.practiceColor==='black')setTimeout(function(){autoMove('main-board');},600);
 }
-
 function handleMove(fr,fc,tr,tc){
-  var l=curPractice,done=BS.moves.length;
-  var mi=l.practiceColor==='white'?done-1:done-2;if(mi<0)return;
+  var l=curPractice,done=BS.moves.length,mi=l.practiceColor==='white'?done-1:done-2;if(mi<0)return;
   var exp=l.moves[mi],ec=coords(exp);
   var cExp=(ec[1]===4&&ec[3]===6);
   var ok=(fr===ec[0]&&fc===ec[1]&&tr===ec[2]&&tc===ec[3])||(cExp&&fr===ec[0]&&fc===ec[1]&&tr===ec[2]&&tc===7);
   var fb=document.getElementById('prac-fb');fb.style.display='block';
   if(ok){
-    fb.className='fb show ok';fb.innerHTML='<b style="color:var(--mint)">✓ Correct !</b> '+l.labels[mi];
+    fb.className='fb show ok';fb.innerHTML='<em>Correct —</em> '+l.labels[mi];
     updMtags();document.getElementById('hint-btn').style.display='none';
     var ni=mi+1;
-    if(ni>=l.moves.length){fb.innerHTML='<b style="color:var(--mint)">Ouverture complète !</b> Tu as joué les '+l.moves.length+' coups. +30 XP !';addXP(30);BS.frozen=true;return;}
+    if(ni>=l.moves.length){fb.innerHTML='<em>Ouverture complète.</em> Tu as joué les '+l.moves.length+' coups correctement. +30 XP';addXP(30);BS.frozen=true;return;}
     var isMe=(l.practiceColor==='white'&&ni%2===0)||(l.practiceColor==='black'&&ni%2===1);
     if(!isMe)setTimeout(function(){autoMove('main-board');},600);
   } else {
-    fb.className='fb show ko';fb.innerHTML='<b>Pas tout à fait.</b> Coup attendu : <b style="color:var(--amber)">'+l.labels[mi]+'</b>';
+    fb.className='fb show ko';fb.innerHTML='Pas tout à fait — coup attendu : <em>'+l.labels[mi]+'</em>';
     var lm=BS.moves.pop(),b=BS.board;
     if(lm&&lm.castle){var row=lm.fr;if(lm.castle==='K'){b[row][4]=b[row][6];b[row][6]=null;b[row][7]=b[row][5];b[row][5]=null;}else{b[row][4]=b[row][2];b[row][2]=null;b[row][0]=b[row][3];b[row][3]=null;}}
     else{b[fr][fc]=b[tr][tc];b[tr][tc]=null;}
@@ -900,20 +1467,18 @@ function handleMove(fr,fc,tr,tc){
     document.getElementById('hint-btn').style.display='block';
   }
 }
-
 function autoMove(id){var done=BS.moves.length,exp=curPractice.moves[done];if(!exp)return;var ec=coords(exp);doMove(ec[0],ec[1],ec[2],ec[3]);renderBoard(id);updMtags();}
 function updMtags(){if(!curPractice)return;var done=BS.moves.length;document.getElementById('mtags').innerHTML=curPractice.labels.map(function(lb,i){return'<span class="mtag'+(i===done?' cur':i<done?' done':'')+'">'+(i<done?'<s>'+lb+'</s>':lb)+'</span>';}).join('');}
-function showHint(){var done=BS.moves.length,l=curPractice,mi=l.practiceColor==='white'?done:done-1;if(mi>=0&&mi<l.moves.length){var fb=document.getElementById('prac-fb');fb.style.display='block';fb.className='fb show info';fb.innerHTML='Indice : <b style="color:var(--amber)">'+l.labels[mi]+'</b>';}}
+function showHint(){var done=BS.moves.length,l=curPractice,mi=l.practiceColor==='white'?done:done-1;if(mi>=0&&mi<l.moves.length){var fb=document.getElementById('prac-fb');fb.style.display='block';fb.className='fb show info';fb.innerHTML='Indice : <em>'+l.labels[mi]+'</em>';}}
 function resetPractice(){if(curPractice)startPractice(curPractice.id);}
 function closePractice(){document.getElementById('prac-home').style.display='block';document.getElementById('prac-board').style.display='none';curPractice=null;BS.frozen=false;}
 
-/* === QUIZ === */
 function renderQuizList(){
   document.getElementById('qlist').innerHTML=QUIZZES.map(function(q,i){
     return'<div class="qcard" onclick="startQuiz('+i+')">'+
-      '<div class="licon cv" style="font-size:10px;font-weight:800">Q'+(i+1)+'</div>'+
+      '<div class="licon cv" style="font-style:italic">Q'+(i+1)+'</div>'+
       '<div style="flex:1"><div class="ltitle">'+q.t+'</div><div class="ldesc">Question de culture échecs</div></div>'+
-      '<div class="badge bnew">Jouer</div></div>';
+      '<span class="badge bnew">Jouer</span></div>';
   }).join('');
 }
 function startQuiz(idx){
@@ -930,8 +1495,9 @@ function startQuiz(idx){
 function answerQuiz(i,idx){
   var q=QUIZZES[idx],ok=i===q.sol;
   document.querySelectorAll('.qopt').forEach(function(b,bi){b.disabled=true;if(bi===q.sol)b.className='qopt ok';else if(bi===i&&!ok)b.className='qopt ko';});
-  var res=document.getElementById('q-res');res.className='qres show '+(ok?'ok':'ko');
-  res.innerHTML='<div style="font-weight:600;color:'+(ok?'var(--mint)':'var(--rose)')+';margin-bottom:6px">'+(ok?'Correct !':'Pas tout à fait')+'</div><div style="font-size:12px;color:var(--text-muted);line-height:1.6">'+q.exp+'</div>';
+  var res=document.getElementById('q-res');
+  res.className='qres show '+(ok?'ok':'ko');
+  res.innerHTML='<div style="font-family:\'Cormorant Garamond\',serif;font-size:15px;font-style:italic;color:'+(ok?'var(--sage)':'var(--rose)')+';margin-bottom:8px">'+(ok?'Correct.':'Pas tout à fait.')+'</div><div>'+q.exp+'</div>';
   document.getElementById('q-next').style.display='block';
   if(ok){UP.quizCorrect=(UP.quizCorrect||0)+1;UP.quizStreak=(UP.quizStreak||0)+1;addXP(15);}
   else{UP.quizStreak=0;saveProgress();}
@@ -941,33 +1507,31 @@ function answerQuiz(i,idx){
 function nextQuiz(){var old=document.getElementById('q-opts');if(old)old.remove();startQuiz((curQuizIdx+1)%QUIZZES.length);}
 function closeQuiz(){document.getElementById('quiz-home').style.display='block';document.getElementById('quiz-active').style.display='none';var old=document.getElementById('q-opts');if(old)old.remove();}
 
-/* === PROFESSOR AI === */
-function isAdmin(){var p=profiles.find(function(x){return x.id===CU;});return p&&p.name.toLowerCase()===ADMIN;}
 function updChatLbl(){
   if(isAdmin()){document.getElementById('chat-lbl').textContent='Accès illimité';return;}
   var today=new Date().toDateString();if(UP.msgDate!==today)UP.msgToday=0;
   var r=MSG_LIMIT-(UP.msgToday||0);
-  document.getElementById('chat-lbl').textContent=r+' message'+(r>1?'s':'')+' restant'+(r>1?'s':'')+" aujourd'hui";
+  document.getElementById('chat-lbl').textContent=r+" message"+(r>1?'s':'')+' restant'+(r>1?'s':'')+' aujourd\'hui';
 }
-function askProf(lessonId){
-  var l=LESSONS.find(function(x){return x.id===lessonId;});
+function askProf(lid){
+  var l=LESSONS.find(function(x){return x.id===lid;});
   document.querySelectorAll('.nbtn').forEach(function(b,i){b.classList.toggle('active',i===3);});
   document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
   document.getElementById('tab-prof').classList.add('active');
-  sendChatMsg('Je viens de lire la leçon sur "'+l.title+'". Peux-tu me donner un exemple pratique supplémentaire ?',true);
+  sendChatMsg('Je viens de lire la leçon sur "'+l.title+'". Peux-tu me donner un exemple pratique supplémentaire et me conseiller comment progresser ?',true);
 }
 function sendChat(){
   var inp=document.getElementById('chat-inp'),msg=inp.value.trim();if(!msg)return;inp.value='';
   if(!isAdmin()){
     var today=new Date().toDateString();if(UP.msgDate!==today){UP.msgToday=0;UP.msgDate=today;}
-    if((UP.msgToday||0)>=MSG_LIMIT){addMsg('ai',"Tu as atteint la limite de "+MSG_LIMIT+" messages aujourd'hui. Reviens demain !");return;}
+    if((UP.msgToday||0)>=MSG_LIMIT){addMsg('ai','Tu as atteint la limite de '+MSG_LIMIT+' messages aujourd\'hui. Reviens demain !');return;}
     UP.msgToday=(UP.msgToday||0)+1;saveProgress();updChatLbl();
   }
   sendChatMsg(msg,false);
 }
 function addMsg(role,text){
   var el=document.getElementById('chat-msgs'),div=document.createElement('div');div.className='msg '+role;
-  div.innerHTML='<div class="mav">'+(role==='ai'?'64':'?')+'</div><div class="mbub">'+text.replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>')+'</div>';
+  div.innerHTML='<div class="mav">'+(role==='ai'?'♟':'?')+'</div><div class="mbub">'+text.replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>')+'</div>';
   el.appendChild(div);el.scrollTop=el.scrollHeight;
 }
 async function sendChatMsg(msg,isAuto){
@@ -978,16 +1542,15 @@ async function sendChatMsg(msg,isAuto){
   try{
     var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':CLAUDE_KEY,'anthropic-version':'2023-06-01'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,
-        system:'Tu es un professeur d\'échecs passionné et pédagogue. Tu réponds en français, clair et concis (max 100 mots). Tu utilises des anecdotes. Tu utilises **gras** pour les termes importants. Tu encourages.',
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,
+        system:'Tu es un professeur d\'échecs passionné et pédagogue, style élégant et précis. Tu réponds en français, concis (max 100 mots). Tu utilises **gras** pour les termes clés. Tu illustres avec des anecdotes. Tu encourages avec sobriété.',
         messages:chatHist.slice(-10)})});
     var d=await r.json();t.remove();
-    var rep=(d.content&&d.content[0])?d.content[0].text:'Connexion impossible. Vérifie la clé API (variable CLAUDE_KEY dans le code).';
+    var rep=(d.content&&d.content[0])?d.content[0].text:'Connexion impossible. Vérifie la clé API dans le code (variable CLAUDE_KEY).';
     chatHist.push({role:'assistant',content:rep});addMsg('ai',rep);
-  }catch(e){t.remove();addMsg('ai','Connexion impossible. Vérifie la clé API Anthropic dans le code.');}
+  }catch(e){t.remove();addMsg('ai','Connexion impossible. Vérifie la clé API.');}
 }
 
-/* === GLOSSARY === */
 function renderGlossary(f){
   var html='';
   GLOSSARY.forEach(function(cat){
@@ -995,31 +1558,39 @@ function renderGlossary(f){
     if(!terms.length)return;
     html+='<div class="gcat">'+cat.cat+'</div><div class="gblock">'+terms.map(function(term){return'<div class="gitem"><div class="gterm">'+term.t+'</div><div class="gdef">'+term.d+'</div></div>';}).join('')+'</div>';
   });
-  document.getElementById('gcontent').innerHTML=html||'<div class="empty">Aucun résultat</div>';
+  document.getElementById('gcontent').innerHTML=html||'<div class="empty">Aucun résultat pour cette recherche.</div>';
 }
 function filterG(v){renderGlossary(v);}
 
-/* === PROGRESS === */
 function showProgress(){
-  var p=profiles.find(function(x){return x.id===CU;});if(!p)return;
   var xp=UP.xp||0,lvl=Math.floor(xp/100)+1;
   document.getElementById('prog-content').innerHTML=
-    '<div class="stitle">Mon profil</div>'+
-    '<div class="pheader"><div class="phavatar">'+p.name[0].toUpperCase()+'</div>'+
-    '<div style="flex:1"><div class="phname">'+p.name+'</div><div class="phlvl">Niveau '+lvl+' · '+xp+' XP</div>'+
-    '<div class="phbar-wrap"><div class="phbar" style="width:'+(xp%100)+'%"></div></div></div></div>'+
+    '<div class="stitle">'+CU+'</div>'+
+    '<div class="pheader">'+
+      '<div class="phavatar"><em>'+CU[0].toUpperCase()+'</em></div>'+
+      '<div style="flex:1">'+
+        '<div class="phname">Niveau '+lvl+'</div>'+
+        '<div class="phlvl">'+xp+' XP · '+(UP.lessonsCompleted||[]).length+' leçons · '+(UP.quizCorrect||0)+' quiz</div>'+
+        '<div class="phbar-wrap"><div class="phbar" style="width:'+(xp%100)+'%"></div></div>'+
+      '</div>'+
+    '</div>'+
     '<div class="sgrid">'+
-    '<div class="sbox"><div class="snum" style="font-size:24px">'+(UP.lessonsCompleted||[]).length+'</div><div class="slbl">Leçons vues</div></div>'+
-    '<div class="sbox"><div class="snum" style="font-size:24px;color:var(--amber)">'+(UP.lessonsMastered||[]).length+'</div><div class="slbl">Maîtrisées</div></div></div>'+
-    '<div class="sbox" style="margin-bottom:1rem"><div class="snum">'+(UP.quizCorrect||0)+'</div><div class="slbl">Quiz réussis</div></div>';
+      '<div class="sbox"><span class="snum" style="font-size:36px;color:var(--rose)">'+(UP.lessonsCompleted||[]).length+'</span><span class="slbl">Leçons vues</span></div>'+
+      '<div class="sbox"><span class="snum" style="font-size:36px;color:var(--amber)">'+(UP.lessonsMastered||[]).length+'</span><span class="slbl">Maîtrisées</span></div>'+
+    '</div>'+
+    '<div style="margin-top:1.2rem">'+
+      '<div class="eyebrow" style="margin-bottom:8px">Changer de nom</div>'+
+      '<div style="display:flex;gap:8px">'+
+        '<input id="rename-inp" style="flex:1;font-family:Inter,sans-serif;font-size:13px;font-weight:300;padding:10px 14px;background:var(--card);border:1px solid var(--border-md);border-radius:var(--radius-sm);color:var(--text);outline:none" placeholder="'+CU+'" onkeydown="if(event.key===\'Enter\')renamePlayer(this.value.trim())">'+
+        '<button onclick="renamePlayer(document.getElementById(\'rename-inp\').value.trim())" style="padding:10px 16px;background:var(--amber);color:#FDF9F2;border:none;border-radius:var(--radius-sm);font-family:Inter,sans-serif;font-weight:500;font-size:11px;cursor:pointer;letter-spacing:.5px;text-transform:uppercase">OK</button>'+
+      '</div>'+
+    '</div>';
   document.getElementById('prog-overlay').classList.add('open');
 }
+function renamePlayer(name){if(!name||name===CU)return;CU=name;save();updHdr();closeProgress();}
 function closeProgress(e){if(e&&e.target!==document.getElementById('prog-overlay'))return;document.getElementById('prog-overlay').classList.remove('open');}
 
-/* === INIT === */
-loadProfiles();
-var lastId=localStorage.getItem('chess64_last');
-if(lastId){var lp=profiles.find(function(p){return p.id===lastId;});if(lp)startApp(lp);}
+startApp();
 </script>
 </body>
 </html>
