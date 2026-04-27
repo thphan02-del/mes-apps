@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bonjour Ly">
+<meta name="theme-color" content="#4a7c59">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%23f0f7f0'/><text x='256' y='320' text-anchor='middle' font-family='Georgia,serif' font-weight='700' font-size='180' fill='%234a7c59'>🌸</text></svg>">
+<title>Bonjour Ly 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:    #f5f0e8;
+  --bg2:   #ede6d8;
+  --bg3:   #e4dcc8;
+  --card:  #fdfaf4;
+  --border: rgba(74,124,89,0.12);
+  --border-md: rgba(74,124,89,0.22);
+  --green: #4a7c59;
+  --green-dim: rgba(74,124,89,0.08);
+  --green-border: rgba(74,124,89,0.22);
+  --sage:  #7fad8f;
+  --sage-dim: rgba(127,173,143,0.12);
+  --rose:  #c06060;
+  --rose-dim: rgba(192,96,96,0.08);
+  --rose-border: rgba(192,96,96,0.2);
+  --gold:  #c49a3c;
+  --gold-dim: rgba(196,154,60,0.08);
+  --gold-border: rgba(196,154,60,0.22);
+  --text:  #1c2e1c;
+  --text-muted: #6a8a6a;
+  --text-hint: #3a5a3a;
+  --r: 14px;
+  --rs: 10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{height:100%;background:var(--bg);}
+body{font-family:'Nunito',sans-serif;color:var(--text);background:var(--bg);display:flex;flex-direction:column;height:100dvh;overflow:hidden;max-width:480px;margin:0 auto;}
+.sidebar{display:none;}
+.desktop-main{display:flex;flex-direction:column;flex:1;min-height:0;}
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;}
+.view{display:none;padding:1.25rem;}
+.view.active{display:block;}
+
+@media(min-width:900px){
+  html{background:var(--bg2);}
+  body{max-width:none;flex-direction:row;height:100vh;overflow:hidden;}
+  .sidebar{display:flex;flex-direction:column;width:220px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);padding:2rem 0;height:100vh;}
+  .sidebar-brand{font-family:'Playfair Display',serif;font-size:16px;font-weight:400;color:var(--green);letter-spacing:3px;text-transform:uppercase;padding:0 1.8rem 2rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem;}
+  .sidebar-nav{display:flex;flex-direction:column;gap:2px;padding:0 1rem;flex:1;}
+  .snav-btn{display:flex;align-items:center;gap:10px;padding:10px 14px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:600;color:var(--text-muted);border:none;background:transparent;cursor:pointer;border-radius:8px;text-align:left;letter-spacing:.6px;text-transform:uppercase;transition:all .15s;width:100%;}
+  .snav-btn:hover{background:var(--bg2);color:var(--text-hint);}
+  .snav-btn.active{background:var(--green-dim);color:var(--green);font-weight:700;}
+  .snav-dot{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:0;flex-shrink:0;}
+  .snav-btn.active .snav-dot{opacity:1;}
+  .sidebar-user{padding:1.5rem 1.8rem;border-top:1px solid var(--border);cursor:pointer;margin-top:auto;}
+  .sidebar-uname{font-family:'Playfair Display',serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;transition:color .15s;}
+  .sidebar-user:hover .sidebar-uname{color:var(--green);}
+  .sidebar-uxp{font-size:10px;color:var(--text-muted);letter-spacing:.5px;}
+  .desktop-main{display:flex;flex-direction:column;flex:1;overflow:hidden;min-width:0;}
+  .header{display:none !important;}
+  .nav{display:none !important;}
+  .content{flex:1;overflow-y:auto;min-height:0;}
+  .view{padding:2.5rem 3rem;max-width:960px;}
+  .lcard{padding:14px 16px !important;}
+  #llist{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  #llist .catlabel{grid-column:1/-1;}
+}
+
+/* HEADER */
+.header{padding:1rem 1.25rem .75rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg);}
+.hbrand{font-family:'Playfair Display',serif;font-size:15px;font-weight:400;color:var(--green);letter-spacing:3px;text-transform:uppercase;}
+.huser{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.havatar{width:30px;height:30px;border-radius:50%;background:var(--green-dim);border:1px solid var(--green-border);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.xpbar-wrap{background:var(--bg3);border-radius:3px;height:4px;width:50px;overflow:hidden;}
+.xpbar{height:100%;background:var(--green);border-radius:3px;transition:width .5s;}
+.hxp{font-size:9px;color:var(--text-muted);margin-top:3px;text-align:right;letter-spacing:.5px;text-transform:uppercase;}
+
+/* NAV */
+.nav{display:flex;background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto;scrollbar-width:none;padding:0 4px;}
+.nav::-webkit-scrollbar{display:none;}
+.nbtn{flex-shrink:0;padding:11px 12px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:600;color:var(--text-muted);border:none;background:transparent;cursor:pointer;position:relative;white-space:nowrap;letter-spacing:.8px;text-transform:uppercase;transition:color .15s;}
+.nbtn.active{color:var(--green);font-weight:800;}
+.nbtn.active::after{content:'';position:absolute;bottom:0;left:12px;right:12px;height:2px;background:var(--green);border-radius:2px;}
+
+/* TYPOGRAPHY */
+.eyebrow{font-size:9px;color:var(--text-muted);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
+.bigtitle{font-family:'Playfair Display',serif;font-size:24px;font-weight:400;color:var(--text);letter-spacing:-.2px;margin-bottom:4px;line-height:1.2;}
+.subtitle{font-size:13px;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.6;font-weight:400;}
+.catlabel{font-size:9px;color:var(--text-muted);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:1.1rem 0 7px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+
+/* LESSON CARDS */
+.lcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:6px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:border-color .15s;}
+.lcard:hover{border-color:var(--border-md);}
+.lcard.done{border-left:3px solid var(--green);}
+.lcard.song{border-left:3px solid var(--gold);}
+.licon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.licon.song{background:var(--gold-dim);border:1px solid var(--gold-border);}
+.licon.life{background:var(--green-dim);border:1px solid var(--green-border);}
+.linfo{flex:1;min-width:0;}
+.ltitle{font-family:'Playfair Display',serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;line-height:1.2;}
+.ldesc{font-size:11px;color:var(--text-muted);font-weight:400;}
+.badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;flex-shrink:0;white-space:nowrap;letter-spacing:.4px;text-transform:uppercase;border:1px solid;}
+.bnew{background:var(--rose-dim);color:var(--rose);border-color:var(--rose-border);}
+.bdone{background:var(--green-dim);color:var(--green);border-color:var(--green-border);}
+
+/* LESSON DETAIL */
+.backbtn{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);background:none;border:none;cursor:pointer;padding:0 0 1rem;font-family:'Nunito',sans-serif;letter-spacing:.5px;text-transform:uppercase;font-weight:600;}
+.progress-dots{display:flex;gap:5px;justify-content:center;margin-bottom:1.2rem;flex-wrap:wrap;}
+.pdot{height:7px;border-radius:99px;background:var(--bg3);transition:all .4s ease;}
+.pdot.done{background:var(--green);}
+.pdot.cur{background:var(--sage);width:20px !important;}
+
+/* PHRASE CARD */
+.phrase-card{background:var(--card);border:1.5px solid var(--green-border);border-radius:16px;padding:20px 18px;margin-bottom:10px;box-shadow:0 3px 14px rgba(74,124,89,0.08);}
+.phrase-fr{font-family:'Playfair Display',serif;font-size:18px;color:var(--text);line-height:1.6;margin-bottom:10px;font-weight:400;}
+.phrase-focus{background:#e8f5d4;border:1.5px solid var(--sage);color:var(--text-hint);font-weight:700;padding:1px 5px;border-radius:6px;}
+.phrase-word.hit{background:#d4f0d4;color:#2d5a3d;border-radius:4px;padding:0 3px;}
+.phrase-word.miss{background:#fde8e8;color:var(--rose);border-radius:4px;padding:0 3px;}
+.phrase-phonetic{font-size:11px;color:var(--text-muted);font-style:italic;margin-bottom:8px;font-family:'Nunito',sans-serif;}
+.phrase-viet{border-top:1px solid var(--border);padding-top:10px;font-size:14px;color:var(--text-muted);font-weight:400;}
+
+/* NOTE */
+.note-card{background:rgba(212,232,200,0.4);border:1.5px solid var(--green-border);border-left:4px solid var(--green);border-radius:0 12px 12px 0;padding:11px 14px;margin-bottom:16px;}
+.note-card p{font-size:13px;color:var(--text-hint);line-height:1.7;font-weight:400;}
+.note-card p b{color:var(--green);}
+
+/* BUTTONS */
+.btn{width:100%;padding:13px 18px;border:none;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;cursor:pointer;transition:all .15s;margin-bottom:8px;letter-spacing:.3px;}
+.btn:active{transform:scale(.98);}
+.btn-green{background:var(--green);color:#fff;box-shadow:0 3px 10px rgba(74,124,89,0.3);}
+.btn-sage{background:var(--sage);color:#fff;box-shadow:0 3px 10px rgba(127,173,143,0.25);}
+.btn-ghost{background:var(--bg2);color:var(--text-muted);font-size:13px;}
+
+/* RESULT */
+.result-card{border-radius:14px;padding:18px 20px;text-align:center;margin-bottom:12px;}
+.result-card.ok{background:rgba(212,240,212,0.9);border:1.5px solid var(--sage);}
+.result-card.ko{background:rgba(255,220,220,0.9);border:1.5px solid var(--rose-border);}
+.result-pct{font-family:'Nunito',sans-serif;font-size:48px;font-weight:900;line-height:1;}
+.result-pct.ok{color:#2d5a3d;}
+.result-pct.ko{color:var(--rose);}
+.result-msg{font-size:15px;color:var(--text-muted);margin-top:6px;font-weight:600;}
+.result-transcript{font-size:12px;color:var(--text-muted);margin-top:6px;font-style:italic;}
+.result-btns{display:flex;gap:8px;}
+.result-btns .btn{margin-bottom:0;}
+
+/* LISTENING */
+.listen-indicator{text-align:center;font-size:14px;color:var(--green);font-weight:700;padding:6px 0;}
+
+/* HOME / PROGRESS */
+.progress-hero{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:1.2rem;}
+.progress-hero-top{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.prog-avatar{width:42px;height:42px;border-radius:50%;background:var(--green-dim);border:1px solid var(--green-border);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.prog-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--text);}
+.prog-sub{font-size:11px;color:var(--text-muted);margin-top:2px;}
+.prog-bar-wrap{background:var(--bg3);border-radius:3px;height:6px;overflow:hidden;}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--sage),var(--green));border-radius:3px;transition:width .6s cubic-bezier(.4,2,.6,1);}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.2rem;}
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 12px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.stat-num{font-family:'Nunito',sans-serif;font-size:32px;font-weight:900;line-height:1;letter-spacing:-1px;}
+.stat-lbl{font-size:9px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;font-weight:700;}
+
+/* GHIBLI SKY */
+.ghibli-sky{position:fixed;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,#c8e6f5 0%,transparent 100%);pointer-events:none;z-index:0;opacity:.4;}
+.ghibli-cloud{position:absolute;background:rgba(255,255,255,.7);border-radius:50px;filter:blur(3px);}
+.leaf{position:fixed;pointer-events:none;z-index:0;font-size:14px;opacity:.2;animation:leaf-fall linear infinite;}
+@keyframes leaf-fall{0%{transform:translateY(-30px) rotate(0deg);opacity:0;}10%{opacity:.2;}90%{opacity:.2;}100%{transform:translateY(100vh) rotate(360deg);opacity:0;}}
+
+/* OVERLAY */
+.overlay{display:none;position:fixed;inset:0;background:rgba(20,30,20,.5);z-index:50;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;}
+.sheet{background:var(--bg);border-radius:16px 16px 0 0;padding:1.25rem 1.25rem 3rem;width:100%;max-width:480px;border-top:1px solid var(--border-md);max-height:85vh;overflow-y:auto;animation:sup .22s cubic-bezier(.32,0,.15,1);}
+@keyframes sup{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.shandle{width:32px;height:3px;background:var(--border-md);border-radius:2px;margin:0 auto 1.25rem;}
+.stitle{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;color:var(--text);margin-bottom:1rem;}
+
+/* FOOTER NOTE */
+.footer-note{text-align:center;padding:2rem 1rem 0;font-size:12px;color:var(--text-muted);line-height:1.9;font-weight:400;}
+</style>
+</head>
+<body>
+
+<!-- GHIBLI ATMOSPHERE -->
+<div class="ghibli-sky">
+  <div class="ghibli-cloud" style="width:120px;height:34px;top:22px;left:8%"></div>
+  <div class="ghibli-cloud" style="width:80px;height:24px;top:55px;left:45%"></div>
+  <div class="ghibli-cloud" style="width:160px;height:40px;top:16px;right:4%"></div>
+</div>
+<div class="leaf" style="left:5%;font-size:14px;animation-duration:10s;animation-delay:0s">🍃</div>
+<div class="leaf" style="left:18%;font-size:10px;animation-duration:13s;animation-delay:2s">🌿</div>
+<div class="leaf" style="left:35%;font-size:16px;animation-duration:9s;animation-delay:4s">🌸</div>
+<div class="leaf" style="left:55%;font-size:12px;animation-duration:11s;animation-delay:1s">🍀</div>
+<div class="leaf" style="left:70%;font-size:10px;animation-duration:14s;animation-delay:3s">🌱</div>
+<div class="leaf" style="left:85%;font-size:15px;animation-duration:8s;animation-delay:5s">✿</div>
+
+<!-- SIDEBAR desktop -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-brand">Bonjour Ly</div>
+  <div class="sidebar-nav">
+    <button class="snav-btn active" onclick="showTab('accueil',this,true)"><div class="snav-dot"></div>Accueil</button>
+    <button class="snav-btn" onclick="showTab('chansons',this,true)"><div class="snav-dot"></div>Chansons</button>
+    <button class="snav-btn" onclick="showTab('vie',this,true)"><div class="snav-dot"></div>Choisy</button>
+  </div>
+  <div class="sidebar-user" onclick="showProgress()">
+    <div class="sidebar-uname" id="sidebar-uname">Ly 🌸</div>
+    <div class="sidebar-uxp" id="sidebar-uxp">0 leçons complétées</div>
+    <div style="margin-top:6px"><div class="xpbar-wrap" style="width:100%"><div class="xpbar" id="sidebar-xpbar" style="width:0%"></div></div></div>
+  </div>
+</div>
+
+<div class="desktop-main">
+
+<!-- HEADER mobile -->
+<div class="header">
+  <div class="hbrand">Bonjour Ly</div>
+  <div class="huser" onclick="showProgress()">
+    <div>
+      <div class="xpbar-wrap"><div class="xpbar" id="hxpbar" style="width:0%"></div></div>
+      <div class="hxp" id="hxplbl">0 leçons</div>
+    </div>
+    <div class="havatar">🌸</div>
+  </div>
+</div>
+
+<!-- NAV mobile -->
+<div class="nav">
+  <button class="nbtn active" onclick="showTab('accueil',this)">🏠 Accueil</button>
+  <button class="nbtn" onclick="showTab('chansons',this)">🎵 Chansons</button>
+  <button class="nbtn" onclick="showTab('vie',this)">🏡 Choisy</button>
+</div>
+
+<div class="content">
+
+<!-- ══ ACCUEIL ══════════════════════════════════════ -->
+<div class="view active" id="tab-accueil">
+  <div style="padding-top:.5rem">
+    <div class="eyebrow">Tiếng Pháp · Trung cấp</div>
+    <div class="bigtitle">Bonjour Ly ! 🌸</div>
+    <div class="subtitle">Choisy-le-Roi · Leo, Chloé &amp; Millie · Bobby &amp; Toro</div>
+
+    <div class="progress-hero">
+      <div class="progress-hero-top">
+        <div class="prog-avatar">🌸</div>
+        <div>
+          <div class="prog-name" id="home-name">Ly</div>
+          <div class="prog-sub" id="home-sub">Bắt đầu học nào!</div>
+        </div>
+      </div>
+      <div class="prog-bar-wrap"><div class="prog-bar" id="home-bar" style="width:0%"></div></div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-box">
+        <span class="stat-num" style="color:var(--green)" id="stat-done">0</span>
+        <span class="stat-lbl">Bài hoàn thành</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num" style="color:var(--gold)" id="stat-total">14</span>
+        <span class="stat-lbl">Tổng số bài</span>
+      </div>
+    </div>
+
+    <div class="catlabel">🎵 Bài hát mới nhất</div>
+    <div id="home-songs"></div>
+
+    <div class="catlabel" style="margin-top:1.4rem">🏡 Cuộc sống ở Choisy</div>
+    <div id="home-life"></div>
+
+    <div class="footer-note">🌿 Mỗi ngày một chút, Ly sẽ làm được!<br>Fait avec ❤️ pour toi</div>
+  </div>
+</div>
+
+<!-- ══ CHANSONS ══════════════════════════════════════ -->
+<div class="view" id="tab-chansons">
+  <div class="eyebrow">Học qua âm nhạc</div>
+  <div class="bigtitle">Chansons 🎵</div>
+  <div class="subtitle">Céline Dion &amp; Lara Fabian — những bài em đã biết</div>
+  <div id="song-list"></div>
+</div>
+
+<!-- ══ VIE ══════════════════════════════════════════ -->
+<div class="view" id="tab-vie">
+  <div class="eyebrow">Cuộc sống hàng ngày</div>
+  <div class="bigtitle">Choisy-le-Roi 🏡</div>
+  <div class="subtitle">Hàng xóm · Trường học · Bác sĩ · Chợ · Bobby &amp; Toro</div>
+  <div id="life-list"></div>
+</div>
+
+<!-- ══ LESSON DETAIL ══════════════════════════════════ -->
+<div class="view" id="tab-lesson">
+  <button class="backbtn" onclick="closeLesson()">← Quay lại</button>
+  <div id="lesson-detail"></div>
+</div>
+
+</div><!-- /content -->
+</div><!-- /desktop-main -->
+
+<!-- PROGRESS OVERLAY -->
+<div class="overlay" id="prog-overlay" onclick="closeProgress(event)">
+  <div class="sheet">
+    <div class="shandle"></div>
+    <div id="prog-content"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════════════ */
+var LESSONS = [
+  {id:'s1',type:'song',icon:'🌹',title:'Pour que tu m\'aimes encore',sub:'Céline Dion',lines:[
+    {fr:'J\'ai compris tous les mots, j\'ai bien compris merci',viet:'Tôi đã hiểu tất cả những từ, tôi đã hiểu rõ, cảm ơn',focus:'J\'ai compris',note:'<b>J\'ai compris</b> = Tôi đã hiểu. Thì passé composé: avoir + participe passé.',ph:'Zhay com-pree too lay moh'},
+    {fr:'Pour que tu m\'aimes encore',viet:'Để anh yêu em một lần nữa',focus:'Pour que',note:'<b>Pour que</b> + subjonctif = để (mục đích). Cấu trúc rất quan trọng trong tiếng Pháp!',ph:'Poor kuh too maym on-cor'},
+    {fr:'Il faudrait que tu reviennes',viet:'Anh cần phải quay trở lại',focus:'Il faudrait',note:'<b>Il faudrait</b> = cần phải (lịch sự hơn "il faut"). Dùng khi muốn nhẹ nhàng.',ph:'Eel foh-dray kuh too ruh-vyen'},
+    {fr:'Je veux tout recommencer avec toi',viet:'Em muốn bắt đầu lại tất cả cùng anh',focus:'recommencer',note:'<b>Recommencer</b> = bắt đầu lại. Tiền tố "re-" thường có nghĩa làm lại.',ph:'Zhuh vuh too ruh-com-on-say a-vek twa'},
+    {fr:'Tu me manques tellement',viet:'Anh nhớ em quá',focus:'Tu me manques',note:'⚠️ Cấu trúc ngược! <b>Tu me manques</b> = anh nhớ em (em làm anh thiếu vắng).',ph:'Too muh monk tel-mon'},
+    {fr:'Sans toi je ne suis rien',viet:'Không có em, anh không là gì cả',focus:'Sans toi',note:'<b>Sans</b> = không có. Trái nghĩa "avec". "Sans toi, sans toi" — em sẽ hát được!',ph:'Son twa zhuh nuh swee ryen'},
+    {fr:'Dis-moi que tu ne partiras pas',viet:'Hãy nói với anh rằng em sẽ không rời đi',focus:'Dis-moi',note:'<b>Dis-moi</b> = nói với tôi. Mệnh lệnh cách của "dire". Rất thông dụng!',ph:'Dee-mwa kuh too nuh par-tee-ra pa'},
+    {fr:'Jamais je ne t\'oublierai',viet:'Anh sẽ không bao giờ quên em',focus:'Jamais',note:'<b>Ne...jamais</b> = không bao giờ. Phủ định tuyệt đối và rất thơ mộng!',ph:'Zha-may zhuh nuh too-blee-ray'},
+  ]},
+  {id:'s2',type:'song',icon:'💙',title:'Je t\'aime',sub:'Lara Fabian',lines:[
+    {fr:'Je t\'aime, plus que tout au monde',viet:'Anh yêu em, hơn tất cả mọi thứ trên thế giới',focus:'plus que tout',note:'<b>Plus que tout</b> = hơn tất cả. So sánh hơn: plus + que + danh từ/đại từ.',ph:'Zhuh tem, ploo kuh too oh mond'},
+    {fr:'Tu es ma vie, mon seul amour',viet:'Em là cuộc đời anh, tình yêu duy nhất',focus:'mon seul',note:'<b>Seul</b> = duy nhất, một mình. "Mon seul ami" = người bạn duy nhất của tôi.',ph:'Too ay ma vee, mon sul a-moor'},
+    {fr:'Sans toi je ne suis rien',viet:'Không có em, anh không là gì cả',focus:'je ne suis rien',note:'<b>Rien</b> = không gì cả. "Je ne sais rien" = tôi không biết gì. Từ phủ định mạnh.',ph:'Son twa zhuh nuh swee ryen'},
+    {fr:'Je te cherche dans chaque regard',viet:'Anh tìm em trong từng ánh mắt',focus:'chaque',note:'<b>Chaque</b> = mỗi, từng (không có số nhiều!). "Chaque jour" = mỗi ngày.',ph:'Zhuh tuh shairsh don shak ruh-gar'},
+    {fr:'Mon cœur bat pour toi',viet:'Trái tim anh đập vì em',focus:'Mon cœur',note:'<b>Le cœur</b> = trái tim. "Avoir bon cœur" = tốt bụng. Dùng nghĩa bóng như tiếng Việt!',ph:'Mon kur ba poor twa'},
+    {fr:'Tu es tout ce que j\'espère',viet:'Em là tất cả những gì anh hy vọng',focus:'j\'espère',note:'<b>Espérer</b> = hy vọng. "J\'espère que tu vas bien" = anh hy vọng em khỏe.',ph:'Too ay too suh kuh zhes-pair'},
+    {fr:'Je serai toujours là pour toi',viet:'Anh sẽ luôn ở đây vì em',focus:'Je serai là',note:'<b>Être là</b> = ở đây, có mặt. "Je suis là" = tôi đây. Câu an ủi rất hay dùng!',ph:'Zhuh suh-ray too-zhoor la poor twa'},
+    {fr:'Je t\'aime pour toujours et à jamais',viet:'Anh yêu em mãi mãi đến muôn đời',focus:'à jamais',note:'<b>À jamais</b> = mãi mãi (văn học). "Pour toujours" = mãi mãi. Hai cách nói cùng nghĩa!',ph:'Zhuh tem poor too-zhoor ay a zha-may'},
+  ]},
+  {id:'s3',type:'song',icon:'🌊',title:'Adagio',sub:'Lara Fabian',lines:[
+    {fr:'Reste encore un peu près de moi',viet:'Hãy ở lại thêm một chút bên cạnh tôi',focus:'encore un peu',note:'<b>Encore un peu</b> = thêm một chút. Ly có thể nói câu này với Leo, Chloé, Millie!',ph:'Rest on-cor un puh pray duh mwa'},
+    {fr:'Prends-moi dans tes bras',viet:'Hãy ôm tôi vào vòng tay em',focus:'Prends-moi',note:'Mệnh lệnh cách với đại từ theo sau động từ: prends + moi. Rất tự nhiên!',ph:'Pron-mwa don tay bra'},
+    {fr:'Dis-moi que je ne rêve pas',viet:'Hãy nói với tôi rằng tôi không mơ',focus:'rêve',note:'<b>Rêver</b> = mơ. "Un rêve" = giấc mơ. "Tu es mon rêve" = em là giấc mơ của anh 🌸',ph:'Dee-mwa kuh zhuh nuh rev pa'},
+    {fr:'Je n\'ai plus peur de rien',viet:'Tôi không còn sợ bất cứ điều gì nữa',focus:'plus peur de rien',note:'<b>Avoir peur</b> = sợ. "Ne...plus" = không còn. "Ne...rien" = không gì. Ba cấu trúc trong một!',ph:'Zhuh nay ploo pur duh ryen'},
+    {fr:'Quand tu es là, tout va bien',viet:'Khi em ở đây, mọi thứ đều ổn',focus:'tout va bien',note:'<b>Tout va bien</b> = mọi thứ đều ổn. Trả lời "Ça va?" = "Tout va bien, merci!"',ph:'Kon too ay la, too va byen'},
+    {fr:'Tu es ma seule raison de vivre',viet:'Em là lý do sống duy nhất của tôi',focus:'raison de vivre',note:'<b>Raison de vivre</b> = lý do để sống. Cụm từ triết học nổi tiếng của người Pháp!',ph:'Too ay ma sul ray-zon duh vee-vruh'},
+    {fr:'Laisse-moi vivre dans tes yeux',viet:'Hãy để tôi sống trong đôi mắt của em',focus:'Laisse-moi',note:'<b>Laisser</b> + infinitif = để cho ai làm gì. "Laisse-moi parler" = để tôi nói.',ph:'Les-mwa vee-vruh don tay zyuh'},
+    {fr:'Je t\'aime comme tu es',viet:'Tôi yêu em như em vốn vậy',focus:'comme tu es',note:'<b>Comme tu es</b> = như em vốn vậy. Câu thể hiện tình yêu vô điều kiện. Rất đẹp!',ph:'Zhuh tem com too ay'},
+  ]},
+  {id:'s4',type:'song',icon:'✨',title:'S\'il suffisait d\'aimer',sub:'Céline Dion',lines:[
+    {fr:'S\'il suffisait d\'aimer',viet:'Nếu chỉ cần yêu thôi là đủ',focus:'S\'il suffisait',note:'<b>Suffire</b> = đủ. Điều kiện cách quá khứ — dùng cho điều không có thật.',ph:'Seel soo-fee-zay daymay'},
+    {fr:'On vivrait dans un monde merveilleux',viet:'Chúng ta sẽ sống trong một thế giới kỳ diệu',focus:'merveilleux',note:'<b>Merveilleux</b> = kỳ diệu. "C\'est merveilleux!" = tuyệt vời quá!',ph:'On vee-vray don zon mond mair-vay-yuh'},
+    {fr:'Il faudrait apprendre à s\'aimer',viet:'Chúng ta cần học cách yêu thương nhau',focus:'apprendre à',note:'<b>Apprendre à</b> + infinitif = học cách làm gì. "J\'apprends le français" = tôi học tiếng Pháp!',ph:'Eel foh-dray a-pron-druh a saymay'},
+    {fr:'L\'amour serait plus fort que tout',viet:'Tình yêu sẽ mạnh hơn tất cả',focus:'plus fort que tout',note:'So sánh hơn hoàn chỉnh: plus + tính từ + que + danh từ/đại từ.',ph:'La-moor suh-ray ploo for kuh too'},
+    {fr:'Mais aimer ne suffit pas',viet:'Nhưng yêu thôi chưa đủ',focus:'ne suffit pas',note:'"<b>Ça suffit!</b>" = đủ rồi! (khi trẻ con quá ồn ào 😄). Phủ định: ne suffit pas.',ph:'May zaymay nuh soo-fee pa'},
+    {fr:'Pour changer les choses',viet:'Để thay đổi mọi thứ',focus:'Pour changer',note:'<b>Pour</b> + nguyên mẫu = để làm gì. "Pour apprendre" = để học. Cấu trúc rất thông dụng!',ph:'Poor shon-zhay lay shohz'},
+    {fr:'Si la nuit était moins longue',viet:'Nếu màn đêm ngắn hơn',focus:'moins longue',note:'<b>Moins + tính từ</b> = ít...hơn. "Moins cher" = rẻ hơn. Ngược với "plus".',ph:'See la nwee ay-tay mwen long'},
+    {fr:'Je t\'offre mon cœur et mon âme',viet:'Anh trao cho em trái tim và tâm hồn',focus:'Je t\'offre',note:'<b>Offrir</b> = tặng, trao. "Je t\'offre un cadeau" = anh tặng em một món quà 🎁',ph:'Zhuh tof-ruh mon kur ay mon am'},
+  ]},
+  {id:'l1',type:'life',icon:'🏫',title:'Le portail de l\'école',sub:'Trước cổng trường',lines:[
+    {fr:'Bonjour, vous êtes la maman de Chloé aussi ?',viet:'Xin chào, bạn cũng là mẹ của Chloé à?',focus:'vous êtes',note:'<b>Vous êtes</b> = bạn là (lịch sự). Câu mở đầu hoàn hảo để làm quen với các mẹ khác!',ph:'Bohn-zhoor, voo zet la ma-mon duh Shlo-ay oh-see'},
+    {fr:'Ma fille s\'appelle Millie, elle est en petite section',viet:'Con gái tôi tên là Millie, bé học lớp nhỏ nhất',focus:'petite section',note:'<b>Petite section</b> = lớp mầm non nhỏ (3-4 tuổi). Moyenne section = lớp giữa. Grande section = lớp lớn.',ph:'Ma fee sa-pel Mee-lee, el ay on puh-teet sek-syon'},
+    {fr:'À quelle heure est la sortie aujourd\'hui ?',viet:'Hôm nay tan học lúc mấy giờ?',focus:'la sortie',note:'<b>La sortie</b> = lúc tan học. "L\'entrée" = lúc vào trường. Hỏi câu này mỗi ngày được!',ph:'A kel ur ay la sor-tee oh-zhoor-dwee'},
+    {fr:'Est-ce qu\'il y a une sortie scolaire cette semaine ?',viet:'Tuần này có chuyến tham quan không?',focus:'sortie scolaire',note:'<b>Une sortie scolaire</b> = chuyến tham quan của trường. Hay xảy ra, cần biết để chuẩn bị!',ph:'Es keel ya oon sor-tee sko-lair set suh-men'},
+    {fr:'Mon fils Leo est en CM1, vous connaissez sa maîtresse ?',viet:'Con trai tôi Leo học lớp CM1, bạn có biết cô giáo không?',focus:'CM1',note:'<b>CM1</b> = lớp 4 (10-11 tuổi). CM2 = lớp 5. CE1/CE2 = lớp 2/3. CP = lớp 1.',ph:'Mon fees Lay-oh ay on say-em-un'},
+    {fr:'On pourrait échanger nos numéros ?',viet:'Chúng ta có thể trao đổi số điện thoại không?',focus:'échanger nos numéros',note:'Câu để kết bạn với các mẹ khác! Tự nhiên và thân thiện.',ph:'On poo-ray ay-shon-zhay no noo-may-roh'},
+    {fr:'Votre fille peut venir jouer avec Chloé samedi ?',viet:'Con gái bạn có thể đến chơi với Chloé thứ Bảy không?',focus:'venir jouer',note:'<b>Venir jouer</b> = đến chơi. Câu mời rất quan trọng cho Chloé có bạn bè!',ph:'Vot fee puh vuh-neer zhoo-ay a-vek Shlo-ay sam-dee'},
+    {fr:'À demain, bonne journée !',viet:'Hẹn gặp ngày mai, chúc một ngày tốt lành!',focus:'À demain',note:'<b>À demain</b> = hẹn gặp ngày mai. "À lundi" = hẹn gặp thứ Hai.',ph:'A duh-men, bon zhoor-nay'},
+  ]},
+  {id:'l2',type:'life',icon:'🏘️',title:'Les voisins de Choisy',sub:'Hàng xóm',lines:[
+    {fr:'Bonjour, je suis votre voisine, je m\'appelle Ly',viet:'Xin chào, tôi là hàng xóm của bạn, tôi tên là Ly',focus:'votre voisine',note:'<b>Voisin</b> (nam) / <b>voisine</b> (nữ) = hàng xóm. Se présenter = điều đầu tiên nên làm!',ph:'Bohn-zhoor, zhuh swee vot vwa-zeen, zhuh ma-pel Lee'},
+    {fr:'Excusez-moi pour le bruit, les enfants jouaient',viet:'Xin lỗi vì tiếng ồn, bọn trẻ đang chơi',focus:'Excusez-moi pour',note:'<b>Excusez-moi pour</b> = xin lỗi vì... Câu xin lỗi lịch sự khi có Bobby và Toro!',ph:'Ek-skoo-zay mwa poor luh brwee, lay zon-fon zhoo-ay'},
+    {fr:'Bobby et Toro ont aboyé cette nuit, je suis désolée',viet:'Bobby và Toro đã sủa tối qua, tôi xin lỗi',focus:'je suis désolée',note:'<b>Je suis désolée</b> (nữ) = tôi rất tiếc, xin lỗi. "Désolé" pour les hommes.',ph:'Bo-bee ay To-roh on a-bwa-yay set nwee, zhuh swee day-zo-lay'},
+    {fr:'Vous avez besoin de quelque chose ?',viet:'Bạn có cần giúp gì không?',focus:'besoin de',note:'<b>Avoir besoin de</b> = cần. "J\'ai besoin d\'aide" = tôi cần giúp đỡ. Câu hỏi thăm hay!',ph:'Voo za-vay buh-zwen duh kel-kuh shohz'},
+    {fr:'Les poubelles se sortent quel jour ?',viet:'Ngày nào đem thùng rác ra?',focus:'Les poubelles',note:'<b>Les poubelles</b> = thùng rác. "Sortir les poubelles" = đem thùng rác ra. Câu thực tế!',ph:'Lay poo-bel suh sort kel zhoor'},
+    {fr:'Vos enfants peuvent jouer avec les miens',viet:'Con cái bạn có thể chơi với con tôi',focus:'les miens',note:'<b>Les miens</b> = của tôi (số nhiều). "Le mien" = của tôi (số ít). Đại từ sở hữu!',ph:'Voh zon-fon puv zhoo-ay a-vek lay myen'},
+    {fr:'On peut récupérer votre courrier quand vous partez ?',viet:'Chúng tôi có thể lấy thư cho bạn khi bạn đi vắng không?',focus:'récupérer le courrier',note:'<b>Le courrier</b> = thư từ, bưu kiện. Cử chỉ hàng xóm tốt ở Pháp!',ph:'On puh ray-koo-pay-ray vot koo-ryay kon voo par-tay'},
+    {fr:'Bonne soirée, à bientôt !',viet:'Chúc buổi tối tốt lành, hẹn gặp lại!',focus:'Bonne soirée',note:'<b>Bonne soirée</b> = chúc buổi tối vui. "Bonne nuit" = chúc ngủ ngon. Dùng đúng giờ!',ph:'Bon swa-ray, a byen-toh'},
+  ]},
+  {id:'l3',type:'life',icon:'🐕',title:'Bobby et Toro',sub:'Vétérinaire · Parc · Promenade',lines:[
+    {fr:'Je viens pour la vaccination de mon chien Bobby',viet:'Tôi đến để tiêm phòng cho chó Bobby của tôi',focus:'vaccination',note:'<b>La vaccination</b> = tiêm phòng. "Le carnet de santé" = sổ sức khỏe — cần cho Bobby và Toro!',ph:'Zhuh vyen poor la vak-see-na-syon duh mon shyen Bo-bee'},
+    {fr:'Toro a avalé quelque chose dans le jardin',viet:'Toro đã nuốt thứ gì đó trong vườn',focus:'a avalé',note:'<b>Avaler</b> = nuốt. "Il a avalé" = nó đã nuốt. Câu quan trọng khi gặp sự cố với chó!',ph:'To-roh a a-va-lay kel-kuh shohz don luh zhar-den'},
+    {fr:'Ils sont à jour de leurs vaccins',viet:'Chúng đã tiêm đầy đủ các mũi vắc-xin',focus:'à jour',note:'<b>À jour</b> = cập nhật, đầy đủ. "Mes papiers sont à jour" = giấy tờ của tôi đầy đủ.',ph:'Eel son a zhoor duh lur vak-sen'},
+    {fr:'Bobby et Toro sont très gentils, ne vous inquiétez pas',viet:'Bobby và Toro rất hiền, đừng lo lắng',focus:'ne vous inquiétez pas',note:'<b>Ne vous inquiétez pas</b> = đừng lo lắng. Phiên bản lịch sự của "ne t\'inquiète pas".',ph:'Bo-bee ay To-roh son treh zhon-tee, nuh voo zon-kyay-tay pa'},
+    {fr:'Il faut les promener deux fois par jour',viet:'Cần dắt chúng đi dạo hai lần mỗi ngày',focus:'promener',note:'<b>Promener le chien</b> = dắt chó đi dạo. "Se promener" = đi dạo (cho người).',ph:'Eel foh lay prom-nay duh fwa par zhoor'},
+    {fr:'C\'est autorisé pour les chiens dans ce parc ?',viet:'Công viên này chó có được phép vào không?',focus:'autorisé',note:'<b>Autorisé</b> = được phép. "Interdit" = bị cấm. "Chiens autorisés" = chó được phép vào!',ph:'Say oh-to-ree-zay poor lay shyen don suh park'},
+    {fr:'Mon chien est très joueur, il adore les enfants',viet:'Chó của tôi rất hay chơi, nó rất thích trẻ em',focus:'joueur',note:'<b>Joueur</b> = hay chơi, thích chơi. Nói về chó hoặc người đều được!',ph:'Mon shyen ay treh zhoo-ur, eel a-dor lay zon-fon'},
+    {fr:'Vous pouvez les garder ce week-end ?',viet:'Bạn có thể trông chúng cuối tuần này không?',focus:'les garder',note:'<b>Garder</b> = trông, giữ. "Garder les enfants" = trông trẻ. "Garder les chiens" = trông chó.',ph:'Voo poo-vay lay gar-day suh week-end'},
+  ]},
+  {id:'l4',type:'life',icon:'🏥',title:'Chez le médecin',sub:'Pour toi et les enfants',lines:[
+    {fr:'J\'ai rendez-vous pour ma fille Chloé à quatorze heures',viet:'Tôi có hẹn cho con gái Chloé lúc 14 giờ',focus:'J\'ai rendez-vous',note:'<b>Avoir rendez-vous</b> = có lịch hẹn. Giờ Pháp: 14h = 2 giờ chiều. Dùng giờ 24h!',ph:'Zhay ron-day voo poor ma fee Shlo-ay a ka-torz ur'},
+    {fr:'Millie a de la fièvre depuis hier soir',viet:'Millie bị sốt từ tối qua',focus:'depuis hier soir',note:'<b>Depuis</b> = từ (khi nào). "Depuis hier" = từ hôm qua. "Depuis ce matin" = từ sáng nay.',ph:'Mee-lee a duh la fye-vruh duh-pwee yair swar'},
+    {fr:'Leo a mal à la gorge et tousse beaucoup',viet:'Leo đau họng và ho nhiều',focus:'mal à la gorge',note:'<b>J\'ai mal à la gorge</b> = đau họng. "J\'ai mal au ventre" = đau bụng. "J\'ai mal aux dents" = đau răng.',ph:'Lay-oh a mal a la gorj ay toos bo-koo'},
+    {fr:'Elle est allergique à la pénicilline',viet:'Bé bị dị ứng với penicillin',focus:'allergique à',note:'Câu quan trọng nhất! <b>Elle</b> = bé gái. <b>Il</b> = bé trai. Nói rõ tên thuốc.',ph:'El ay a-lair-zheek a la pay-nee-see-leen'},
+    {fr:'Je n\'ai pas bien compris l\'ordonnance',viet:'Tôi không hiểu rõ đơn thuốc',focus:'l\'ordonnance',note:'<b>L\'ordonnance</b> = đơn thuốc. Đừng ngại nói câu này! Bác sĩ sẽ giải thích lại.',ph:'Zhuh nay pa byen com-pree lor-do-nons'},
+    {fr:'C\'est remboursé par la Sécurité Sociale ?',viet:'Cái này có được bảo hiểm y tế hoàn trả không?',focus:'remboursé',note:'<b>Remboursé</b> = được hoàn trả. "La Sécu" = bảo hiểm y tế Pháp. Rất quan trọng!',ph:'Say rom-boor-say par la say-kyoo-ree-tay so-syal'},
+    {fr:'J\'ai de la fièvre depuis hier',viet:'Tôi bị sốt từ hôm qua',focus:'de la fièvre',note:'<b>Avoir de la fièvre</b> = bị sốt. "Avoir froid" = lạnh. "Avoir chaud" = nóng.',ph:'Zhay duh la fye-vruh duh-pwee yair'},
+    {fr:'Merci docteur, à bientôt',viet:'Cảm ơn bác sĩ, hẹn gặp lại',focus:'à bientôt',note:'<b>À bientôt</b> = hẹn gặp lại sớm. "À la prochaine" = hẹn lần sau.',ph:'Mair-see dok-tur, a byen-toh'},
+  ]},
+  {id:'l5',type:'life',icon:'🎂',title:'Anniversaires et goûters',sub:'Sinh nhật và tiệc nhỏ',lines:[
+    {fr:'Chloé est invitée à l\'anniversaire de Zoé samedi',viet:'Chloé được mời dự sinh nhật của Zoé thứ Bảy',focus:'est invitée',note:'<b>Être invité(e)</b> = được mời. "Invité" (nam) / "invitée" (nữ). Nhớ thêm "e" cho nữ!',ph:'Shlo-ay ay ton-vee-tay a la-nee-vair-sair duh Zoh-ay sam-dee'},
+    {fr:'Qu\'est-ce qu\'on offre comme cadeau ?',viet:'Mình nên tặng quà gì nhỉ?',focus:'Qu\'est-ce qu\'on offre',note:'<b>Offrir</b> = tặng quà. "Qu\'est-ce qu\'on offre?" = mình tặng gì? Câu hỏi tự nhiên!',ph:'Kes kon of-ruh com ka-doh'},
+    {fr:'Le goûter est de quinze à dix-sept heures',viet:'Tiệc nhỏ từ 15 giờ đến 17 giờ',focus:'le goûter',note:'<b>Le goûter</b> = bữa ăn nhẹ chiều (4 giờ). Truyền thống Pháp — bánh, jus de fruit!',ph:'Luh goo-tay ay duh konz a dee-set ur'},
+    {fr:'Je peux déposer et revenir la chercher à dix-sept heures ?',viet:'Tôi có thể thả bé rồi quay lại đón lúc 17 giờ không?',focus:'déposer...chercher',note:'<b>Déposer</b> = thả, bỏ xuống. <b>Chercher</b> = đón, tìm. "Je viens chercher Chloé" = tôi đến đón.',ph:'Zhuh puh day-po-zay ay ruh-vuh-neer la shair-shay a dee-set ur'},
+    {fr:'Merci beaucoup pour l\'invitation, Chloé est ravie',viet:'Cảm ơn rất nhiều vì lời mời, Chloé rất vui',focus:'est ravie',note:'<b>Ravi(e)</b> = rất vui, hân hạnh. "Je suis ravie de vous rencontrer" = tôi rất vui được gặp.',ph:'Mair-see bo-koo poor lon-vee-ta-syon, Shlo-ay ay ra-vee'},
+    {fr:'On devrait organiser un goûter chez nous aussi',viet:'Chúng ta nên tổ chức một buổi tiệc nhỏ ở nhà tôi nữa',focus:'On devrait',note:'<b>On devrait</b> = chúng ta nên (lịch sự). Plus doux que "on doit". Câu mời thân thiện!',ph:'On duh-vray or-ga-nee-zay un goo-tay shay noo oh-see'},
+    {fr:'Les enfants ont l\'air de bien s\'entendre',viet:'Bọn trẻ có vẻ chơi với nhau rất tốt',focus:'s\'entendre',note:'<b>S\'entendre</b> = hòa thuận với nhau. "On s\'entend bien" = chúng tôi hợp nhau. Tốt cho Chloé!',ph:'Lay zon-fon on lair duh byen son-ton-druh'},
+    {fr:'À bientôt, c\'était un plaisir !',viet:'Hẹn gặp lại, thật vui được gặp!',focus:'un plaisir',note:'<b>Un plaisir</b> = niềm vui. "Avec plaisir" = với niềm vui = cách nói "sẵn lòng"!',ph:'A byen-toh, say-tay un play-zeer'},
+  ]},
+  {id:'l6',type:'life',icon:'🛒',title:'Au marché de Choisy',sub:'Le marché du Val-de-Marne',lines:[
+    {fr:'Bonjour, c\'est combien le kilo de tomates ?',viet:'Xin chào, cà chua bao nhiêu tiền một kilo?',focus:'le kilo de',note:'Au marché, on demande toujours le prix au kilo! <b>Le kilo de</b> + produit.',ph:'Bohn-zhoor, say com-byen luh kee-loh duh to-mat'},
+    {fr:'Je voudrais un kilo de carottes s\'il vous plaît',viet:'Tôi muốn một kilo cà rốt, làm ơn',focus:'Je voudrais',note:'<b>Je voudrais</b> = tôi muốn (lịch sự). Luôn dùng câu này khi mua hàng!',ph:'Zhuh voo-dray un kee-loh duh ka-rot seel voo play'},
+    {fr:'Est-ce que c\'est local, les fraises ?',viet:'Dâu tây này có phải hàng địa phương không?',focus:'local',note:'<b>Local</b> = địa phương. Người Pháp rất quan tâm đến nguồn gốc thực phẩm!',ph:'Es kuh say lo-kal, lay frez'},
+    {fr:'Vous avez du basilic frais ?',viet:'Bạn có húng quế tươi không?',focus:'frais',note:'<b>Frais/fraîche</b> = tươi. "Du pain frais" = bánh mì tươi. "C\'est frais" = hàng tươi.',ph:'Voo za-vay doo ba-zee-leek freh'},
+    {fr:'Ça fait combien en tout ?',viet:'Tổng cộng bao nhiêu tiền?',focus:'en tout',note:'<b>En tout</b> = tổng cộng. "C\'est tout" = vậy thôi. Hai câu kết thúc mua hàng quan trọng!',ph:'Sa feh com-byen on too'},
+    {fr:'Je n\'ai qu\'un billet de vingt euros',viet:'Tôi chỉ có tờ 20 euro thôi',focus:'Je n\'ai qu\'un',note:'<b>Ne...que</b> = chỉ có. "Je n\'ai que 10 euros" = tôi chỉ có 10 euro.',ph:'Zhuh nay kun bee-yay duh vont uh-roh'},
+    {fr:'Je prends aussi ces poivrons, c\'est bien mûr ?',viet:'Tôi cũng lấy những quả ớt này, chín chưa?',focus:'bien mûr',note:'<b>Mûr</b> = chín (trái cây, rau củ). "Bien mûr" = chín tới. Hỏi trước khi mua!',ph:'Zhuh pron oh-see say pwa-vron, say byen moor'},
+    {fr:'Merci, bonne continuation !',viet:'Cảm ơn, chúc tiếp tục vui vẻ!',focus:'bonne continuation',note:'<b>Bonne continuation</b> = chúc tiếp tục thuận lợi. Câu lịch sự Pháp hiếm ai dạy!',ph:'Mair-see, bon con-tee-noo-a-syon'},
+  ]},
+  {id:'l7',type:'life',icon:'👨‍👩‍👧‍👦',title:'Avec les amis français',sub:'Bạn bè của chồng',lines:[
+    {fr:'Enchantée, j\'ai beaucoup entendu parler de vous',viet:'Rất vui được gặp, tôi đã nghe nhiều về bạn',focus:'Enchantée',note:'<b>Enchanté(e)</b> = rất vui được gặp. Femme = "enchantée". Câu giới thiệu sang trọng!',ph:'On-shon-tay, zhay bo-koo on-ton-doo par-lay duh voo'},
+    {fr:'La cuisine française me plaît beaucoup',viet:'Tôi rất thích ẩm thực Pháp',focus:'me plaît',note:'<b>Plaire</b> = làm hài lòng, thích. "Ça me plaît" = tôi thích cái này. Cấu trúc đặc biệt!',ph:'La kwee-zeen fron-sez muh play bo-koo'},
+    {fr:'Je comprends mieux quand vous parlez lentement',viet:'Tôi hiểu hơn khi bạn nói chậm',focus:'lentement',note:'<b>Lentement</b> = chậm rãi. N\'hésitez pas à dire ça! Câu cứu nguy số một!',ph:'Zhuh com-pron myuh kon voo par-lay lon-tuh-mon'},
+    {fr:'C\'est quoi comme plat, c\'est délicieux !',viet:'Đây là món gì vậy, ngon quá!',focus:'C\'est quoi comme',note:'"<b>C\'est quoi comme...</b>" = đây là loại...gì? Câu hỏi tự nhiên và thân mật khi ăn.',ph:'Say kwa com pla, say day-lee-syuh'},
+    {fr:'En France ça fait neuf ans que j\'habite ici',viet:'Tôi đã sống ở Pháp được chín năm rồi',focus:'ça fait...que',note:'<b>Ça fait + durée + que</b> = đã...được bao lâu rồi. Structure très utilisée!',ph:'On frons sa feh nuh von kuh zha-beet ee-see'},
+    {fr:'Au Vietnam on mangeait beaucoup de pho',viet:'Ở Việt Nam chúng tôi ăn nhiều phở',focus:'on mangeait',note:'<b>Imparfait</b> = thì quá khứ không hoàn thành — thói quen trong quá khứ.',ph:'Oh Vyet-nam on mon-zhay bo-koo duh foh'},
+    {fr:'Vous devriez goûter la cuisine vietnamienne !',viet:'Bạn nên thử ẩm thực Việt Nam!',focus:'Vous devriez',note:'<b>Vous devriez</b> = bạn nên (lịch sự). Parfait pour inviter les amis!',ph:'Voo duh-vryay goo-tay la kwee-zeen vyet-na-myen'},
+    {fr:'Vous habitez Choisy depuis longtemps ?',viet:'Bạn sống ở Choisy lâu chưa?',focus:'depuis longtemps',note:'<b>Depuis longtemps</b> = từ lâu. "Pas depuis longtemps" = chưa lâu. Câu hỏi xã giao.',ph:'Voo za-bee-tay Shwa-zee duh-pwee lon-ton'},
+  ]},
+  {id:'l8',type:'life',icon:'🏃‍♀️',title:'Réunion parents-professeurs',sub:'Họp phụ huynh — Leo, Chloé',lines:[
+    {fr:'Bonsoir, je suis la maman de Leo, en CM1',viet:'Chào buổi tối, tôi là mẹ của Leo, học CM1',focus:'Bonsoir',note:'<b>Bonsoir</b> = chào buổi tối (từ khoảng 18h). "Bonjour" = ban ngày. Phân biệt quan trọng!',ph:'Bon-swar, zhuh swee la ma-mon duh Lay-oh, on say-em-un'},
+    {fr:'Comment se passe-t-il en classe ?',viet:'Bé học trong lớp như thế nào?',focus:'Comment se passe',note:'"<b>Comment ça se passe</b>" = mọi chuyện diễn ra thế nào? Câu hỏi mở, tự nhiên.',ph:'Co-mon suh pas teel on klas'},
+    {fr:'Il a des difficultés en mathématiques',viet:'Bé gặp khó khăn trong môn toán',focus:'des difficultés en',note:'<b>Avoir des difficultés en</b> + matière = gặp khó trong môn...',ph:'Eel a day dee-fee-kool-tay on mat-ay-ma-teek'},
+    {fr:'Chloé a du mal à se concentrer',viet:'Chloé khó tập trung',focus:'du mal à',note:'<b>Avoir du mal à</b> + infinitif = khó khăn khi làm gì. "J\'ai du mal à comprendre" = tôi khó hiểu.',ph:'Shlo-ay a doo mal a suh con-son-tray'},
+    {fr:'Qu\'est-ce que je peux faire pour l\'aider à la maison ?',viet:'Tôi có thể làm gì để giúp bé ở nhà?',focus:'pour l\'aider',note:'Câu hỏi này làm hài lòng mọi giáo viên — <b>dùng ngay</b>!',ph:'Kes kuh zhuh puh fair poor lay-day a la may-zon'},
+    {fr:'Il y a un soutien scolaire disponible ?',viet:'Có dạy thêm hỗ trợ không?',focus:'soutien scolaire',note:'<b>Le soutien scolaire</b> = học thêm hỗ trợ. Có thể miễn phí qua trường — hỏi luôn!',ph:'Eel ya un soo-tyen sko-lair dee-spo-neebl'},
+    {fr:'Est-ce qu\'il travaille bien en classe ?',viet:'Bé có học hành chăm chỉ trong lớp không?',focus:'travaille bien',note:'<b>Travailler</b> en école = học, làm việc. "Il travaille bien" = bé chăm học.',ph:'Es keel tra-vay byen on klas'},
+    {fr:'Merci pour vos retours, c\'est très utile',viet:'Cảm ơn vì những phản hồi của bạn, rất hữu ích',focus:'vos retours',note:'<b>Les retours</b> = phản hồi, nhận xét. Câu kết thúc lịch sự và chuyên nghiệp!',ph:'Mair-see poor voh ruh-toor, say treh oo-teel'},
+  ]},
+  {id:'l9',type:'life',icon:'💊',title:'À la pharmacie',sub:'Nhà thuốc — médicaments',lines:[
+    {fr:'Bonjour, j\'ai une ordonnance pour ma fille',viet:'Xin chào, tôi có đơn thuốc cho con gái tôi',focus:'une ordonnance',note:'<b>Une ordonnance</b> = đơn thuốc. Sans ordonnance = không cần đơn. Avec = cần đơn.',ph:'Bohn-zhoor, zhay oon or-do-nons poor ma fee'},
+    {fr:'Vous avez quelque chose contre la toux ?',viet:'Bạn có thứ gì trị ho không?',focus:'contre la toux',note:'<b>Contre</b> = chống lại, trị. "Contre la fièvre" = hạ sốt. "Contre la douleur" = giảm đau.',ph:'Voo za-vay kel-kuh shohz con-truh la too'},
+    {fr:'C\'est pour un enfant de sept ans',viet:'Dành cho trẻ em bảy tuổi',focus:'C\'est pour',note:'<b>C\'est pour</b> = dành cho. Luôn nói tuổi khi mua thuốc cho trẻ em — liều lượng khác!',ph:'Say poor un on-fon duh set on'},
+    {fr:'Est-ce que ça existe en sirop ?',viet:'Cái này có dạng siro không?',focus:'en sirop',note:'<b>En sirop</b> = dạng siro. "En comprimé" = dạng viên nén. Từ vựng nhà thuốc quan trọng!',ph:'Es kuh sa eg-zeest on see-roh'},
+    {fr:'Il faut le donner combien de fois par jour ?',viet:'Cần cho uống bao nhiêu lần mỗi ngày?',focus:'combien de fois',note:'<b>Combien de fois</b> = bao nhiêu lần. "Trois fois par jour" = ba lần mỗi ngày.',ph:'Eel foh luh do-nay com-byen duh fwa par zhoor'},
+    {fr:'C\'est remboursé par la mutuelle ?',viet:'Cái này có được bảo hiểm bổ sung chi trả không?',focus:'la mutuelle',note:'<b>La mutuelle</b> = bảo hiểm sức khỏe bổ sung (thêm vào Sécu). Quan trọng ở Pháp!',ph:'Say rom-boor-say par la moo-twell'},
+    {fr:'Vous avez de la crème solaire indice cinquante ?',viet:'Bạn có kem chống nắng SPF 50 không?',focus:'indice cinquante',note:'<b>L\'indice</b> = chỉ số SPF. Mùa hè ở Pháp — rất cần cho Millie!',ph:'Voo za-vay duh la krem so-lair on-dees sank-ont'},
+    {fr:'Merci, bonne journée à vous aussi',viet:'Cảm ơn, chúc bạn cũng có một ngày tốt lành',focus:'à vous aussi',note:'<b>À vous aussi</b> = bạn cũng vậy. Réponse polie quand quelqu\'un vous souhaite une bonne journée!',ph:'Mair-see, bon zhoor-nay a voo oh-see'},
+  ]},
+  {id:'l10',type:'life',icon:'🏛️',title:'À la mairie',sub:'Démarches administratives',lines:[
+    {fr:'Bonjour, je voudrais renouveler mon titre de séjour',viet:'Xin chào, tôi muốn gia hạn giấy phép cư trú',focus:'renouveler',note:'<b>Renouveler</b> = gia hạn. "Le titre de séjour" = giấy phép cư trú. Démarche essentielle!',ph:'Bohn-zhoor, zhuh voo-dray ruh-noo-vuh-lay mon tee-truh duh say-zhoor'},
+    {fr:'Quels documents dois-je fournir ?',viet:'Tôi cần nộp những tài liệu gì?',focus:'dois-je fournir',note:'<b>Dois-je</b> = tôi có phải không? Inversion lịch sự. "Fournir" = cung cấp, nộp.',ph:'Kel do-koo-mon dwa zhuh foor-neer'},
+    {fr:'Je n\'ai pas compris, pouvez-vous répéter ?',viet:'Tôi không hiểu, bạn có thể nhắc lại không?',focus:'pouvez-vous répéter',note:'Câu cứu nguy số một! <b>Đừng bao giờ ngại nói câu này.</b>',ph:'Zhuh nay pa com-pree, poo-vay voo ray-pay-tay'},
+    {fr:'Faut-il une traduction certifiée ?',viet:'Có cần bản dịch công chứng không?',focus:'traduction certifiée',note:'<b>Traduction certifiée</b> = bản dịch có công chứng. Souvent obligatoire pour documents vietnamiens!',ph:'Foh-teel oon tra-dook-syon sair-tee-fyay'},
+    {fr:'Mon dossier est complet ?',viet:'Hồ sơ của tôi đã đầy đủ chưa?',focus:'dossier',note:'<b>Le dossier</b> = hồ sơ. "Dossier complet" = hồ sơ đầy đủ. "Dossier incomplet" = còn thiếu.',ph:'Mon dos-yay ay com-play'},
+    {fr:'Quel est le délai de traitement ?',viet:'Thời gian xử lý là bao lâu?',focus:'délai de traitement',note:'<b>Le délai</b> = thời hạn, thời gian chờ. "Le traitement" = xử lý. Câu hỏi quan trọng!',ph:'Kel ay luh day-lay duh tret-mon'},
+    {fr:'Je peux avoir un récépissé s\'il vous plaît ?',viet:'Tôi có thể xin biên lai không?',focus:'un récépissé',note:'<b>Un récépissé</b> = biên lai, giấy biên nhận. Toujours demander ça pour garder une trace!',ph:'Zhuh puh a-vwar un ray-say-pee-say seel voo play'},
+    {fr:'J\'ai un rendez-vous avec Madame Lebrun',viet:'Tôi có hẹn với bà Lebrun',focus:'rendez-vous avec',note:'Toujours prendre rendez-vous avant d\'aller à la mairie — gain de temps assuré!',ph:'Zhay un ron-day voo a-vek ma-dam Luh-broon'},
+  ]},
+];
+
+/* ═══════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════ */
+var UP = JSON.parse(localStorage.getItem('ly-french-v1')||'{}');
+var curLesson = null, curLine = 0, curPhase = 'read', curFrom = 'accueil';
+function save(){ localStorage.setItem('ly-french-v1', JSON.stringify(UP)); }
+
+/* ═══════════════════════════════════════════════════════
+   SPEECH
+═══════════════════════════════════════════════════════ */
+function speakFr(text, rate) {
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'fr-FR'; u.rate = rate || 0.8;
+  var voices = window.speechSynthesis.getVoices();
+  var v = voices.find(function(v){ return v.lang==='fr-FR'; }) || voices.find(function(v){ return v.lang.startsWith('fr'); });
+  if(v) u.voice = v;
+  window.speechSynthesis.speak(u);
+}
+function initVoices(){ if(window.speechSynthesis){ window.speechSynthesis.getVoices(); window.speechSynthesis.onvoiceschanged = function(){}; } }
+
+/* ═══════════════════════════════════════════════════════
+   SCORE
+═══════════════════════════════════════════════════════ */
+function scoreT(t, expected) {
+  function norm(s){ return s.toLowerCase().replace(/[^a-z\u00e0\u00e2\u00e4\u00e9\u00e8\u00ea\u00eb\u00ee\u00ef\u00f4\u00f9\u00fb\u00fc\u00e7\s]/g,'').trim(); }
+  var tW = norm(t).split(/\s+/), eW = norm(expected).split(/\s+/), m = 0;
+  eW.forEach(function(w){ if(tW.some(function(tw){ return tw===w||tw.indexOf(w.slice(0,4))===0; })) m++; });
+  return Math.round((m/eW.length)*100);
+}
+
+/* ═══════════════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════════════ */
+function showTab(id, btn, isSidebar) {
+  document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
+  document.getElementById('tab-'+id).classList.add('active');
+  if(isSidebar){
+    document.querySelectorAll('.snav-btn').forEach(function(b){ b.classList.remove('active'); });
+    if(btn) btn.classList.add('active');
+  } else {
+    document.querySelectorAll('.nbtn').forEach(function(b){ b.classList.remove('active'); });
+    if(btn) btn.classList.add('active');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   LESSON CARDS RENDER
+═══════════════════════════════════════════════════════ */
+function lessonCard(lesson, from) {
+  var done = (UP.done||[]).indexOf(lesson.id) > -1;
+  return '<div class="lcard '+(lesson.type==='song'?'song':'')+(done?' done':'')+'" onclick="openLesson(\''+lesson.id+'\',\''+from+'\')">'
+    +'<div class="licon '+lesson.type+'">'+lesson.icon+'</div>'
+    +'<div class="linfo"><div class="ltitle">'+lesson.title+'</div><div class="ldesc">'+lesson.sub+' · '+lesson.lines.length+' câu</div></div>'
+    +'<span class="badge '+(done?'bdone':'bnew')+'">'+(done?'✓ Xong':'Học')+'</span>'
+    +'</div>';
+}
+
+function renderLists() {
+  var songs = LESSONS.filter(function(l){ return l.type==='song'; });
+  var life  = LESSONS.filter(function(l){ return l.type==='life'; });
+  document.getElementById('song-list').innerHTML = songs.map(function(l){ return lessonCard(l,'chansons'); }).join('');
+  document.getElementById('life-list').innerHTML = life.map(function(l){ return lessonCard(l,'vie'); }).join('');
+  document.getElementById('home-songs').innerHTML = songs.slice(0,2).map(function(l){ return lessonCard(l,'accueil'); }).join('');
+  document.getElementById('home-life').innerHTML = life.slice(0,3).map(function(l){ return lessonCard(l,'accueil'); }).join('');
+}
+
+function updateProgress() {
+  var done = (UP.done||[]).length, total = LESSONS.length, pct = Math.round((done/total)*100);
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('home-sub').textContent = done===0?'Bắt đầu học nào!':done+'/'+total+' bài hoàn thành 🌸';
+  document.getElementById('home-bar').style.width = pct+'%';
+  ['hxpbar','sidebar-xpbar'].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.width=pct+'%'; });
+  var hxp = document.getElementById('hxplbl'); if(hxp) hxp.textContent = done+' bài';
+  var sxp = document.getElementById('sidebar-uxp'); if(sxp) sxp.textContent = done+' bài complétées';
+}
+
+/* ═══════════════════════════════════════════════════════
+   LESSON FLOW
+═══════════════════════════════════════════════════════ */
+function openLesson(id, from) {
+  curLesson = LESSONS.find(function(l){ return l.id===id; });
+  curLine = 0; curPhase = 'read'; curFrom = from || 'accueil';
+  renderLessonDetail();
+  document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
+  document.getElementById('tab-lesson').classList.add('active');
+}
+
+function closeLesson() {
+  document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
+  document.getElementById('tab-'+curFrom).classList.add('active');
+  // update nav highlight
+  var tabs = ['accueil','chansons','vie'];
+  document.querySelectorAll('.nbtn').forEach(function(b,i){ b.classList.toggle('active', tabs[i]===curFrom); });
+  document.querySelectorAll('.snav-btn').forEach(function(b,i){ b.classList.toggle('active', tabs[i]===curFrom); });
+  renderLists(); updateProgress();
+}
+
+function renderLessonDetail() {
+  var l = curLesson, line = l.lines[curLine], total = l.lines.length;
+  // dots
+  var dots = '';
+  for(var i=0;i<total;i++) dots+='<div class="pdot'+(i===curLine?' cur':curLine>i?' done':'')+'" style="width:'+(i===curLine?'20':'7')+'px"></div>';
+  // phrase with focus highlighted
+  var frHtml = line.fr.replace(line.focus,'<span class="phrase-focus">'+line.focus+'</span>');
+  var html = '<div class="eyebrow">'+l.icon+' '+l.title+'</div>'
+    +'<div style="font-family:\'Playfair Display\',serif;font-size:13px;color:var(--text-muted);font-style:italic;margin-bottom:1.2rem">'+l.sub+'</div>'
+    +'<div class="progress-dots" id="pdots">'+dots+'</div>'
+    +'<div class="phrase-card" id="phrase-card">'
+    +'<div class="phrase-fr" id="phrase-fr">'+frHtml+'</div>'
+    +'<div class="phrase-phonetic">🔤 '+line.ph+'</div>'
+    +'<div class="phrase-viet">🇻🇳 '+line.viet+'</div>'
+    +'</div>'
+    +'<div class="note-card"><p><b>📚 Ghi chú · </b>'+line.note+'</p></div>'
+    +'<div id="actions"></div>';
+  document.getElementById('lesson-detail').innerHTML = html;
+  renderActions();
+}
+
+function renderActions() {
+  var el = document.getElementById('actions');
+  if(curPhase==='read') {
+    el.innerHTML = '<button class="btn btn-green" onclick="doListen(0.8)">🔊 Nghe phát âm</button>'
+      +'<button class="btn btn-sage" onclick="doListen(0.55)">🐢 Nghe chậm hơn</button>';
+  } else if(curPhase==='speak') {
+    el.innerHTML = '<button class="btn btn-green" id="mic-btn" onclick="doRecord()">🎤 Tôi sẽ lặp lại</button>'
+      +'<button class="btn btn-sage" onclick="speakFr(curLesson.lines[curLine].fr,0.8)">🔊 Nghe lại</button>'
+      +'<button class="btn btn-ghost" onclick="skipSpeak()">Bỏ qua bước này</button>'
+      +'<div class="listen-indicator" id="listen-ind" style="display:none">🎙 Đang lắng nghe…</div>';
+  }
+}
+
+function doListen(rate) {
+  speakFr(curLesson.lines[curLine].fr, rate);
+  curPhase = 'speak';
+  renderActions();
+}
+
+function skipSpeak() {
+  curPhase = 'read';
+  nextLine();
+}
+
+var recObj = null;
+function doRecord() {
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ alert('Vui lòng dùng trình duyệt Chrome để dùng microphone.'); return; }
+  var r = new SR(); r.lang='fr-FR'; r.interimResults=false;
+  r.onresult = function(e) {
+    var t = e.results[0][0].transcript;
+    var sc = scoreT(t, curLesson.lines[curLine].fr);
+    showResult(sc, t);
+    document.getElementById('listen-ind').style.display='none';
+    document.getElementById('mic-btn') && (document.getElementById('mic-btn').textContent='🎤 Tôi sẽ lặp lại');
+  };
+  r.onerror = function(){ document.getElementById('listen-ind') && (document.getElementById('listen-ind').style.display='none'); };
+  r.onend = function(){ document.getElementById('listen-ind') && (document.getElementById('listen-ind').style.display='none'); };
+  recObj = r; r.start();
+  document.getElementById('listen-ind').style.display='block';
+  document.getElementById('mic-btn').textContent='⏹ Xong';
+  document.getElementById('mic-btn').onclick = function(){ r.stop(); };
+}
+
+function showResult(score, transcript) {
+  var line = curLesson.lines[curLine];
+  var ok = score>=70;
+  // colorize words
+  var normT = transcript.toLowerCase().replace(/[^a-z\u00e0\u00e2\u00e4\u00e9\u00e8\u00ea\u00eb\u00ee\u00ef\u00f4\u00f9\u00fb\u00fc\u00e7\s]/g,'');
+  var tWords = normT.split(/\s+/);
+  var frColored = line.fr.split(' ').map(function(w){
+    var clean=w.toLowerCase().replace(/[^a-z\u00e0\u00e2\u00e4\u00e9\u00e8\u00ea\u00eb\u00ee\u00ef\u00f4\u00f9\u00fb\u00fc\u00e7']/g,'');
+    var hit=tWords.some(function(tw){ return tw===clean||tw.indexOf(clean.slice(0,4))===0; });
+    return '<span class="phrase-word '+(hit?'hit':'miss')+'">'+w+'</span>';
+  }).join(' ');
+  document.getElementById('phrase-fr').innerHTML = frColored;
+  var msg = score>=90?'🌟 Tuyệt vời!':score>=70?'🌸 Rất tốt!':score>=40?'🌱 Cố lên!':'💪 Thử lại nhé!';
+  var actions = document.getElementById('actions');
+  actions.innerHTML = '<div class="result-card '+(ok?'ok':'ko')+'">'
+    +'<div class="result-pct '+(ok?'ok':'ko')+'">'+score+'%</div>'
+    +'<div class="result-msg">'+msg+'</div>'
+    +(transcript?'<div class="result-transcript">« '+transcript+' »</div>':'')
+    +'</div>'
+    +'<div class="result-btns">'
+    +'<button class="btn btn-sage" style="flex:1;margin:0" onclick="retryLine()">↩ Thử lại</button>'
+    +'<button class="btn btn-green" style="flex:2;margin:0 0 0 8px" onclick="nextLine()">'+(curLine+1>=curLesson.lines.length?'Hoàn thành ✨':'Câu tiếp →')+'</button>'
+    +'</div>';
+}
+
+function retryLine() {
+  curPhase='read';
+  renderLessonDetail();
+}
+
+function nextLine() {
+  curLine++;
+  if(curLine >= curLesson.lines.length) {
+    finishLesson();
+  } else {
+    curPhase='read';
+    renderLessonDetail();
+  }
+}
+
+function finishLesson() {
+  if(!UP.done) UP.done=[];
+  if(UP.done.indexOf(curLesson.id)<0) UP.done.push(curLesson.id);
+  save();
+  document.getElementById('lesson-detail').innerHTML =
+    '<div style="text-align:center;padding:3rem 0">'
+    +'<div style="font-size:64px;margin-bottom:14px">🌸</div>'
+    +'<div style="font-family:\'Playfair Display\',serif;font-size:26px;font-weight:400;color:var(--text);margin-bottom:8px">Hoàn thành rồi!</div>'
+    +'<div style="font-size:15px;color:var(--text-muted);line-height:1.8;margin-bottom:2rem;font-weight:400">Bạn đã học '+curLesson.lines.length+' câu tiếng Pháp.<br>Leo, Chloé và Millie tự hào về bạn! 🌸</div>'
+    +'<button class="btn btn-green" onclick="closeLesson()">Quay lại danh sách</button>'
+    +'</div>';
+}
+
+/* ═══════════════════════════════════════════════════════
+   PROGRESS OVERLAY
+═══════════════════════════════════════════════════════ */
+function showProgress() {
+  var done=(UP.done||[]).length, total=LESSONS.length;
+  document.getElementById('prog-content').innerHTML =
+    '<div class="stitle">Tiến độ của Ly 🌸</div>'
+    +'<div class="stat-grid">'
+    +'<div class="stat-box"><span class="stat-num" style="color:var(--green)">'+done+'</span><span class="stat-lbl">Bài hoàn thành</span></div>'
+    +'<div class="stat-box"><span class="stat-num" style="color:var(--gold)">'+total+'</span><span class="stat-lbl">Tổng số bài</span></div>'
+    +'</div>'
+    +'<div class="prog-bar-wrap" style="margin-bottom:1.5rem"><div class="prog-bar" style="width:'+Math.round(done/total*100)+'%"></div></div>'
+    +'<div style="font-size:13px;color:var(--text-muted);line-height:1.8;text-align:center;font-style:italic">Choisy-le-Roi · Leo, Chloé &amp; Millie<br>Bobby &amp; Toro · Fait avec ❤️</div>';
+  document.getElementById('prog-overlay').classList.add('open');
+}
+function closeProgress(e){ if(e&&e.target!==document.getElementById('prog-overlay'))return; document.getElementById('prog-overlay').classList.remove('open'); }
+
+/* ═══════════════════════════════════════════════════════
+   BOOT
+═══════════════════════════════════════════════════════ */
+function boot() {
+  initVoices();
+  renderLists();
+  updateProgress();
+}
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',boot);
+} else {
+  boot();
+}
+</script>
+</body>
+</html>
