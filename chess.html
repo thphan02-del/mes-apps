@@ -1197,7 +1197,7 @@ function renderPracList(){
 
 
 function handleMove(fr,fc,tr,tc){
-  var l=curPractice,done=BS.moves.length,mi=l.practiceColor==='white'?done-1:done-2;if(mi<0)return;
+  var l=curPractice,done=BS.moves.length,mi=done-1;if(mi<0)return;
   var exp=l.moves[mi],ec=coords(exp);
   var cExp=(ec[1]===4&&ec[3]===6);
   var ok=(fr===ec[0]&&fc===ec[1]&&tr===ec[2]&&tc===ec[3])||(cExp&&fr===ec[0]&&fc===ec[1]&&tr===ec[2]&&tc===7);
