@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<h2 class="sr-only">Application de suivi des travaux avec filtres par pièce et priorité</h2>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary)}
+.app{padding:1rem 0}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
+.title{font-size:18px;font-weight:500}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem}
+.stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px;text-align:center;cursor:pointer;border:0.5px solid transparent;transition:border-color .15s}
+.stat:hover{border-color:var(--color-border-secondary)}
+.stat.active{border-color:var(--color-border-info)}
+.stat-val{font-size:20px;font-weight:500}
+.stat-lbl{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.filters{display:flex;gap:8px;margin-bottom:1rem;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:4px}
+.filter-tab{flex:1;font-size:13px;padding:6px 12px;border-radius:var(--border-radius-md);border:none;background:transparent;color:var(--color-text-secondary);cursor:pointer;font-family:var(--font-sans)}
+.filter-tab.active{background:var(--color-background-primary);color:var(--color-text-primary);font-weight:500;border:0.5px solid var(--color-border-tertiary)}
+.filter-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.chip{font-size:12px;padding:4px 12px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer}
+.chip:hover{border-color:var(--color-border-primary);color:var(--color-text-primary)}
+.chip.active{background:var(--color-background-info);border-color:var(--color-border-info);color:var(--color-text-info);font-weight:500}
+.chip.prio-active{border-color:var(--chip-c);color:var(--chip-c);background:transparent}
+.tasks{display:flex;flex-direction:column;gap:8px}
+.task{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:12px 14px;display:flex;align-items:flex-start;gap:12px;border-left:3px solid var(--accent)}
+.task.done-task{opacity:.55}
+.task-body{flex:1;min-width:0}
+.task-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.task-titre{font-size:14px;font-weight:500}
+.task-titre.done{text-decoration:line-through;color:var(--color-text-secondary)}
+.badge{font-size:11px;padding:2px 7px;border-radius:var(--border-radius-md);font-weight:500}
+.task-meta{font-size:12px;color:var(--color-text-secondary);display:flex;gap:10px;flex-wrap:wrap}
+.task-actions{display:flex;gap:6px;flex-shrink:0}
+.btn-sm{font-size:12px;padding:4px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer}
+.btn-sm:hover{background:var(--color-background-tertiary)}
+.btn-primary{background:var(--color-background-info);border-color:var(--color-border-info);color:var(--color-text-info)}
+.btn-primary:hover{opacity:.85}
+.btn-success{border-color:var(--color-border-success);color:var(--color-text-success)}
+.btn-success:hover{background:var(--color-background-success)}
+.btn-undo{font-style:italic}
+.btn-danger{border-color:var(--color-border-danger);color:var(--color-text-danger);background:var(--color-background-danger)}
+.btn-danger:hover{opacity:.85}
+.empty{text-align:center;padding:2rem;color:var(--color-text-secondary);font-size:14px}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal{background:var(--color-background-primary);border:0.5px solid var(--color-border-primary);border-radius:var(--border-radius-lg);padding:1.25rem;width:100%;max-width:440px}
+.modal-title{font-size:16px;font-weight:500;margin-bottom:1rem}
+.field{margin-bottom:.75rem}
+.field label{font-size:12px;color:var(--color-text-secondary);display:block;margin-bottom:4px}
+.field input,.field select,.field textarea{width:100%;font-size:13px;padding:7px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary)}
+.field textarea{resize:vertical;min-height:64px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.modal-footer{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}
+.modal-footer-right{display:flex;gap:8px}
+.voice-btn{display:flex;align-items:center;gap:6px;font-size:12px;padding:5px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer}
+.voice-btn.listening{border-color:var(--color-border-danger);color:var(--color-text-danger);animation:pulse 1s infinite}
+.mic-dot{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block;flex-shrink:0}
+.voice-hint{font-size:11px;color:var(--color-text-secondary);font-style:italic}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+
+<div id="app"></div>
+
+<script>
+const PIECES=["Cuisine","Salon","Chambre","Salle de bain","WC","Couloir","Garage","Extérieur","Autre"];
+const PRIOS=[{v:"urgente",l:"Urgente",c:"#e74c3c"},{v:"importante",l:"Importante",c:"#e67e22"},{v:"normale",l:"Normale",c:"#3498db"},{v:"basse",l:"Basse",c:"#7f8c8d"}];
+const STATUTS=[{v:"todo",l:"À faire"},{v:"inprogress",l:"En cours"},{v:"done",l:"Terminé"}];
+const PORD={urgente:0,importante:1,normale:2,basse:3};
+
+let tasks=JSON.parse(localStorage.getItem("travaux_tasks")||"null")||[
+  {id:1,titre:"Réparer le robinet",piece:"Cuisine",priorite:"urgente",statut:"todo",notes:"Fuite sous l'évier"},
+  {id:2,titre:"Peindre les murs",piece:"Salon",priorite:"normale",statut:"todo",notes:""},
+  {id:3,titre:"Changer le joint",piece:"Salle de bain",priorite:"importante",statut:"inprogress",notes:""},
+];
+
+let filterMode="piece"; // "piece" | "prio"
+let filterVal=null; // null = tout afficher
+let showDone=false;
+let modal=null,recognition=null,isListening=false;
+
+function save(){localStorage.setItem("travaux_tasks",JSON.stringify(tasks));}
+function getPrioColor(v){return PRIOS.find(p=>p.v===v)?.c||"#888";}
+function getPrioLabel(v){return PRIOS.find(p=>p.v===v)?.l||v;}
+function getStatutLabel(v){return STATUTS.find(s=>s.v===v)?.l||v;}
+function getStatutColor(v){return{todo:"var(--color-text-secondary)",inprogress:"var(--color-text-warning)",done:"var(--color-text-success)"}[v]||"var(--color-text-secondary)";}
+
+function filtered(){
+  return tasks
+    .filter(t=>showDone ? true : t.statut!=="done")
+    .filter(t=>!filterVal||(filterMode==="piece"?t.piece===filterVal:t.priorite===filterVal))
+    .sort((a,b)=>a.piece.localeCompare(b.piece)||PORD[a.priorite]-PORD[b.priorite]);
+}
+
+function markDone(id){tasks=tasks.map(t=>t.id===id?{...t,statut:"done"}:t);save();render();}
+function markTodo(id){tasks=tasks.map(t=>t.id===id?{...t,statut:"todo"}:t);save();render();}
+function deleteTask(id){if(confirm("Supprimer cette tâche ?")){tasks=tasks.filter(t=>t.id!==id);save();modal=null;render();}}
+
+function initVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR)return false;
+  recognition=new SR();recognition.lang="fr-FR";recognition.continuous=false;recognition.interimResults=false;
+  return true;
+}
+function startVoice(fieldId){
+  if(!recognition&&!initVoice()){alert("Dictée vocale non supportée.");return;}
+  if(isListening){recognition.stop();return;}
+  recognition.onstart=()=>{isListening=true;render();}
+  recognition.onend=()=>{isListening=false;render();}
+  recognition.onresult=(e)=>{const txt=e.results[0][0].transcript;const el=document.getElementById(fieldId);if(el)el.value=(el.value?el.value+" ":"")+txt;}
+  recognition.onerror=()=>{isListening=false;render();}
+  recognition.start();
+}
+
+function openAdd(){modal={mode:"add",form:{titre:"",piece:PIECES[0],priorite:"normale",statut:"todo",notes:""}};render();setTimeout(()=>document.getElementById("f-titre")?.focus(),50);}
+function openEdit(id){modal={mode:"edit",id,form:{...tasks.find(t=>t.id===id)}};render();}
+function closeModal(){modal=null;if(isListening)recognition?.stop();render();}
+function saveModal(){
+  const titre=document.getElementById("f-titre")?.value?.trim();
+  if(!titre)return;
+  const piece=document.getElementById("f-piece").value;
+  const priorite=document.getElementById("f-priorite").value;
+  const statut=document.getElementById("f-statut").value;
+  const notes=document.getElementById("f-notes").value||"";
+  if(modal.mode==="add")tasks.push({id:Date.now(),titre,piece,priorite,statut,notes});
+  else tasks=tasks.map(t=>t.id===modal.id?{...t,titre,piece,priorite,statut,notes}:t);
+  save();modal=null;render();
+}
+
+function renderModal(){
+  if(!modal)return"";
+  const f=modal.form;
+  const vs=!!(window.SpeechRecognition||window.webkitSpeechRecognition);
+  const isEdit=modal.mode==="edit";
+  return`<div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title">${isEdit?"Modifier la tâche":"Nouvelle tâche"}</div>
+    <div class="field">
+      <label>Titre</label>
+      <input id="f-titre" value="${f.titre.replace(/"/g,'&quot;')}" placeholder="Ex : Réparer la fuite..." onkeydown="if(event.key==='Enter')saveModal()">
+      ${vs?`<div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+        <button class="voice-btn${isListening?" listening":""}" onclick="startVoice('f-titre')" type="button"><span class="mic-dot"></span>${isListening?"Écoute...":"Dicter"}</button>
+        ${isListening?'<span class="voice-hint">Parlez...</span>':''}
+      </div>`:''}
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Pièce</label><select id="f-piece">${PIECES.map(p=>`<option${p===f.piece?" selected":""}>${p}</option>`).join("")}</select></div>
+      <div class="field"><label>Priorité</label><select id="f-priorite">${PRIOS.map(p=>`<option value="${p.v}"${p.v===f.priorite?" selected":""}>${p.l}</option>`).join("")}</select></div>
+    </div>
+    <div class="field"><label>Statut</label><select id="f-statut">${STATUTS.map(s=>`<option value="${s.v}"${s.v===f.statut?" selected":""}>${s.l}</option>`).join("")}</select></div>
+    <div class="field">
+      <label>Notes</label>
+      <textarea id="f-notes" placeholder="Détails, matériaux...">${f.notes}</textarea>
+      ${vs?`<div style="margin-top:6px"><button class="voice-btn${isListening?" listening":""}" onclick="startVoice('f-notes')" type="button"><span class="mic-dot"></span>Dicter les notes</button></div>`:""}
+    </div>
+    <div class="modal-footer">
+      <div>${isEdit?`<button class="btn-sm btn-danger" onclick="deleteTask(${modal.id})">Supprimer</button>`:""}</div>
+      <div class="modal-footer-right">
+        <button class="btn-sm" onclick="closeModal()">Annuler</button>
+        <button class="btn-sm btn-primary" onclick="saveModal()">Enregistrer</button>
+      </div>
+    </div>
+  </div></div>`;
+}
+
+function render(){
+  const list=filtered();
+  const total=tasks.length;
+  const done=tasks.filter(t=>t.statut==="done").length;
+  const inprog=tasks.filter(t=>t.statut==="inprogress").length;
+  const urgent=tasks.filter(t=>t.priorite==="urgente"&&t.statut!=="done").length;
+
+  const chips = filterMode==="piece"
+    ? PIECES.filter(p=>tasks.some(t=>t.piece===p))
+        .map(p=>`<button class="chip${filterVal===p?" active":""}" onclick="filterVal=filterVal===\`${p}\`?null:\`${p}\`;render()">${p}</button>`)
+    : PRIOS.map(p=>`<button class="chip${filterVal===p.v?" prio-active":""}" style="${filterVal===p.v?`--chip-c:${p.c}`:"color:var(--color-text-secondary)"}" onclick="filterVal=filterVal===\`${p.v}\`?null:\`${p.v}\`;render()">${p.l}</button>`);
+
+  document.getElementById("app").innerHTML=`
+  <div class="app">
+    <div class="header">
+      <div class="title">Suivi des travaux</div>
+      <button class="btn-sm btn-primary" onclick="openAdd()">+ Nouvelle tâche</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-val">${total}</div><div class="stat-lbl">Total</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--color-text-warning)">${inprog}</div><div class="stat-lbl">En cours</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--color-text-success)">${done}</div><div class="stat-lbl">Terminé</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--color-text-danger)">${urgent}</div><div class="stat-lbl">Urgentes</div></div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px;flex-wrap:wrap">
+      <div class="filters" style="width:auto">
+        <button class="filter-tab${filterMode==="piece"?" active":""}" onclick="filterMode='piece';filterVal=null;render()">Par pièce</button>
+        <button class="filter-tab${filterMode==="prio"?" active":""}" onclick="filterMode='prio';filterVal=null;render()">Par priorité</button>
+      </div>
+      <button class="chip${showDone?" active":""}" onclick="showDone=!showDone;render()" style="font-size:12px">
+        ${showDone?"Masquer terminés":"Voir terminés"}
+      </button>
+    </div>
+
+    <div class="filter-chips">${chips.join("")}</div>
+
+    <div class="tasks">
+      ${list.length===0?`<div class="empty">Aucune tâche${filterVal?" pour ce filtre":""}</div>`:list.map(t=>`
+      <div class="task${t.statut==="done"?" done-task":""}" style="--accent:${getPrioColor(t.priorite)}">
+        <div class="task-body">
+          <div class="task-top">
+            <span class="task-titre${t.statut==="done"?" done":""}">${t.titre}</span>
+            <span class="badge" style="background:${getPrioColor(t.priorite)}22;color:${getPrioColor(t.priorite)}">${getPrioLabel(t.priorite)}</span>
+          </div>
+          <div class="task-meta">
+            <span>${t.piece}</span>
+            ${t.notes?`<span style="font-style:italic">${t.notes}</span>`:""}
+          </div>
+        </div>
+        <div class="task-actions">
+          ${t.statut!=="done"
+            ?`<button class="btn-sm btn-success" onclick="markDone(${t.id})">✓ Effectué</button>`
+            :`<button class="btn-sm btn-undo" onclick="markTodo(${t.id})">↩ Rouvrir</button>`
+          }
+          <button class="btn-sm" onclick="openEdit(${t.id})">Modifier</button>
+        </div>
+      </div>`).join("")}
+    </div>
+    ${list.length>0?`<div style="font-size:12px;color:var(--color-text-secondary);text-align:right;margin-top:8px">${list.length} tâche(s)</div>`:""}
+  </div>
+  ${renderModal()}`;
+}
+
+render();
+</script>
