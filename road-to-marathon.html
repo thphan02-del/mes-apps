@@ -254,10 +254,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:colu
     <div class="citation-author" id="citation-author"></div>
   </div>
 
-  <div class="stat-grid">
-    <div class="stat-box"><div class="stat-lbl">km semaine</div><div class="stat-val" id="h-km">—<span class="stat-unit"> km</span></div></div>
-    <div class="stat-box"><div class="stat-lbl">km total</div><div class="stat-val" id="h-total">—<span class="stat-unit"> km</span></div></div>
-    <div class="stat-box"><div class="stat-lbl">séances</div><div class="stat-val" id="h-seances">—</div></div>
+  <div class="stat-grid" style="grid-template-columns:repeat(2,1fr)">
+    <div class="stat-box"><div class="stat-lbl">km depuis le 27 avril</div><div class="stat-val" id="h-total">—<span class="stat-unit"> km</span></div></div>
+    <div class="stat-box"><div class="stat-lbl">séances de prépa</div><div class="stat-val" id="h-seances">—</div></div>
   </div>
 
   <a class="nolio-link" href="https://www.nolio.io/calendar/" target="_blank">
@@ -271,6 +270,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:colu
 
   <div class="section-lbl">nutrition du mois</div>
   <div class="card" id="nutri-today-card"></div>
+
+  <div class="section-lbl">conseil du jour</div>
+  <div class="card" id="conseil-card"></div>
+
 </div>
 
 <!-- OBJECTIFS -->
@@ -351,7 +354,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:colu
 
 <!-- COACH -->
 <div id="tab-coach" class="view">
-  <div class="chat-wrap">
+  <div class="section-lbl" style="margin-top:0">programme de la semaine</div>
+  <div class="card" style="padding:0.75rem;margin-bottom:8px">
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:10px" id="week-grid"></div>
+    <button onclick="saveWeekPlan()" style="width:100%;padding:9px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;border:1.5px solid var(--red-border);border-radius:var(--rs);background:var(--red-dim);color:var(--red);cursor:pointer">Sauvegarder</button>
+  </div>
+  <div class="chat-wrap" style="height:calc(100dvh - 370px)">
     <div class="chat-msgs" id="chat-msgs">
       <div class="msg ai">
         <div class="msg-bubble">Salut. Je connais ton profil : semi en 1h37, objectif Deauville sub 3h30, 7 mois de prépa.
@@ -379,17 +387,11 @@ Qu'est-ce qui se passe ?</div>
     <div style="font-size:12px;color:var(--text-hint);margin-bottom:3px" id="edit-habit-name"></div>
     <div style="font-size:20px;font-weight:700;font-family:'Montserrat',sans-serif;margin-bottom:1.25rem;color:var(--text)" id="edit-date"></div>
     <div style="display:flex;gap:10px;margin-bottom:10px">
-      <button onclick="editLog(true)" style="flex:1;padding:14px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;border-radius:12px;border:1.5px solid var(--green);background:var(--green-dim);color:var(--green);cursor:pointer">✓ Réussi</button>
-      <button onclick="editLog(false)" style="flex:1;padding:14px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;border-radius:12px;border:1.5px solid var(--red-v);background:var(--red-dim);color:var(--red-v);cursor:pointer">✗ Raté</button>
-    </div>
-    <button onclick="editLog(null)" style="width:100%;padding:11px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;border:1px solid var(--border-md);border-radius:var(--rs);background:transparent;color:var(--text-muted);cursor:pointer">Effacer</button>
-  </div>
-</div>
-
-<script>
+      <button onclick="editLog(true)" style="flex:1;padding:14px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;border-radius:12px;border:1.5px solid var(--green);background:var(--green-dim);color:var(--green);cursor:pointer">✓ 
 const SUPA_URL='https://jqjkvlafjgdsnodsdzwz.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxamt2bGFmamdkc25vZHNkend6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MzM5NTEsImV4cCI6MjA5MjIwOTk1MX0.9Suc58I_vBcnSA_UmQxCklr6QpYRns64OmiftgkYAHg';
 const CLAUDE_KEY='';
+const PREP_START=new Date('2026-04-27T00:00:00');
 
 async function sbGet(t){try{const r=await fetch(`${SUPA_URL}/rest/v1/${t}?select=*`,{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});return r.json();}catch(e){return[];}}
 async function sbUpsert(t,d){try{await fetch(`${SUPA_URL}/rest/v1/${t}`,{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},body:JSON.stringify(d)});}catch(e){}}
@@ -397,6 +399,9 @@ async function sbUpsert(t,d){try{await fetch(`${SUPA_URL}/rest/v1/${t}`,{method:
 var habits={};
 var activities=[];
 var chatHistory=[];
+var weekPlan={lun:'',mar:'',mer:'',jeu:'',ven:'',sam:'',dim:''};
+var JOURS=[{k:'lun',l:'Lun'},{k:'mar',l:'Mar'},{k:'mer',l:'Mer'},{k:'jeu',l:'Jeu'},{k:'ven',l:'Ven'},{k:'sam',l:'Sam'},{k:'dim',l:'Dim'}];
+
 
 /* Monthly targets — single source of truth */
 var MONTHS_DATA=[
@@ -437,8 +442,8 @@ var CITATIONS=[
   {t:"Le marathon ne ment pas. Il t'oblige à être honnête avec toi-même.",a:"George Sheehan"},
   {t:"Chaque matin tu as le choix : rester au lit ou aller courir. Ce choix répété 7 mois s'appelle Deauville.",a:"Coach IA"},
   {t:"Ton semi en 1h37 ne ment pas. Tu as ce qu'il faut.",a:"Coach IA"},
-  {t:"La récupération n'est pas de la faiblesse. C'est là que tu progresses.",a:"Coach IA"},
-  {t:"67 kg aujourd'hui, 63 kg le jour J. 4 kg = 8 à 12 minutes. C'est là.",a:"Coach IA"},
+  {t:"La récupération n'est pas de la faiblesse. C\'est là que tu progresses.",a:"Coach IA"},
+  {t:"67 kg aujourd'hui, 63 kg le jour J. 4 kg = 8 à 12 minutes. C\'est là.",a:"Coach IA"},
   {t:"Dormir 7h c'est aussi important que courir. Ton corps se répare la nuit.",a:"Coach IA"},
 ];
 
@@ -484,29 +489,54 @@ function getTargetValue(habit,md){
   if(habit.id==='eau')return{val:md.eau,unit:'',hint:'objectif eau du jour'};
   if(habit.id==='poids')return{val:md.poidsCible+'kg',unit:'',hint:'peser ce matin'};
   if(habit.id==='sommeil')return{val:md.sommeil,unit:'',hint:'minimum cette nuit'};
-  if(habit.id==='nutri')return{val:'Nutri',unit:'',hint:md.nutri};
   if(habit.id==='fc')return{val:'FC',unit:'',hint:'noter au réveil'};
   return{val:'—',unit:'',hint:''};
 }
 
+function getSavedMetric(id,ds){
+  var d=habits[id]||{};var e=d[ds];
+  if(e&&typeof e==='object'&&e.val!==undefined)return e.val;
+  return '';
+}
+async function saveMetric(id,val){
+  var today=todayStr();
+  if(!habits[id])habits[id]={};
+  habits[id][today]={checked:getVal(id,today)===true,val:val};
+  await sbUpsert('marathon_habits',{id:id,data:habits[id]||{}});
+}
 function renderTargets(){
   var md=getCurrentMonthData();
   var today=todayStr();
   var el=document.getElementById('targets-grid');if(!el)return;
-  el.innerHTML=HABITS.map(function(h){
+  var html=HABITS.map(function(h){
     var v=getVal(h.id,today);
     var tv=getTargetValue(h,md);
-    var cls='target-card';
-    var statusHtml='';
-    var valCls='';
-    if(v===true){cls+=' done';statusHtml='<div class="tc-status ok">✓<\/div>';valCls=' done-val';}
-    else if(v===false){cls+=' failed';statusHtml='<div class="tc-status ko">✗<\/div>';valCls=' fail-val';}
-    return '<div class="'+cls+'" onclick="toggleTarget(\''+h.id+'\')">'+
-      statusHtml+
-      '<div class="tc-value'+valCls+'">'+tv.val+'<span class="tc-unit">'+tv.unit+'<\/span><\/div>'+
-      '<div class="tc-label">'+tv.hint+'<\/div>'+
-    '<\/div>';
+    var cls='target-card'+(v===true?' done':v===false?' failed':'');
+    var statusHtml=v===true?'<div class="tc-status ok">✓</div>':v===false?'<div class="tc-status ko">✗</div>':'';
+    var valCls=v===true?' done-val':v===false?' fail-val':'';
+    var inputPlaceholder='';
+    if(h.id==='poids')inputPlaceholder='kg';
+    else if(h.id==='fc')inputPlaceholder='bpm';
+    return '<div class="'+cls+'" data-hid="'+h.id+'" onclick="toggleTarget(this.dataset.hid)">'+statusHtml+
+      '<div class="tc-value'+valCls+'">'+tv.val+'</div>'+
+      '<div class="tc-label">'+tv.hint+'</div>'+
+      (inputPlaceholder?'<div class="tc-input-wrap" data-hid="'+h.id+'"></div>':'')+
+    '</div>';
   }).join('');
+  el.innerHTML=html;
+  ['poids','fc'].forEach(function(id){
+    var wrap=el.querySelector('.tc-input-wrap[data-hid="'+id+'"]');
+    if(!wrap)return;
+    var inp=document.createElement('input');
+    inp.type='number';
+    inp.step=id==='poids'?'0.1':'1';
+    inp.placeholder=id==='poids'?'kg ce matin':'bpm au réveil';
+    inp.value=getSavedMetric(id,today);
+    inp.style.cssText='margin-top:8px;width:100%;background:transparent;border:none;border-bottom:1px solid var(--border-md);font-family:Montserrat,sans-serif;font-size:14px;font-weight:700;color:var(--text);outline:none;padding:3px 0';
+    inp.addEventListener('click',function(e){e.stopPropagation();});
+    inp.addEventListener('change',function(){saveMetric(id,this.value);});
+    wrap.appendChild(inp);
+  });
 }
 
 async function toggleTarget(id){
@@ -664,10 +694,12 @@ async function parseAndDisplay(text){
 function renderCourse(acts){
   var runs=acts.filter(function(a){var t=a.type.toLowerCase();return t.includes('run')||t.includes('course')||t.includes('trail');});
   var totalKm=runs.reduce(function(s,a){return s+a.dist;},0);
-  document.getElementById('s-seances').textContent=runs.length;
-  document.getElementById('h-seances').textContent=runs.length;
-  document.getElementById('s-total').innerHTML=Math.round(totalKm)+'<span class="stat-unit"> km<\/span>';
-  document.getElementById('h-total').innerHTML=Math.round(totalKm)+'<span class="stat-unit"> km<\/span>';
+  var prepRuns=runs.filter(function(a){return new Date(a.date)>=PREP_START;});
+  var prepKm=prepRuns.reduce(function(s,a){return s+a.dist;},0);
+  document.getElementById('s-seances').textContent=prepRuns.length;
+  document.getElementById('h-seances').textContent=prepRuns.length;
+  document.getElementById('s-total').innerHTML=Math.round(prepKm)+'<span class="stat-unit"> km<\/span>';
+  document.getElementById('h-total').innerHTML=Math.round(prepKm)+'<span class="stat-unit"> km<\/span>';
   var now=new Date();
   var wkStart=new Date(now);wkStart.setDate(now.getDate()-(now.getDay()===0?6:now.getDay()-1));wkStart.setHours(0,0,0,0);
   var weekKm=runs.filter(function(a){return new Date(a.date)>=wkStart;}).reduce(function(s,a){return s+a.dist;},0);
@@ -682,7 +714,7 @@ function renderCourse(acts){
   document.getElementById('all-runs').innerHTML=runs.map(function(a){
     return '<div class="seance-item"><div class="seance-icon">🏃<\/div><div class="seance-info"><div class="seance-name">'+a.name+'<\/div><div class="seance-date">'+a.date+'<\/div><\/div><div class="seance-right"><div class="seance-dist">'+a.dist.toFixed(1)+' km<\/div><div class="seance-pace">'+paceStr(a.dist,a.movingTime)+' /km<\/div><\/div><\/div>';
   }).join('');
-  document.getElementById('import-banner').textContent='✓ '+acts.length+' activités · '+runs.length+' courses · '+Math.round(totalKm)+' km';
+
   document.getElementById('strava-import-section').style.display='none';
   document.getElementById('strava-loaded').style.display='block';
   document.getElementById('seances-charts').style.display='block';
@@ -722,18 +754,23 @@ function closeEdit(e){
 }
 
 /* ── COACH IA ── */
-var SYSTEM_PROMPT=`Tu es le coach marathon de l'utilisateur. Profil :
-- Objectif : Marathon de Deauville le 15 novembre 2026, sub 3h30 (allure 4'58"/km)
-- Niveau : Semi 1h37, Marathon 4h00, 30-50km/semaine actuellement
-- Morpho : 67kg, 174cm. Poids cible J-1 : 63kg
-- Sommeil : 6-7h (objectif 7h min), Hydratation : 1-1.5L (objectif 2.5L)
-- Rythme : télétravail, enfants, court le matin. Pas d'alcool
-- Coach séances : Nolio (1 semaine à l'avance max)
-- Forerunner 965 : surveiller FC repos, +7 bpm = repos
-
-Tu gères tout sauf les séances (c'est Nolio). Récupération, nutrition, sommeil, mental, organisation quotidienne.
-Réponses courtes, directes, personnalisées. Pas de généralités.`;
-
+function getSystemPrompt(){
+  var session=getTodaySession();
+  var planStr=JOURS.map(function(j){return j.l+': '+(weekPlan[j.k]||'--');}).join(' | ');
+  return [
+    'Tu es le coach marathon personnel. Profil :',
+    'Objectif : Deauville 15 nov 2026, sub 3h30, allure 4m58/km',
+    'Niveau : Semi 1h37, Marathon 4h00, 30-50km/semaine',
+    'Morpho : 67kg, 174cm, poids cible J-1 : 63kg',
+    'Sommeil : 6-7h, objectif 7h min. Hydratation : 1-1.5L, objectif 2.5L',
+    'Rythme : teletravail, enfants, court le matin, pas alcool',
+    'Coach seances : Nolio. Tu geres tout sauf les seances.',
+    'Programme semaine : '+planStr,
+    session?'Seance du jour : '+session:'',
+    'Style : court, direct, personnel.',
+  ].filter(Boolean).join('\n');
+}
+var SYSTEM_PROMPT='';
 function addMsg(role,text){
   var msgs=document.getElementById('chat-msgs');
   var div=document.createElement('div');div.className='msg '+role;
@@ -761,7 +798,7 @@ async function sendMsg(){
   }
   showTyping();
   try{
-    var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYSTEM_PROMPT,messages:chatHistory})});
+    var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:getSystemPrompt(),messages:chatHistory})});
     var d=await r.json();removeTyping();
     var reply=d.content&&d.content[0]?d.content[0].text:'Erreur.';
     addMsg('ai',reply);chatHistory.push({role:'assistant',content:reply});
@@ -781,9 +818,100 @@ function showTab(id,btn,isSidebar){
   if(isSidebar){var mbs=document.querySelectorAll('.nbtn');if(mbs[idx])mbs[idx].classList.add('active');}
   else{var sbs=document.querySelectorAll('.snav-btn');if(sbs[idx])sbs[idx].classList.add('active');}
   if(id==='suivi')renderSuivi();
+  if(id==='coach')renderWeekGrid();
+
 }
 
 /* ── INIT ── */
+
+
+
+
+
+
+var CONSEILS=[
+  'Hydratation : 1L avant midi, 1L apres-midi, 0.5L le soir. Aujourd\'hui.',
+  'Mange dans les 30min apres ta seance. Glucides + proteines, pas juste un cafe.',
+  'FC de repos demain matin : note-la avant de te lever. C\'est ton meilleur indicateur de recuperation.',
+  'Viennoiserie aujourd\'hui ? Rappel : progressivement moins selon le mois.',
+  'Pesee ce matin. Toujours apres les toilettes, toujours nu, toujours la meme heure.',
+  '7 mois a Deauville. Chaque habitude d\'aujourd\'hui compte.',
+  'Ton semi en 1h37 confirme que tu peux faire sub 3h30. Tes habitudes d\'aujourd\'hui aussi.',
+  'Cafe avant la seance OK. Pas apres 14h pour ne pas perturber le sommeil.',
+  'La recuperation se fait la nuit, pas pendant la seance. 7h minimum ce soir.',
+  '63kg le 15 novembre. La tendance compte plus que le chiffre du jour.',
+  'Pas de grandes changes alimentaires en periode de charge. Mange ce que tu connais.',
+  'Le mental casse avant les jambes au km 35. Aujourd\'hui tu travailles aussi ca.',
+  'Glucides la veille des sorties longues. Pates, riz, patate douce ce soir ?',
+  'Un kilo de moins = 2 a 3 minutes gagnees sur le marathon. La patience paye.',
+];
+
+function getTodayKey(){var d=new Date().getDay();return['dim','lun','mar','mer','jeu','ven','sam'][d];}
+function getTodaySession(){return weekPlan[getTodayKey()]||'';}
+function renderWeekGrid(){
+  var el=document.getElementById('week-grid');if(!el)return;
+  var today=getTodayKey();
+  el.innerHTML=JOURS.map(function(j){
+    var v=weekPlan[j.k]||'';
+    var isToday=today===j.k;
+    return '<div style="display:flex;flex-direction:column;gap:3px">'+
+      '<div style="font-size:9px;font-weight:700;text-align:center;color:'+(isToday?'var(--red)':'var(--text-hint)')+'">'+j.l+'</div>'+
+      '<textarea data-day="'+j.k+'" rows="3" style="width:100%;background:var(--bg3);border:1px solid '+(isToday?'var(--red-border)':'var(--border)')+';border-radius:6px;padding:4px 5px;font-size:10px;font-family:Plus Jakarta Sans,sans-serif;color:var(--text);resize:none;outline:none;line-height:1.4">'+v+'</textarea>'+
+    '</div>';
+  }).join('');
+  el.querySelectorAll('textarea').forEach(function(ta){
+    ta.addEventListener('input',function(){weekPlan[this.dataset.day]=this.value;renderConseil();});
+  });
+}
+async function saveWeekPlan(){
+  await sbUpsert('marathon_week',{id:'plan',data:weekPlan});
+  var btn=document.querySelector('[onclick="saveWeekPlan()"]');
+  if(btn){btn.textContent='Sauvegardé ✓';setTimeout(function(){btn.textContent='Sauvegarder';},1500);}
+}
+function renderConseil(){
+  var el=document.getElementById('conseil-card');if(!el)return;
+  var session=getTodaySession();
+  var idx=Math.floor(Date.now()/86400000)%CONSEILS.length;
+  var base=CONSEILS[idx];
+  if(session){
+    var s=session.toLowerCase();
+    if(s.includes('long')||s.includes('sortie long'))
+      base='Sortie longue aujourd\u2019hui ('+session+'). Glucides ce matin 2h avant. Eau et gels/dattes toutes les 45min en course.';
+    else if(s.includes('frac')||s.includes('vma')||s.includes('interval'))
+      base='Seance intense aujourd\u2019hui ('+session+'). Echauffement 15min minimum. Protéines + glucides dans les 30min apres. Dors 7h ce soir.';
+    else if(s.includes('recup')||s.includes('footing')||s.includes('endur'))
+      base='Footing aujourd\u2019hui ('+session+'). Allure ou tu peux parler confortablement. Recuperation active, pas de chrono.';
+    else if(s.includes('repos')||s==='-')
+      base='Repos aujourd\u2019hui. Hydrate-toi bien, mange equilibre, dors 7h+. La progression se fait aussi hors des seances.';
+    else if(session.length>0)
+      base='Seance du jour : '+session+'. Mange bien avant, recupere bien apres.';
+  }
+  el.innerHTML='<div style="font-size:13px;line-height:1.6;color:var(--text)">'+base+'</div>'+
+    (session?'<div style="font-size:11px;color:var(--text-hint);margin-top:6px;border-top:1px solid var(--border);padding-top:6px">Seance saisie : '+session+'</div>':'');
+}
+
+async function loadAll(){
+  try{
+    var[h,a]=await Promise.all([sbGet('marathon_habits'),sbGet('marathon_activities')]);
+    habits={};
+    if(Array.isArray(h))h.forEach(function(row){habits[row.id]=row.data||{};});
+    var strava=(Array.isArray(a)?a:[]).find(function(r){return r.id==='strava';});
+    if(strava&&strava.data&&strava.data.length){activities=strava.data;renderCourse(activities);}
+  }catch(e){}
+  try{var wp=await sbGet('marathon_week');var wpr=(Array.isArray(wp)?wp:[]).find(function(r){return r.id==='plan';});if(wpr&&wpr.data)Object.assign(weekPlan,wpr.data);}catch(e){}
+  renderCitation();
+  calcCountdown();
+  renderTargets();
+  renderNutriToday();
+  renderProgTable();
+  renderNutritionPhases();
+  renderConseil();
+
+}
+loadAll();
+div>';
+}
+
 async function loadAll(){
   try{
     var[h,a]=await Promise.all([sbGet('marathon_habits'),sbGet('marathon_activities')]);
@@ -798,6 +926,8 @@ async function loadAll(){
   renderNutriToday();
   renderProgTable();
   renderNutritionPhases();
+  renderConseil();
+
 }
 loadAll();
 </script>
