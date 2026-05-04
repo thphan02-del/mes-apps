@@ -3,663 +3,803 @@
 <head>
 <meta charset="UTF-8">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="42 · Marathon">
-<meta name="theme-color" content="#0F0F0F">
-<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+CiAgPHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMTIiIGZpbGw9IiMwRjBGMEYiLz4KICA8dGV4dCB4PSIyNTYiIHk9IjMxMCIgZm9udC1mYW1pbHk9IkFyaWFsIEJsYWNrLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0MCIgZm9udC13ZWlnaHQ9IjkwMCIgZmlsbD0iI0U4RkY0NyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9Ii04Ij40MjwvdGV4dD4KPC9zdmc+">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+CiAgPHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMTIiIGZpbGw9IiMwRjBGMEYiLz4KICA8dGV4dCB4PSIyNTYiIHk9IjMxMCIgZm9udC1mYW1pbHk9IkFyaWFsIEJsYWNrLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0MCIgZm9udC13ZWlnaHQ9IjkwMCIgZmlsbD0iI0U4RkY0NyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9Ii04Ij40MjwvdGV4dD4KPC9zdmc+">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="42 · Deauville">
+<meta name="theme-color" content="#EDE0C4">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Road to Marathon — Deauville 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Road to Deauville — 3h30</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0F0F0F;
-  --bg2: #1A1A1A;
-  --bg3: #242424;
-  --border: rgba(255,255,255,0.07);
-  --border-md: rgba(255,255,255,0.12);
-  --text: #F2F2F2;
-  --text-muted: #888;
-  --text-hint: #555;
-  --accent: #E8FF47;
-  --accent-dim: rgba(232,255,71,0.12);
-  --green: #2ECC8A;
-  --green-dim: rgba(46,204,138,0.15);
-  --red: #FF5A5A;
-  --red-dim: rgba(255,90,90,0.15);
-  --strava: #FC4C02;
-  --radius: 16px;
-  --radius-sm: 10px;
+:root{
+  --bg:#EDE0C4;--bg2:#F5EDDC;--bg3:#EAE0CC;--bg4:#E0D0B0;
+  --border:rgba(61,43,26,0.1);--border-md:rgba(61,43,26,0.18);
+  --text:#2A1A0A;--text-muted:#6B4A2A;--text-hint:#A08060;
+  --red:#8B1A1A;--red-v:#C0392B;--red-dim:rgba(139,26,26,0.1);--red-border:rgba(139,26,26,0.25);
+  --gold:#C9A84C;--gold-dim:rgba(201,168,76,0.15);--gold-border:rgba(201,168,76,0.4);
+  --green:#3B7A4A;--green-dim:rgba(59,122,74,0.12);--green-border:rgba(59,122,74,0.35);
+  --r:12px;--rs:8px;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:#F2F2F2;min-height:100vh}
-.shell{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text)}
+body{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:column;overflow:hidden}
 
-/* HEADER */
-.header{padding:1.5rem 1.25rem 1.25rem;background:var(--bg)}
-.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
-.header-left{}
-.app-eyebrow{font-size:11px;color:#888888;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
-.app-title{font-size:22px;font-weight:800;letter-spacing:-0.5px;color:#F2F2F2;line-height:1}
-.app-title span{color:var(--accent)}
-.score-badge{background:var(--accent-dim);border:1px solid rgba(232,255,71,0.25);border-radius:12px;padding:8px 14px;text-align:center}
-.score-num{font-size:22px;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-0.5px}
-.score-lbl{font-size:10px;color:rgba(232,255,71,0.6);margin-top:2px;letter-spacing:0.5px}
+/* DESKTOP */
+@media(min-width:900px){
+  body{flex-direction:row;height:100vh;overflow:hidden}
+  .sidebar{display:flex!important;flex-direction:column;width:220px;background:var(--bg2);border-right:1px solid var(--border-md);flex-shrink:0;padding:2rem 0}
+  .sidebar-brand{padding:0 1.5rem 2rem}
+  .sidebar-brand-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:20px;letter-spacing:-0.5px;color:var(--red)}
+  .sidebar-brand-sub{font-size:11px;color:var(--text-hint);margin-top:3px;letter-spacing:0.5px}
+  .sidebar-nav{display:flex;flex-direction:column;gap:2px;padding:0 0.75rem}
+  .snav-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--rs);border:none;background:transparent;color:var(--text-muted);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;text-align:left;width:100%;transition:all 0.15s}
+  .snav-btn:hover{background:var(--bg3);color:var(--text)}
+  .snav-btn.active{background:var(--red-dim);color:var(--red);font-weight:700}
+  .snav-dot{width:5px;height:5px;border-radius:50%;background:var(--border-md);flex-shrink:0;transition:background 0.15s}
+  .snav-btn.active .snav-dot{background:var(--red)}
+  .desktop-main{display:flex;flex-direction:column;flex:1;overflow:hidden;min-width:0}
+  .mobile-header{display:none}
+  .mobile-nav{display:none}
+  .content{flex:1;overflow-y:auto;padding:2.5rem 3rem;max-width:860px}
+  .desk-header{padding:2.5rem 3rem 0;display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
+  .desk-header{display:flex}
+}
+@media(max-width:899px){
+  .sidebar{display:none!important}
+  .desk-header{display:none}
+  .desktop-main{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
+  .content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:1rem;min-height:0}
+}
+.sidebar{display:none}
+.desk-header{display:none}
 
-.countdown-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.cd-box{background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius-sm);padding:12px 4px;text-align:center}
-.cd-num{font-size:24px;font-weight:800;line-height:1;color:#F2F2F2;letter-spacing:-0.5px}
-.cd-label{font-size:9px;color:#888888;margin-top:4px;letter-spacing:0.5px;text-transform:uppercase}
-.cd-box.streak .cd-num{color:var(--accent)}
+/* MOBILE HEADER */
+.mobile-header{padding:1.1rem 1.25rem 0.75rem;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border)}
+.mh-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem}
+.mh-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:20px;letter-spacing:-0.5px;color:var(--text)}
+.mh-title em{color:var(--red);font-style:normal}
+.mh-right{display:flex;gap:8px;align-items:center}
+.mh-badge{background:var(--red-dim);border:1px solid var(--red-border);border-radius:10px;padding:5px 12px;text-align:center}
+.mh-days{font-size:20px;font-weight:900;font-family:'Montserrat',sans-serif;color:var(--red);line-height:1;letter-spacing:-0.5px}
+.mh-lbl{font-size:9px;color:var(--red);letter-spacing:0.8px;text-transform:uppercase;margin-top:1px;opacity:0.6}
+.cd-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.cd-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:9px 4px;text-align:center}
+.cd-num{font-size:17px;font-weight:800;font-family:'Montserrat',sans-serif;letter-spacing:-0.5px;color:var(--text)}
+.cd-lbl{font-size:9px;color:var(--text-hint);margin-top:2px;letter-spacing:0.5px;text-transform:uppercase}
 
-/* NAV */
-.nav{display:grid;grid-template-columns:repeat(3,1fr);background:var(--bg2);border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:10}
-.nav-btn{padding:13px 4px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;text-align:center;border:none;border-bottom:2px solid transparent;cursor:pointer;background:transparent;color:#888888;transition:all 0.15s;letter-spacing:0.3px}
-.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+/* MOBILE NAV */
+.mobile-nav{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0}
+.nbtn{flex:1;padding:10px 4px;font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;text-align:center;border:none;border-bottom:2px solid transparent;cursor:pointer;background:transparent;color:var(--text-muted);transition:all 0.15s}
+.nbtn.active{color:var(--red);border-bottom-color:var(--red);font-weight:700}
 
-/* CONTENT */
-.content{padding:1rem;flex:1}
+/* VIEWS */
 .view{display:none}.view.active{display:block}
-.section-title{font-size:10px;color:#DDDDDD;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin:1rem 0 0.5rem}
-.section-title:first-child{margin-top:0}
-.card{background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius);padding:0.75rem 1rem;margin-bottom:6px}
 
-/* HABITS */
-.habit-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
-.habit-row:last-child{border-bottom:none;padding-bottom:0}
-.habit-row:first-child{padding-top:0}
-.habit-emoji{font-size:20px;flex-shrink:0;width:28px;text-align:center}
-.habit-info{flex:1;min-width:0}
-.habit-name{font-size:14px;font-weight:600;color:#F2F2F2}
-.habit-status{font-size:11px;color:#AAAAAA;margin-top:2px}
-.habit-status.ok{color:var(--green)}
-.habit-status.ko{color:var(--red)}
-.toggle-wrap{display:flex;gap:6px;flex-shrink:0}
-.toggle-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.2);background:transparent;cursor:pointer;font-size:13px;transition:all 0.12s;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;color:#BBBBBB}
-.toggle-btn:active{transform:scale(0.9)}
-.toggle-btn.yes-on{background:var(--green-dim);border-color:var(--green);color:var(--green)}
-.toggle-btn.no-on{background:var(--red-dim);border-color:var(--red);color:var(--red)}
+/* COMPONENTS */
+.section-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin:1.25rem 0 0.5rem}
+.section-lbl:first-child{margin-top:0}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1rem;margin-bottom:8px}
+
+/* CITATION */
+.citation-card{background:var(--red);border-radius:var(--r);padding:1.25rem;margin-bottom:8px;position:relative;overflow:hidden}
+.citation-card::before{content:'"';position:absolute;top:-15px;left:8px;font-size:90px;font-family:'Montserrat',sans-serif;font-weight:900;color:rgba(255,255,255,0.07);line-height:1}
+.citation-text{font-size:13px;font-weight:500;line-height:1.6;color:rgba(255,255,255,0.92);position:relative;font-style:italic}
+.citation-author{font-size:11px;color:rgba(255,255,255,0.45);margin-top:8px;letter-spacing:0.3px;position:relative}
+
+/* UNIFIED DAILY TARGETS */
+.targets-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:8px}
+.target-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r);padding:14px 12px;cursor:pointer;transition:all 0.15s;position:relative;overflow:hidden}
+.target-card:active{transform:scale(0.97)}
+.target-card.done{background:var(--green-dim);border-color:var(--green-border)}
+.target-card.failed{background:var(--red-dim);border-color:var(--red-border)}
+.target-card.gold-done{background:var(--gold-dim);border-color:var(--gold-border)}
+.tc-value{font-size:26px;font-weight:900;font-family:'Montserrat',sans-serif;letter-spacing:-1px;line-height:1;color:var(--text)}
+.tc-value.done-val{color:var(--green)}
+.tc-value.fail-val{color:var(--red)}
+.tc-value.gold-val{color:var(--gold)}
+.tc-unit{font-size:13px;font-weight:600;color:var(--text-muted);margin-left:1px}
+.tc-label{font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.3}
+.tc-status{position:absolute;top:10px;right:10px;font-size:13px;font-weight:700}
+.tc-status.ok{color:var(--green)}
+.tc-status.ko{color:var(--red)}
 
 /* STATS */
-.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:8px}
-.stat-box{background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius-sm);padding:14px}
-.stat-label{font-size:11px;color:#CCCCCC;margin-bottom:6px;letter-spacing:0.3px}
-.stat-value{font-size:24px;font-weight:800;color:#F2F2F2;letter-spacing:-0.5px;line-height:1}
-.stat-unit{font-size:12px;font-weight:500;color:#BBBBBB;font-family:'Plus Jakarta Sans',sans-serif}
-
-/* HEATMAP */
-.hm-header{display:flex;gap:4px;margin-bottom:4px}
-.hm-spacer{width:18px;flex-shrink:0}
-.hm-days-hdr{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;flex:1}
-.hm-day-lbl{font-size:9px;color:#AAAAAA;text-align:center}
-.heatmap-row{display:flex;gap:4px;margin-bottom:3px;align-items:center}
-.hm-mlbl{font-size:9px;color:#AAAAAA;width:18px;flex-shrink:0}
-.hm-week{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;flex:1}
-.hm-day{aspect-ratio:1;border-radius:3px;border:1px solid rgba(255,255,255,0.08);background:var(--bg3);cursor:pointer}
-.hm-day.logged{background:var(--green-dim);border-color:var(--green)}
-.hm-day.failed{background:var(--red-dim);border-color:var(--red)}
-.hm-day.future{background:rgba(255,255,255,0.03);border-color:transparent}
-.hm-day.today{border:2px solid var(--accent)!important}
-.hm-day.marathon{background:var(--accent-dim);border-color:var(--accent)}
-.hm-legend{display:flex;align-items:center;gap:5px;margin-top:8px;font-size:11px;color:#AAAAAA;flex-wrap:wrap}
-.hm-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
-
-/* CONSOLIDATED */
-.consol-table{width:100%;border-collapse:collapse;font-size:12px}
-.consol-table th{font-size:10px;color:#AAAAAA;font-weight:600;padding:0 4px 10px;text-align:center;letter-spacing:0.5px}
-.consol-table th:first-child{text-align:left;padding-left:0}
-.consol-table td{padding:8px 4px;text-align:center;border-top:1px solid rgba(255,255,255,0.08)}
-.consol-table td:first-child{text-align:left;padding-left:0;font-size:11px;color:#CCCCCC;height:22px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:11px}
-.c-dot.ok{background:var(--green-dim);color:var(--green)}
-.c-dot.ko{background:var(--red-dim);color:var(--red)}
-.c-dot.mt{background:var(--bg3);border:1px solid rgba(255,255,255,0.08)}
-.c-score{font-size:12px;font-weight:600}
-.c-score.full{color:var(--green)}
-.c-score.zero{color:#666}
-
-/* ACTIVITIES */
-.act-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
-.act-item:last-child{border-bottom:none;padding-bottom:0}
-.act-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:var(--accent-dim);border:1px solid rgba(232,255,71,0.2)}
-.act-info{flex:1;min-width:0}
-.act-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#F2F2F2}
-.act-date{font-size:11px;color:#CCCCCC;margin-top:1px}
-.act-right{text-align:right;flex-shrink:0}
-.act-dist{font-size:13px;font-weight:700;color:#F2F2F2}
-.act-pace{font-size:11px;color:#AAAAAA;align-items:center;gap:8px;margin-bottom:7px}
-.bar-lbl{font-size:10px;color:#CCCCCC;width:28px;text-align:right;flex-shrink:0}
-.bar-track{flex:1;height:14px;background:var(--bg3);border-radius:4px;overflow:hidden}
-.bar-fill{height:100%;border-radius:4px;background:var(--accent)}
-.bar-val{font-size:10px;color:#CCCCCC;width:36px;flex-shrink:0}
-
-/* IMPORT */
-.import-zone{border:1.5px dashed rgba(255,255,255,0.15);border-radius:var(--radius);padding:2rem 1.5rem;text-align:center;cursor:pointer;transition:all 0.15s;background:var(--bg2)}
-.import-zone:hover{border-color:var(--accent);background:var(--accent-dim)}
-.strava-badge{display:inline-flex;align-items:center;gap:4px;background:var(--strava);color:white;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin-top:10px}
-.steps-box{background:var(--bg3);border-radius:var(--radius-sm);padding:12px 14px;margin-top:12px;border:1px solid rgba(255,255,255,0.08)}
-.steps-title{font-size:12px;font-weight:600;margin-bottom:8px;color:#CCCCCC;color:#AAAAAA;line-height:2;display:flex;align-items:center;gap:8px}
-.step-n{display:inline-flex;width:18px;height:18px;background:var(--accent-dim);color:var(--accent);border-radius:50%;font-size:10px;font-weight:700;align-items:center;justify-content:center;flex-shrink:0}
-
-/* GOAL */
-.goal-banner{background:var(--accent-dim);border:1px solid rgba(232,255,71,0.2);border-radius:var(--radius);padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:10px}
-.goal-title{font-size:14px;font-weight:700;color:var(--accent)}
-.goal-sub{font-size:12px;color:rgba(232,255,71,0.6);margin-top:3px}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:12px 10px}
+.stat-lbl{font-size:11px;color:var(--text-muted);margin-bottom:4px}
+.stat-val{font-size:20px;font-weight:800;font-family:'Montserrat',sans-serif;letter-spacing:-0.5px;line-height:1;color:var(--text)}
+.stat-unit{font-size:11px;font-weight:500;color:var(--text-muted)}
 
 /* NOLIO */
-.nolio-link{display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg2);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius);text-decoration:none;margin-bottom:8px;transition:border-color 0.15s}
-.nolio-link:hover{border-color:var(--accent)}
-.nolio-ico{width:36px;height:36px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#0F0F0F;font-size:14px;font-weight:800;flex-shrink:0}
-.nolio-name{font-size:14px;font-weight:600;color:#F2F2F2}
-.nolio-desc{font-size:12px;color:#CCCCCC;margin-top:1px}
+.nolio-link{display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);text-decoration:none;margin-bottom:8px;transition:border-color 0.15s}
+.nolio-link:hover{border-color:var(--red-border)}
+.nolio-ico{width:36px;height:36px;background:var(--red);border-radius:9px;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:900;flex-shrink:0;font-family:'Montserrat',sans-serif}
+.nolio-name{font-size:14px;font-weight:600;color:var(--text)}
+.nolio-desc{font-size:12px;color:var(--text-muted);margin-top:1px}
 
-.btn{width:100%;padding:11px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-sm);background:transparent;color:#CCCCCC;cursor:pointer;transition:all 0.12s}
-.btn:hover{background:var(--bg3)}
-.success-banner{background:var(--green-dim);color:var(--green);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:10px;border:1px solid rgba(46,204,138,0.3)}
-.empty-state{text-align:center;padding:1.5rem 0.5rem;font-size:13px;color:#666;border-radius:var(--radius) var(--radius) 0 0;padding:1.5rem 1.25rem 2.5rem;width:100%;max-width:480px}
+/* OBJECTIFS TABLE */
+.prog-table{width:100%;border-collapse:collapse;font-size:12px}
+.prog-table th{font-size:10px;color:var(--text-muted);font-weight:700;padding:0 8px 10px;text-align:left;letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap}
+.prog-table td{padding:9px 8px;border-top:1px solid var(--border);font-size:12px;vertical-align:middle;color:var(--text-muted)}
+.prog-table td:first-child{color:var(--text);font-weight:600}
+.prog-table tr.current{background:var(--red-dim)}
+.prog-table tr.current td:first-child{color:var(--red);font-weight:700}
+.prog-table tr.current td{border-top:1px solid var(--red-border)}
+.target-num{font-family:'Montserrat',sans-serif;font-weight:700;color:var(--text);font-size:13px}
+
+/* PROFILE */
+.profile-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.profile-row:last-child{border-bottom:none}
+.pr-label{font-size:12px;font-weight:600;color:var(--text);min-width:120px;flex-shrink:0}
+.pr-val{font-size:12px;color:var(--text-muted);flex:1;line-height:1.5}
+.pr-num{font-family:'Montserrat',sans-serif;font-weight:700;color:var(--red);font-size:14px;text-align:right;flex-shrink:0}
+
+/* SÉANCES */
+.seance-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.seance-item:last-child{border-bottom:none}
+.seance-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;background:var(--red-dim);border:1px solid var(--red-border)}
+.seance-info{flex:1;min-width:0}
+.seance-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seance-date{font-size:11px;color:var(--text-muted);margin-top:1px}
+.seance-right{text-align:right;flex-shrink:0}
+.seance-dist{font-size:13px;font-weight:700;color:var(--text)}
+.seance-pace{font-size:11px;color:var(--text-muted)}
+
+/* HEATMAP */
+.hm-row{display:flex;gap:4px;margin-bottom:3px;align-items:center}
+.hm-mlbl{font-size:9px;color:var(--text-hint);width:18px;flex-shrink:0}
+.hm-week{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;flex:1}
+.hm-day{aspect-ratio:1;border-radius:3px;border:1px solid var(--border);background:var(--bg3);cursor:pointer}
+.hm-day.ok{background:var(--green-dim);border-color:var(--green-border)}
+.hm-day.ko{background:var(--red-dim);border-color:var(--red-border)}
+.hm-day.future{opacity:0.3}
+.hm-day.today{border:2px solid var(--red)!important}
+
+/* CHAT */
+.chat-wrap{display:flex;flex-direction:column;height:calc(100dvh - 165px)}
+@media(min-width:900px){.chat-wrap{height:calc(100vh - 100px)}}
+.chat-msgs{flex:1;overflow-y:auto;padding:0.75rem 0;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:88%}
+.msg.user{align-self:flex-end}
+.msg.ai{align-self:flex-start}
+.msg-bubble{padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.55;white-space:pre-wrap}
+.msg.user .msg-bubble{background:var(--red);color:white;border-radius:16px 16px 4px 16px}
+.msg.ai .msg-bubble{background:var(--bg2);border:1px solid var(--border-md);color:var(--text);border-radius:16px 16px 16px 4px}
+.msg-time{font-size:10px;color:var(--text-hint);margin-top:3px}
+.msg.user .msg-time{text-align:right}
+.chat-input-row{display:flex;gap:8px;padding:0.75rem 0 0;border-top:1px solid var(--border);flex-shrink:0}
+.chat-input{flex:1;background:var(--bg2);border:1.5px solid var(--border-md);border-radius:22px;padding:10px 16px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);outline:none;resize:none;max-height:120px;line-height:1.5}
+.chat-input::placeholder{color:var(--text-hint)}
+.chat-input:focus{border-color:var(--red-border)}
+.chat-send{width:38px;height:38px;border-radius:50%;background:var(--red);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;color:white;transition:transform 0.1s}
+.chat-send:active{transform:scale(0.9)}
+.typing{display:flex;gap:4px;align-items:center;padding:2px 0}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--text-muted);animation:blink 1.2s infinite}
+.typing span:nth-child(2){animation-delay:0.2s}
+.typing span:nth-child(3){animation-delay:0.4s}
+@keyframes blink{0%,80%,100%{opacity:0.2}40%{opacity:1}}
+
+/* IMPORT */
+.import-zone{border:1.5px dashed var(--border-md);border-radius:var(--r);padding:2rem;text-align:center;cursor:pointer;transition:all 0.15s;background:var(--bg2)}
+.import-zone:hover{border-color:var(--red-border);background:var(--red-dim)}
+.btn{width:100%;padding:11px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;border:1px solid var(--border-md);border-radius:var(--rs);background:transparent;color:var(--text-muted);cursor:pointer;transition:all 0.12s}
+.btn:hover{background:var(--bg3);color:var(--text)}
+.success-banner{background:var(--green-dim);color:var(--green);border-radius:var(--rs);padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:10px;border:1px solid var(--green-border)}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.bar-lbl{font-size:10px;color:var(--text-muted);width:28px;text-align:right;flex-shrink:0}
+.bar-track{flex:1;height:10px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;background:var(--red)}
+.bar-val{font-size:10px;color:var(--text-muted);width:36px;flex-shrink:0}
+
+/* MISC */
+.empty-state{text-align:center;padding:2rem 1rem;font-size:13px;color:var(--text-hint)}
+.alert-row{background:var(--red-dim);border:1px solid var(--red-border);border-radius:var(--rs);padding:10px 14px;font-size:12px;color:var(--red);line-height:1.5}
 </style>
 </head>
 <body>
-<div class="shell">
 
-<div class="header">
-  <div class="header-top">
-    <div class="header-left">
-      <div class="app-eyebrow">inDeauville · 15 nov. 2026</div>
-      <div class="app-title">Road to <span>Marathon</span></div>
-    </div>
-    <div class="score-badge">
-      <div class="score-num" id="today-score">—</div>
-      <div class="score-lbl">aujourd'hui</div>
-    </div>
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-title">42 KM</div>
+    <div class="sidebar-brand-sub">Deauville · 15 nov. 2026</div>
   </div>
-  <div class="countdown-row">
-    <div class="cd-box"><div class="cd-num" id="cd-j">—</div><div class="cd-label">jours</div></div>
-    <div class="cd-box"><div class="cd-num" id="cd-s">—</div><div class="cd-label">semaines</div></div>
-    <div class="cd-box"><div class="cd-num" id="cd-m">—</div><div class="cd-label">mois</div></div>
-    <div class="cd-box streak"><div class="cd-num" id="cd-streak">—</div><div class="cd-label">🔥 streak</div></div>
+  <nav class="sidebar-nav">
+    <button class="snav-btn active" onclick="showTab('accueil',this,true)"><div class="snav-dot"></div>Accueil</button>
+    <button class="snav-btn" onclick="showTab('objectifs',this,true)"><div class="snav-dot"></div>Objectifs</button>
+    <button class="snav-btn" onclick="showTab('seances',this,true)"><div class="snav-dot"></div>Séances</button>
+    <button class="snav-btn" onclick="showTab('suivi',this,true)"><div class="snav-dot"></div>Suivi</button>
+    <button class="snav-btn" onclick="showTab('coach',this,true)"><div class="snav-dot"></div>Coach IA</button>
+  </nav>
+</div>
+
+<div class="desktop-main">
+
+<div class="desk-header">
+  <div>
+    <div style="font-size:11px;color:var(--text-hint);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">Deauville · 15 nov. 2026</div>
+    <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:32px;letter-spacing:-1px;color:var(--text)">Road to <em style="color:var(--red);font-style:normal">3h30</em></div>
+  </div>
+  <div style="display:flex;gap:10px">
+    <div class="cd-box" style="min-width:70px"><div class="cd-num" id="dd-j" style="font-size:22px">—</div><div class="cd-lbl">jours</div></div>
+    <div class="cd-box" style="min-width:70px"><div class="cd-num" id="dd-s" style="font-size:22px">—</div><div class="cd-lbl">semaines</div></div>
+    <div class="cd-box" style="min-width:70px"><div class="cd-num" id="dd-streak" style="font-size:22px;color:var(--red)">—</div><div class="cd-lbl">streak</div></div>
   </div>
 </div>
 
-<nav class="nav">
-  <button class="nav-btn active" onclick="showTab('accueil',this)">Accueil</button>
-  <button class="nav-btn" onclick="showTab('suivi',this)">Suivi</button>
-  <button class="nav-btn" onclick="showTab('course',this)">Course</button>
+<div class="mobile-header">
+  <div class="mh-top">
+    <div class="mh-title">42 <em>KM</em></div>
+    <div class="mh-badge"><div class="mh-days" id="m-days">—</div><div class="mh-lbl">jours</div></div>
+  </div>
+  <div class="cd-row">
+    <div class="cd-box"><div class="cd-num" id="cd-s">—</div><div class="cd-lbl">semaines</div></div>
+    <div class="cd-box"><div class="cd-num" id="cd-streak" style="color:var(--red)">—</div><div class="cd-lbl">streak</div></div>
+    <div class="cd-box"><div class="cd-num" id="cd-score" style="color:var(--green)">—</div><div class="cd-lbl">score j.</div></div>
+  </div>
+</div>
+
+<nav class="mobile-nav">
+  <button class="nbtn active" onclick="showTab('accueil',this)">Accueil</button>
+  <button class="nbtn" onclick="showTab('objectifs',this)">Objectifs</button>
+  <button class="nbtn" onclick="showTab('seances',this)">Séances</button>
+  <button class="nbtn" onclick="showTab('suivi',this)">Suivi</button>
+  <button class="nbtn" onclick="showTab('coach',this)">Coach</button>
 </nav>
 
 <div class="content">
 
-  <!-- ACCUEIL -->
-  <div id="tab-accueil" class="view active">
-    <div class="section-title">entraînement</div>
-    <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
-      <div class="stat-box"><div class="stat-label">km semaine</div><div class="stat-value" id="h-km-home">—<span class="stat-unit"> km</span></div></div>
-      <div class="stat-box"><div class="stat-label">km total</div><div class="stat-value" id="h-total-home">—<span class="stat-unit"> km</span></div></div>
-      <div class="stat-box"><div class="stat-label">séances</div><div class="stat-value" id="h-seances-home">—</div></div>
+<!-- ACCUEIL -->
+<div id="tab-accueil" class="view active">
+  <div class="citation-card">
+    <div class="citation-text" id="citation-text">…</div>
+    <div class="citation-author" id="citation-author"></div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-box"><div class="stat-lbl">km semaine</div><div class="stat-val" id="h-km">—<span class="stat-unit"> km</span></div></div>
+    <div class="stat-box"><div class="stat-lbl">km total</div><div class="stat-val" id="h-total">—<span class="stat-unit"> km</span></div></div>
+    <div class="stat-box"><div class="stat-lbl">séances</div><div class="stat-val" id="h-seances">—</div></div>
+  </div>
+
+  <a class="nolio-link" href="https://www.nolio.io/calendar/" target="_blank">
+    <div class="nolio-ico">N</div>
+    <div style="flex:1"><div class="nolio-name">Ouvrir Nolio</div><div class="nolio-desc">Séance du jour par ton coach</div></div>
+    <div style="font-size:16px;color:var(--text-hint)">↗</div>
+  </a>
+
+  <div class="section-lbl">objectifs du jour</div>
+  <div class="targets-grid" id="targets-grid"></div>
+
+  <div class="section-lbl">nutrition du mois</div>
+  <div class="card" id="nutri-today-card"></div>
+</div>
+
+<!-- OBJECTIFS -->
+<div id="tab-objectifs" class="view">
+  <div class="section-lbl">profil & objectif</div>
+  <div class="card">
+    <div class="profile-row"><div class="pr-label">Marathon cible</div><div class="pr-val">Deauville · 15 nov. 2026</div><div class="pr-num">3h30</div></div>
+    <div class="profile-row"><div class="pr-label">Allure cible</div><div class="pr-val">à maintenir sur 42 km</div><div class="pr-num">4'58"</div></div>
+    <div class="profile-row"><div class="pr-label">Semi-marathon</div><div class="pr-val">Record personnel · potentiel sub 3h30 confirmé</div><div class="pr-num">1h37</div></div>
+    <div class="profile-row"><div class="pr-label">Poids actuel</div><div class="pr-val">174cm · IMC 22.1</div><div class="pr-num">67 kg</div></div>
+    <div class="profile-row" style="border-bottom:none"><div class="pr-label">FC repos</div><div class="pr-val">Forerunner 965 · +7 bpm = repos obligatoire</div><div class="pr-num">45–60</div></div>
+  </div>
+
+  <div class="section-lbl">progression mensuelle</div>
+  <div class="card" style="padding:1rem;overflow-x:auto">
+    <table class="prog-table">
+      <thead><tr>
+        <th>Mois</th>
+        <th>Eau</th>
+        <th>Poids</th>
+        <th>Sommeil</th>
+        <th>Volume</th>
+      </tr></thead>
+      <tbody id="prog-body"></tbody>
+    </table>
+  </div>
+
+  <div class="section-lbl">nutrition par phase</div>
+  <div class="card" id="nutrition-phases"></div>
+
+  <div class="section-lbl">règles permanentes</div>
+  <div class="card">
+    <div class="profile-row"><div class="pr-label">Café</div><div class="pr-val">OK avant séance · pas après 14h · toujours avec un verre d'eau</div></div>
+    <div class="profile-row"><div class="pr-label">Alcool</div><div class="pr-val">Aucun</div></div>
+    <div class="profile-row" style="border-bottom:none"><div class="pr-label">Pesée</div><div class="pr-val">Réveil → toilettes → balance → nu · même heure chaque jour</div></div>
+  </div>
+
+  <div class="alert-row" style="margin-top:8px">⚠ FC de repos +7 bpm au-dessus de ta normale = repos obligatoire ce jour, pas de séance.</div>
+</div>
+
+<!-- SÉANCES -->
+<div id="tab-seances" class="view">
+  <div class="stat-grid" style="grid-template-columns:repeat(2,1fr)">
+    <div class="stat-box"><div class="stat-lbl">séances totales</div><div class="stat-val" id="s-seances">—</div></div>
+    <div class="stat-box"><div class="stat-lbl">km totaux</div><div class="stat-val" id="s-total">—<span class="stat-unit"> km</span></div></div>
+  </div>
+  <div id="seances-charts" style="display:none">
+    <div class="section-lbl">km par mois</div>
+    <div class="card"><div id="month-bars"></div></div>
+    <div class="section-lbl">toutes les courses</div>
+    <div class="card" style="padding:0.5rem 1rem"><div id="all-runs"></div></div>
+  </div>
+  <div id="strava-import-section">
+    <div class="import-zone" onclick="document.getElementById('csv-file').click()">
+      <div style="font-size:28px;margin-bottom:8px">📄</div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px;color:var(--text)">Importer activities.csv</div>
+      <div style="font-size:12px;color:var(--text-muted)">Export depuis Strava</div>
     </div>
-    <a class="nolio-link" href="https://www.nolio.io/calendar/" target="_blank">
-      <div class="nolio-ico">N</div>
-      <div style="flex:1">
-        <div class="nolio-name">Ouvrir Nolio</div>
-        <div class="nolio-desc">Programme coach du jour</div>
-      </div>
-      <div style="font-size:16px;color:#888888">↗</div>
+    <input type="file" id="csv-file" accept=".csv" style="display:none" onchange="handleCSV(this)">
+    <div class="card" style="margin-top:8px">
+      <div style="font-size:12px;font-weight:600;margin-bottom:8px;color:var(--text-muted)">Comment exporter</div>
+      <div style="font-size:12px;color:var(--text-muted);line-height:1.8">1. Strava → Paramètres → Mes données → Demander mes données<br>2. Reçois un email avec un zip<br>3. Extraire → importer activities.csv ici</div>
+    </div>
+    <a href="https://www.strava.com/athlete/delete_your_account" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;padding:12px;background:#FC4C02;border-radius:var(--rs);text-decoration:none">
+      <span style="font-size:13px;font-weight:600;color:white">Exporter mes données Strava ↗</span>
     </a>
-
-    <div class="section-title">mes habitudes — aujourd'hui</div>
-    <div class="card" id="habits-card"></div>
   </div>
-
-  <!-- SUIVI -->
-  <div id="tab-suivi" class="view">
-    <div class="section-title">tableau consolidé</div>
-    <div class="card" style="padding:1rem;overflow-x:auto">
-      <table class="consol-table">
-        <thead>
-          <tr>
-            <th>jour</th>
-            <th>🍰</th><th>🍔</th><th>💧</th><th>⚖️</th>
-            <th>score</th>
-          </tr>
-        </thead>
-        <tbody id="consol-body"></tbody>
-      </table>
-      <div id="consol-empty" class="empty-state">Commence à cocher tes habitudes sur l'accueil</div>
-    </div>
-
-    <div class="section-title">🍰 pas de pâtisserie</div>
-    <div class="card" style="padding:1rem"><div id="hm-patisserie"></div></div>
-
-    <div class="section-title">🍔 pas de junk food</div>
-    <div class="card" style="padding:1rem"><div id="hm-junk"></div></div>
-
-    <div class="section-title">💧 1L d'eau minimum</div>
-    <div class="card" style="padding:1rem"><div id="hm-eau"></div></div>
-
-    <div class="section-title">⚖️ sous 64 kg</div>
-    <div class="card" style="padding:1rem"><div id="hm-poids"></div></div>
+  <div id="strava-loaded" style="display:none">
+    <div class="success-banner" id="import-banner">✓ Activités importées</div>
+    <button class="btn" style="margin-top:4px;font-size:12px" onclick="resetImport()">Réimporter un CSV</button>
   </div>
+</div>
 
-  <!-- COURSE -->
-  <div id="tab-course" class="view">
-    <div class="goal-banner">
-      <div style="font-size:26px">🎯</div>
-      <div>
-        <div class="goal-title">Objectif Deauville — 3h30</div>
-        <div class="goal-sub">Allure cible : 4'58" /km</div>
+<!-- SUIVI -->
+<div id="tab-suivi" class="view">
+  <div id="suivi-content"></div>
+</div>
+
+<!-- COACH -->
+<div id="tab-coach" class="view">
+  <div class="chat-wrap">
+    <div class="chat-msgs" id="chat-msgs">
+      <div class="msg ai">
+        <div class="msg-bubble">Salut. Je connais ton profil : semi en 1h37, objectif Deauville sub 3h30, 7 mois de prépa.
+
+Ton coach Nolio s'occupe des séances. Moi je m'occupe de tout le reste : récupération, nutrition, sommeil, mental, les journées où ça ne se passe pas comme prévu.
+
+Qu'est-ce qui se passe ?</div>
+        <div class="msg-time">Coach IA</div>
       </div>
     </div>
-
-    <a class="nolio-link" href="https://www.nolio.io/calendar/" target="_blank">
-      <div class="nolio-ico">N</div>
-      <div style="flex:1">
-        <div class="nolio-name">Ouvrir Nolio</div>
-        <div class="nolio-desc">Programme coach du jour</div>
-      </div>
-      <div style="font-size:16px;color:#888888">↗</div>
-    </a>
-
-    <div class="section-title">mes stats strava</div>
-    <div class="stat-grid">
-      <div class="stat-box"><div class="stat-label">km cette semaine</div><div class="stat-value" id="h-km">—<span class="stat-unit"> km</span></div></div>
-      <div class="stat-box"><div class="stat-label">km total</div><div class="stat-value" id="h-total">—<span class="stat-unit"> km</span></div></div>
-    </div>
-
-    <div id="strava-charts" style="display:none">
-      <div class="section-title">km par semaine</div>
-      <div class="card"><div id="week-bars"></div></div>
-      <div class="section-title">dernières courses</div>
-      <div class="card" style="padding:0.5rem 1rem"><div id="recent-runs"></div></div>
-    </div>
-
-    <div id="strava-import-section">
-      <div class="import-zone" onclick="document.getElementById('csv-file').click()">
-        <div style="font-size:28px;margin-bottom:8px">📄</div>
-        <div style="font-size:14px;font-weight:700;margin-bottom:4px;color:#F2F2F2">Importer activities.csv</div>
-        <div style="font-size:12px;color:#AAAAAA">Export depuis Strava</div>
-        <div class="strava-badge">S Strava</div>
-      </div>
-      <input type="file" id="csv-file" accept=".csv" style="display:none" onchange="handleCSV(this)">
-      <div class="steps-box">
-        <div class="steps-title">Comment exporter</div>
-        <div class="step"><span class="step-n">1</span>Clique sur le bouton ci-dessous</div>
-        <div class="step"><span class="step-n">2</span>Demander mes données → reçois un email</div>
-        <div class="step"><span class="step-n">3</span>Zip → importe activities.csv ici</div>
-      </div>
-      <a href="https://www.strava.com/athlete/delete_your_account" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;padding:12px 14px;background:var(--strava);border-radius:var(--radius-sm);text-decoration:none">
-        <span style="font-size:13px;font-weight:600;color:white">Exporter mes données Strava ↗</span>
-      </a>
-    </div>
-
-    <div id="strava-loaded" style="display:none">
-      <div class="success-banner" id="import-banner">✓ Activités importées</div>
-      <div class="stat-grid">
-        <div class="stat-box"><div class="stat-label">activités</div><div class="stat-value" id="s-count">—</div></div>
-        <div class="stat-box"><div class="stat-label">km courses</div><div class="stat-value" id="s-total">—<span class="stat-unit"> km</span></div></div>
-      </div>
-      <button class="btn" style="margin-top:4px;font-size:12px" onclick="resetImport()">Réimporter un CSV</button>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chat-input" placeholder="Pose une question…" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="chat-send" onclick="sendMsg()">↑</button>
     </div>
   </div>
+</div>
 
 </div>
+</div>
+
+<!-- EDIT OVERLAY -->
+<div id="edit-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(61,43,26,0.5);z-index:300;align-items:flex-end;justify-content:center" onclick="closeEdit(event)">
+  <div style="background:var(--bg2);border-radius:20px 20px 0 0;padding:1.5rem 1.25rem 2.5rem;width:100%;max-width:480px;border-top:1px solid var(--border-md)" onclick="event.stopPropagation()">
+    <div style="width:36px;height:4px;background:var(--border-md);border-radius:2px;margin:0 auto 1.25rem"></div>
+    <div style="font-size:12px;color:var(--text-hint);margin-bottom:3px" id="edit-habit-name"></div>
+    <div style="font-size:20px;font-weight:700;font-family:'Montserrat',sans-serif;margin-bottom:1.25rem;color:var(--text)" id="edit-date"></div>
+    <div style="display:flex;gap:10px;margin-bottom:10px">
+      <button onclick="editLog(true)" style="flex:1;padding:14px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;border-radius:12px;border:1.5px solid var(--green);background:var(--green-dim);color:var(--green);cursor:pointer">✓ Réussi</button>
+      <button onclick="editLog(false)" style="flex:1;padding:14px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;border-radius:12px;border:1.5px solid var(--red-v);background:var(--red-dim);color:var(--red-v);cursor:pointer">✗ Raté</button>
+    </div>
+    <button onclick="editLog(null)" style="width:100%;padding:11px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;border:1px solid var(--border-md);border-radius:var(--rs);background:transparent;color:var(--text-muted);cursor:pointer">Effacer</button>
+  </div>
 </div>
 
 <script>
 const SUPA_URL='https://jqjkvlafjgdsnodsdzwz.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxamt2bGFmamdkc25vZHNkend6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MzM5NTEsImV4cCI6MjA5MjIwOTk1MX0.9Suc58I_vBcnSA_UmQxCklr6QpYRns64OmiftgkYAHg';
+const CLAUDE_KEY='';
 
-async function sbGet(table){
-  const r=await fetch(`${SUPA_URL}/rest/v1/${table}?select=*`,{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
-  return r.json();
-}
-async function sbUpsert(table,data){
-  await fetch(`${SUPA_URL}/rest/v1/${table}`,{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},body:JSON.stringify(data)});
-}
+async function sbGet(t){try{const r=await fetch(`${SUPA_URL}/rest/v1/${t}?select=*`,{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});return r.json();}catch(e){return[];}}
+async function sbUpsert(t,d){try{await fetch(`${SUPA_URL}/rest/v1/${t}`,{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},body:JSON.stringify(d)});}catch(e){}}
 
-var habits = {};
-var activities = [];
+var habits={};
+var activities=[];
+var chatHistory=[];
 
-var HABITS = [
-  {id:'patisserie', emoji:'🍰', name:'Pas de pâtisserie'},
-  {id:'junk',       emoji:'🍔', name:'Pas de junk food'},
-  {id:'eau',        emoji:'💧', name:'1L d\'eau minimum'},
-  {id:'poids',      emoji:'⚖️', name:'Sous 64 kg'}
+/* Monthly targets — single source of truth */
+var MONTHS_DATA=[
+  {m:'Mai',     mi:4,  eau:'2L',    poidsCible:66.5, sommeil:'6h30', km:'40km',  nutri:'Manger dans les 30min après chaque séance', croissant:'Jamais le matin de séance'},
+  {m:'Juin',    mi:5,  eau:'2.5L',  poidsCible:66,   sommeil:'6h45', km:'45km',  nutri:'Pas de viennoiserie le matin de séance', croissant:'Max 4/semaine'},
+  {m:'Juillet', mi:6,  eau:'2.5L',  poidsCible:65,   sommeil:'7h',   km:'50km',  nutri:'Max 3 viennoiseries dans la semaine', croissant:'Max 3/semaine'},
+  {m:'Août',    mi:7,  eau:'2.5L',  poidsCible:64.5, sommeil:'7h',   km:'55km',  nutri:'Glucides la veille de chaque sortie longue', croissant:'Max 2/semaine'},
+  {m:'Sept.',   mi:8,  eau:'2.5L',  poidsCible:64,   sommeil:'7h',   km:'60km',  nutri:'Tester 1 gel ou 1 datte toutes les 45min sur la longue', croissant:'Max 2/semaine'},
+  {m:'Oct.',    mi:9,  eau:'3L',    poidsCible:63.5, sommeil:'7h15', km:'65km',  nutri:'Carbo-loading 3 jours avant la sortie longue test', croissant:'Max 1/semaine'},
+  {m:'Nov.',    mi:10, eau:'3L',    poidsCible:63,   sommeil:'7h30', km:'Réduit', nutri:'Aliments connus uniquement — rien de nouveau', croissant:'0'},
+  {m:'J-1',     mi:10, eau:'3L',    poidsCible:63,   sommeil:'8h',   km:'—',     nutri:'Petit-déj marathon testé, 3h avant le départ', croissant:'0'},
 ];
 
-function todayStr(){ return new Date().toLocaleDateString('fr-FR'); }
-async function saveH(id){ await sbUpsert('marathon_habits',{id:id,data:habits[id]||{}}); }
-function getVal(id,ds){ return (habits[id]&&habits[id][ds]!==undefined) ? habits[id][ds] : null; }
-function isOk(id,ds){ return getVal(id,ds)===true; }
-function isKo(id,ds){ return getVal(id,ds)===false; }
+function getCurrentMonthData(){
+  var now=new Date();
+  var mi=now.getMonth();
+  return MONTHS_DATA.find(function(m){return m.mi===mi;})||MONTHS_DATA[0];
+}
 
+/* Habits mapped to monthly targets */
+var HABITS=[
+  {id:'eau',     label:'Eau',        subkey:'eau'},
+  {id:'poids',   label:'Poids',      subkey:'poids'},
+  {id:'sommeil', label:'Sommeil',    subkey:'sommeil'},
+
+  {id:'fc',      label:'FC repos',   subkey:'fc'},
+];
+
+var CITATIONS=[
+  {t:"Les champions ne sont pas faits dans les salles de sport. Ils sont faits de ce qu'ils ont en eux — désirs, rêves, visions.",a:"Muhammad Ali"},
+  {t:"Ce n'est pas les muscles qui font courir, c'est le cœur.",a:"Emil Zátopek"},
+  {t:"La douleur est temporaire. La fierté d'avoir abandonné dure éternellement.",a:"Lance Armstrong"},
+  {t:"Tu n'as pas besoin d'être rapide. Tu as juste besoin d'être plus rapide que toi hier.",a:"Anonyme"},
+  {t:"Le corps accomplit ce que l'esprit lui ordonne.",a:"Jim Ryun"},
+  {t:"Sub 3h30, c'est pas un rêve. C'est un plan.",a:"Pour toi, Deauville 2026"},
+  {t:"La beauté du marathon, c'est qu'on ne sait jamais ce qu'on est capable de faire avant de l'avoir fait.",a:"Bill Rodgers"},
+  {t:"Quand tu penses que tu ne peux plus, tu peux encore courir 10 minutes.",a:"Bill Bowerman"},
+  {t:"Le marathon ne ment pas. Il t'oblige à être honnête avec toi-même.",a:"George Sheehan"},
+  {t:"Chaque matin tu as le choix : rester au lit ou aller courir. Ce choix répété 7 mois s'appelle Deauville.",a:"Coach IA"},
+  {t:"Ton semi en 1h37 ne ment pas. Tu as ce qu'il faut.",a:"Coach IA"},
+  {t:"La récupération n'est pas de la faiblesse. C'est là que tu progresses.",a:"Coach IA"},
+  {t:"67 kg aujourd'hui, 63 kg le jour J. 4 kg = 8 à 12 minutes. C'est là.",a:"Coach IA"},
+  {t:"Dormir 7h c'est aussi important que courir. Ton corps se répare la nuit.",a:"Coach IA"},
+];
+
+/* helpers */
+function todayStr(){return new Date().toLocaleDateString('fr-FR');}
+function getVal(id,ds){return(habits[id]&&habits[id][ds]!==undefined)?habits[id][ds]:null;}
+function isOk(id,ds){return getVal(id,ds)===true;}
+
+/* ── COUNTDOWN ── */
 function calcCountdown(){
   var target=new Date('2026-11-15T08:00:00');
   var now=new Date();
-  var start=new Date('2025-11-15');
-  var diff=target-now;
-  var totalDays=Math.round((target-start)/86400000);
-  var daysLeft=Math.max(0,Math.round(diff/86400000));
-  document.getElementById('cd-j').textContent=daysLeft;
-  document.getElementById('cd-s').textContent=Math.round(daysLeft/7);
-  document.getElementById('cd-m').textContent=Math.round(daysLeft/30);
-  var streak=0, checkD=new Date(); checkD.setHours(0,0,0,0);
-  while(true){
+  var days=Math.max(0,Math.round((target-now)/86400000));
+  var weeks=Math.round(days/7);
+  var streak=0;
+  var checkD=new Date();checkD.setHours(0,0,0,0);
+  for(var i=0;i<365;i++){
     var ds=checkD.toLocaleDateString('fr-FR');
-    var hasAny=HABITS.some(function(h){return getVal(h.id,ds)!==null;});
-    if(!hasAny) break;
     var allDone=HABITS.every(function(h){return isOk(h.id,ds);});
-    if(allDone){streak++;checkD.setDate(checkD.getDate()-1);}
-    else break;
+    if(allDone){streak++;checkD.setDate(checkD.getDate()-1);}else break;
   }
-  document.getElementById('cd-streak').textContent=streak;
-}
-
-function showTab(id,btn){
-  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
-  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
-  document.getElementById('tab-'+id).classList.add('active');
-  btn.classList.add('active');
-}
-
-function renderHabitHome(){
   var today=todayStr();
   var score=HABITS.filter(function(h){return isOk(h.id,today);}).length;
   var logged=HABITS.filter(function(h){return getVal(h.id,today)!==null;}).length;
-  document.getElementById('today-score').textContent= logged===0 ? '—' : score+'/'+HABITS.length;
+  var scoreStr=logged===0?'—':score+'/'+HABITS.length;
+  ['m-days'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=days;});
+  ['dd-j'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=days;});
+  ['cd-s','dd-s'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=weeks;});
+  ['cd-streak','dd-streak'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=streak||'0';});
+  ['cd-score'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=scoreStr;});
+}
 
-  document.getElementById('habits-card').innerHTML=HABITS.map(function(h){
-    var val=getVal(h.id,today);
-    var yesOn=val===true?'yes-on':'';
-    var noOn=val===false?'no-on':'';
-    var statusTxt=val===null?'':val===true?'réussi aujourd\'hui ✓':'raté aujourd\'hui ✗';
-    var statusCls=val===null?'':val===true?'ok':'ko';
-    return '<div class="habit-row">'+
-      '<div class="habit-emoji">'+h.emoji+'</div>'+
-      '<div class="habit-info">'+
-        '<div class="habit-name">'+h.name+'</div>'+
-        (statusTxt?'<div class="habit-status '+statusCls+'">'+statusTxt+'</div>':'')+
-      '</div>'+
-      '<div class="toggle-wrap">'+
-        '<button class="toggle-btn '+yesOn+'" onclick="logH(\''+h.id+'\',true)">✓</button>'+
-        '<button class="toggle-btn '+noOn+'" onclick="logH(\''+h.id+'\',false)">✗</button>'+
-      '</div>'+
-    '</div>';
+/* ── CITATION ── */
+function renderCitation(){
+  var idx=Math.floor(Date.now()/86400000)%CITATIONS.length;
+  var c=CITATIONS[idx];
+  document.getElementById('citation-text').textContent=c.t;
+  document.getElementById('citation-author').textContent='— '+c.a;
+}
+
+/* ── TARGET CARDS ── */
+function getTargetValue(habit,md){
+  if(habit.id==='eau')return{val:md.eau,unit:'',hint:'objectif eau du jour'};
+  if(habit.id==='poids')return{val:md.poidsCible+'kg',unit:'',hint:'peser ce matin'};
+  if(habit.id==='sommeil')return{val:md.sommeil,unit:'',hint:'minimum cette nuit'};
+  if(habit.id==='nutri')return{val:'Nutri',unit:'',hint:md.nutri};
+  if(habit.id==='fc')return{val:'FC',unit:'',hint:'noter au réveil'};
+  return{val:'—',unit:'',hint:''};
+}
+
+function renderTargets(){
+  var md=getCurrentMonthData();
+  var today=todayStr();
+  var el=document.getElementById('targets-grid');if(!el)return;
+  el.innerHTML=HABITS.map(function(h){
+    var v=getVal(h.id,today);
+    var tv=getTargetValue(h,md);
+    var cls='target-card';
+    var statusHtml='';
+    var valCls='';
+    if(v===true){cls+=' done';statusHtml='<div class="tc-status ok">✓<\/div>';valCls=' done-val';}
+    else if(v===false){cls+=' failed';statusHtml='<div class="tc-status ko">✗<\/div>';valCls=' fail-val';}
+    return '<div class="'+cls+'" onclick="toggleTarget(\''+h.id+'\')">'+
+      statusHtml+
+      '<div class="tc-value'+valCls+'">'+tv.val+'<span class="tc-unit">'+tv.unit+'<\/span><\/div>'+
+      '<div class="tc-label">'+tv.hint+'<\/div>'+
+    '<\/div>';
   }).join('');
 }
 
-async function logH(id,val){
-  if(!habits[id]) habits[id]={};
+async function toggleTarget(id){
   var today=todayStr();
-  if(habits[id][today]===val){ delete habits[id][today]; }
-  else{ habits[id][today]=val; }
-  renderHabitHome();
-  renderSuivi();
+  if(!habits[id])habits[id]={};
+  var cur=getVal(id,today);
+  if(cur===null)habits[id][today]=true;
+  else if(cur===true)habits[id][today]=false;
+  else delete habits[id][today];
+  renderTargets();
   calcCountdown();
-  await saveH(id);
+  if(document.getElementById('tab-suivi').classList.contains('active'))renderSuivi();
+  await sbUpsert('marathon_habits',{id:id,data:habits[id]||{}});
 }
 
+/* ── NUTRITION TODAY ── */
+function renderNutriToday(){
+  var md=getCurrentMonthData();
+  var el=document.getElementById('nutri-today-card');if(!el)return;
+  el.innerHTML='<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px">'+md.m+'<\/div>'+
+    '<div style="font-size:13px;color:var(--text-muted);line-height:1.6">'+md.nutri+'<\/div>'+
+    '<div style="font-size:11px;color:var(--text-hint);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">Viennoiseries : '+md.croissant+'<\/div>';
+}
+
+/* ── PROG TABLE ── */
+function renderProgTable(){
+  var now=new Date();var mi=now.getMonth();
+  var body=document.getElementById('prog-body');if(!body)return;
+  body.innerHTML=MONTHS_DATA.map(function(p){
+    var isCurrent=p.mi===mi&&p.m!=='J-1';
+    return '<tr class="'+(isCurrent?'current':'')+'">'+
+      '<td>'+(isCurrent?'→ ':'')+p.m+'<\/td>'+
+      '<td><span class="target-num">'+p.eau+'<\/span><\/td>'+
+      '<td><span class="target-num">'+p.poidsCible+'kg<\/span><\/td>'+
+      '<td><span class="target-num">'+p.sommeil+'<\/span><\/td>'+
+      '<td><span class="target-num">'+p.km+'<\/span><\/td>'+
+    '<\/tr>';
+  }).join('');
+}
+
+/* ── NUTRITION PHASES ── */
+function renderNutritionPhases(){
+  var el=document.getElementById('nutrition-phases');if(!el)return;
+  var phases=[
+    {t:'Mai–Juin',items:['Manger dans les 30min après chaque séance (glucides + protéines)','Petit-déj avant toute sortie de plus de 1h','Café : OK avant séance, pas après 14h, toujours avec de l\'eau']},
+    {t:'Juillet–Août',items:['Max 3 viennoiseries par semaine','Tester nutrition de course : gel, datte, banane (toutes les 45min)','Glucides la veille des sorties longues : pâtes, riz, patate douce']},
+    {t:'Septembre–Octobre',items:['Affiner ce qui marche sur les longues','Carbo-loading test 3 jours avant la sortie longue d\'oct.','Supprimer ce qui pèse sur l\'estomac en course']},
+    {t:'Novembre — J-7 à J-1',items:['Carbo-loading léger les 3 derniers jours','J-3 à J-1 : aliments connus, pas de fibres en excès','Matin du marathon : ton petit-déj testé, 3h avant le départ']},
+  ];
+  el.innerHTML=phases.map(function(ph){
+    return '<div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)">'+
+      '<div style="font-size:11px;font-weight:700;color:var(--red);letter-spacing:0.5px;margin-bottom:8px">'+ph.t+'<\/div>'+
+      ph.items.map(function(it){return '<div style="font-size:12px;color:var(--text-muted);padding:3px 0 3px 12px;border-left:2px solid var(--border-md);margin-bottom:3px;line-height:1.5">'+it+'<\/div>';}).join('')+
+    '<\/div>';
+  }).join('').replace(/<\/div>(\s*)$/, '<\/div>').replace(/border-bottom:1px solid var\(--border\)"><\/div>\s*$/, '');
+  var last=el.querySelectorAll('[style*="border-bottom"]');
+  if(last.length)last[last.length-1].style.borderBottom='none';
+}
+
+/* ── SUIVI ── */
 function renderSuivi(){
-  renderConsolidated();
+  var el=document.getElementById('suivi-content');if(!el)return;
+  el.innerHTML=HABITS.map(function(h){
+    return '<div class="section-lbl">'+h.label+'<\/div>'+
+      '<div class="card" style="padding:1rem"><div id="hm-'+h.id+'"><\/div><\/div>';
+  }).join('');
   HABITS.forEach(function(h){renderHeatmap(h.id,'hm-'+h.id);});
 }
 
-function parseDate(ds){
-  var p=ds.split('/');
-  return new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0]));
-}
-
-function renderConsolidated(){
-  var allDates=new Set();
-  HABITS.forEach(function(h){
-    if(habits[h.id]) Object.keys(habits[h.id]).forEach(function(d){allDates.add(d);});
-  });
-  var dates=Array.from(allDates).sort(function(a,b){return parseDate(b)-parseDate(a);}).slice(0,30);
-  var body=document.getElementById('consol-body');
-  var empty=document.getElementById('consol-empty');
-  if(!dates.length){body.innerHTML='';empty.style.display='block';return;}
-  empty.style.display='none';
-  body.innerHTML=dates.map(function(ds){
-    var score=HABITS.filter(function(h){return isOk(h.id,ds);}).length;
-    var scls=score===HABITS.length?'full':score===0?'zero':'';
-    return '<tr>'+
-      '<td>'+ds+'</td>'+
-      HABITS.map(function(h){
-        var v=getVal(h.id,ds);
-        var cls=v===true?'ok':v===false?'ko':'mt';
-        var txt=v===true?'✓':v===false?'✗':'';
-        return '<td><div class="c-dot '+cls+'">'+txt+'</div></td>';
-      }).join('')+
-      '<td><span class="c-score '+scls+'">'+score+'/'+HABITS.length+'</span></td>'+
-    '</tr>';
-  }).join('');
-}
-
-function buildWeeks(){
-  var today=new Date(); today.setHours(0,0,0,0);
-  var tomorrow=new Date(today); tomorrow.setDate(today.getDate()+1);
-  var marathon=new Date('2026-11-15'); marathon.setHours(0,0,0,0);
-  var mo=tomorrow.getDay()===0?6:tomorrow.getDay()-1;
-  var start=new Date(tomorrow); start.setDate(tomorrow.getDate()-mo);
-  var weeks=[]; var cur=new Date(start);
-  while(cur<=marathon){
-    var week=[];
-    for(var w=0;w<7;w++){week.push(new Date(cur));cur.setDate(cur.getDate()+1);}
-    weeks.push(week);
-  }
-  return weeks;
-}
-
 function renderHeatmap(id,elId){
-  var el=document.getElementById(elId);
-  if(!el) return;
+  var el=document.getElementById(elId);if(!el)return;
   var data=habits[id]||{};
-  var today=new Date(); today.setHours(0,0,0,0);
-  var marathon=new Date('2026-11-15'); marathon.setHours(0,0,0,0);
-  var weeks=buildWeeks();
+  var today=new Date();today.setHours(0,0,0,0);
+  var start=new Date(today);
+  var dow=start.getDay()===0?6:start.getDay()-1;
+  start.setDate(start.getDate()-dow-7*11);
+  var weeks=[];var cur=new Date(start);
+  for(var w=0;w<14;w++){
+    var wk=[];for(var i=0;i<7;i++){wk.push(new Date(cur));cur.setDate(cur.getDate()+1);}
+    weeks.push(wk);
+  }
+  var MONTHS=['J','F','M','A','M','J','J','A','S','O','N','D'];var lastM=-1;
   var keys=Object.keys(data);
-  var success=keys.filter(function(k){return data[k]===true;}).length;
-  var rate=keys.length?Math.round((success/keys.length)*100):null;
-  var lastMonth=-1;
-  var MONTHS=['J','F','M','A','M','J','J','A','S','O','N','D'];
-  var grid=weeks.map(function(week){
+  var ok=keys.filter(function(k){return data[k]===true;}).length;
+  var rate=keys.length?Math.round(ok/keys.length*100):null;
+  el.innerHTML=weeks.map(function(wk){
     var ml='';
-    for(var k=0;k<week.length;k++){
-      var d=new Date(week[k]); d.setHours(0,0,0,0);
-      if(d>=today&&d.getMonth()!==lastMonth){lastMonth=d.getMonth();ml=MONTHS[lastMonth];break;}
-    }
-    return '<div class="heatmap-row">'+
-      '<div class="hm-mlbl">'+ml+'</div>'+
-      '<div class="hm-week">'+
-      week.map(function(day){
-        var d=new Date(day); d.setHours(0,0,0,0);
+    wk.forEach(function(d){var dd=new Date(d);dd.setHours(0,0,0,0);if(dd.getMonth()!==lastM&&dd>=today){lastM=dd.getMonth();ml=MONTHS[lastM];}});
+    return '<div class="hm-row"><div class="hm-mlbl">'+ml+'<\/div><div class="hm-week">'+
+      wk.map(function(day){
+        var d=new Date(day);d.setHours(0,0,0,0);
         var ds=d.toLocaleDateString('fr-FR');
         var isToday=d.getTime()===today.getTime();
-        var isMarathon=d.getTime()===marathon.getTime();
-        var isFuture=d>today;
         var v=data[ds];
         var cls='hm-day';
-        if(isMarathon) cls+=' marathon';
-        else if(v===true) cls+=' logged';
-        else if(v===false) cls+=' failed';
-        else if(isFuture) cls+=' future';
-        if(isToday) cls+=' today';
-        return '<div class="'+cls+'" title="'+ds+'" onclick="editDay(\''+id+'\',\''+ds+'\')"></div>';
-      }).join('')+
-      '</div></div>';
-  }).join('');
-  el.innerHTML=
-    '<div class="hm-header"><div class="hm-spacer"></div><div class="hm-days-hdr">'+
-    ['L','M','M','J','V','S','D'].map(function(d){return '<div class="hm-day-lbl">'+d+'</div>';}).join('')+
-    '</div></div>'+grid+
-    '<div class="hm-legend">'+
-    '<div class="hm-dot" style="background:var(--green-light);border:1px solid var(--green)"></div> réussi'+
-    '<div class="hm-dot" style="background:var(--red-light);border:1px solid var(--red);margin-left:8px"></div> raté'+
-    (rate!==null?'<span style="margin-left:auto;color:#BBBBBB">taux : <b>'+rate+'%</b></span>':'')+
-    '</div>';
+        if(v===true)cls+=' ok';
+        else if(v===false)cls+=' ko';
+        else if(d>today)cls+=' future';
+        if(isToday)cls+=' today';
+        return '<div class="'+cls+'" title="'+ds+'" onclick="editDay(\''+id+'\',\''+ds+'\')"><\/div>';
+      }).join('')+'<\/div><\/div>';
+  }).join('')+
+  (rate!==null?'<div style="font-size:11px;color:var(--text-hint);margin-top:8px;text-align:right">Taux : <b style="color:var(--text-muted)">'+rate+'%<\/b><\/div>':'');
 }
 
-/* STRAVA */
+/* ── STRAVA ── */
 function parseCSVLine(line){
   var result=[],cur='',inQ=false;
   for(var i=0;i<line.length;i++){
     var c=line[i];
-    if(c==='"'){inQ=!inQ;}
-    else if(c===','&&!inQ){result.push(cur.trim());cur='';}
-    else{cur+=c;}
+    if(c==='"'){inQ=!inQ;}else if(c===','&&!inQ){result.push(cur.trim());cur='';}else{cur+=c;}
   }
-  result.push(cur.trim());
-  return result;
+  result.push(cur.trim());return result;
 }
 function findCol(headers,names){
   for(var n of names){
     var idx=headers.findIndex(function(h){return h.toLowerCase().replace(/"/g,'').includes(n.toLowerCase());});
-    if(idx>=0) return idx;
+    if(idx>=0)return idx;
   }
   return -1;
 }
 function paceStr(dist,secs){
-  if(!dist||!secs) return '—';
-  var spk=secs/dist;
-  var m=Math.floor(spk/60),s=Math.round(spk%60);
+  if(!dist||!secs)return '—';
+  var spk=secs/dist,m=Math.floor(spk/60),s=Math.round(spk%60);
   return m+':'+(s<10?'0':'')+s;
 }
 function handleCSV(input){
-  var file=input.files[0]; if(!file) return;
+  var file=input.files[0];if(!file)return;
   var reader=new FileReader();
-  reader.onload=function(e){parseAndDisplay(e.target.result,file.name);};
+  reader.onload=function(e){parseAndDisplay(e.target.result);};
   reader.readAsText(file);
 }
-async function parseAndDisplay(text,fname){
+async function parseAndDisplay(text){
   var lines=text.split('\n').filter(function(l){return l.trim();});
-  if(lines.length<2){alert('Fichier CSV invalide');return;}
+  if(lines.length<2){alert('CSV invalide');return;}
   var headers=parseCSVLine(lines[0]);
   var iName=findCol(headers,['Activity Name',"Nom de l'activité"]);
   var iDate=findCol(headers,['Activity Date',"Date de l'activité"]);
   var iType=findCol(headers,['Activity Type',"Type d'activité"]);
   var iDist=findCol(headers,['Distance']);
   var iTime=findCol(headers,['Moving Time','Elapsed Time']);
-  if(iDist<0) iDist=3;
+  if(iDist<0)iDist=3;
   var acts=[];
   for(var i=1;i<lines.length;i++){
-    var cols=parseCSVLine(lines[i]);
-    if(cols.length<3) continue;
+    var cols=parseCSVLine(lines[i]);if(cols.length<3)continue;
     var dist=parseFloat(cols[iDist]||'0')||0;
     var distKm=dist>500?dist/1000:dist;
-    acts.push({
-      name:(cols[iName]||'Activité').replace(/^"|"$/g,''),
-      date:(cols[iDate]||'').replace(/^"|"$/g,'').slice(0,10),
-      type:(cols[iType]||'Run').replace(/^"|"$/g,''),
-      dist:distKm,
-      movingTime:parseInt(cols[iTime]||'0')||0
-    });
+    acts.push({name:(cols[iName]||'Activité').replace(/^"|"$/g,''),date:(cols[iDate]||'').replace(/^"|"$/g,'').slice(0,10),type:(cols[iType]||'Run').replace(/^"|"$/g,''),dist:distKm,movingTime:parseInt(cols[iTime]||'0')||0});
   }
   if(!acts.length){alert('Aucune activité trouvée');return;}
   activities=acts;
   await sbUpsert('marathon_activities',{id:'strava',data:acts});
-  renderCourse(acts,fname);
+  renderCourse(acts);
 }
-function renderCourse(acts,fname){
+function renderCourse(acts){
   var runs=acts.filter(function(a){var t=a.type.toLowerCase();return t.includes('run')||t.includes('course')||t.includes('trail');});
   var totalKm=runs.reduce(function(s,a){return s+a.dist;},0);
+  document.getElementById('s-seances').textContent=runs.length;
+  document.getElementById('h-seances').textContent=runs.length;
+  document.getElementById('s-total').innerHTML=Math.round(totalKm)+'<span class="stat-unit"> km<\/span>';
+  document.getElementById('h-total').innerHTML=Math.round(totalKm)+'<span class="stat-unit"> km<\/span>';
   var now=new Date();
-  var wkStart=new Date(now);wkStart.setDate(now.getDate()-(now.getDay()===0?6:now.getDay()-1));
+  var wkStart=new Date(now);wkStart.setDate(now.getDate()-(now.getDay()===0?6:now.getDay()-1));wkStart.setHours(0,0,0,0);
   var weekKm=runs.filter(function(a){return new Date(a.date)>=wkStart;}).reduce(function(s,a){return s+a.dist;},0);
-  var todayDate=new Date(); todayDate.setHours(0,0,0,0);
-  var runsFromToday=runs.filter(function(a){return new Date(a.date)>=todayDate;});
-  var totalKmFromToday=runsFromToday.reduce(function(s,a){return s+a.dist;},0);
-  var seancesFromToday=runsFromToday.length;
-  document.getElementById('h-km').innerHTML=weekKm.toFixed(1)+'<span class="stat-unit"> km</span>';
-  document.getElementById('h-total').innerHTML=Math.round(totalKmFromToday)+'<span class="stat-unit"> km</span>';
-  document.getElementById('h-km-home').innerHTML=weekKm.toFixed(1)+'<span class="stat-unit"> km</span>';
-  document.getElementById('h-total-home').innerHTML=Math.round(totalKmFromToday)+'<span class="stat-unit"> km</span>';
-  document.getElementById('h-seances-home').textContent=seancesFromToday;
-  document.getElementById('import-banner').textContent='✓ '+acts.length+' activités importées';
-  document.getElementById('s-count').textContent=acts.length;
-  document.getElementById('s-total').innerHTML=Math.round(totalKm)+'<span class="stat-unit"> km</span>';
-  var weeklyMap={};
-  runs.forEach(function(a){var wk=a.date?a.date.slice(0,7):'';if(wk)weeklyMap[wk]=(weeklyMap[wk]||0)+a.dist;});
-  var sortedW=Object.entries(weeklyMap).sort(function(a,b){return a[0].localeCompare(b[0]);}).slice(-10);
-  var maxK=Math.max.apply(null,sortedW.map(function(w){return w[1];}).concat([1]));
-  document.getElementById('week-bars').innerHTML=sortedW.map(function(e){
-    return '<div class="bar-row"><div class="bar-lbl">'+e[0].slice(5)+'</div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round((e[1]/maxK)*100)+'%"></div></div><div class="bar-val">'+Math.round(e[1])+'km</div></div>';
+  document.getElementById('h-km').innerHTML=weekKm.toFixed(1)+'<span class="stat-unit"> km<\/span>';
+  var monthlyMap={};
+  runs.forEach(function(a){var mk=a.date?a.date.slice(0,7):'';if(mk)monthlyMap[mk]=(monthlyMap[mk]||0)+a.dist;});
+  var sortedM=Object.entries(monthlyMap).sort(function(a,b){return a[0].localeCompare(b[0]);});
+  var maxK=Math.max.apply(null,sortedM.map(function(w){return w[1];}).concat([1]));
+  document.getElementById('month-bars').innerHTML=sortedM.map(function(e){
+    return '<div class="bar-row"><div class="bar-lbl">'+e[0].slice(5)+'<\/div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(e[1]/maxK*100)+'%"><\/div><\/div><div class="bar-val">'+Math.round(e[1])+'km<\/div><\/div>';
   }).join('');
-  document.getElementById('recent-runs').innerHTML=runs.slice(0,6).map(function(a){
-    return '<div class="act-item"><div class="act-icon">🏃</div><div class="act-info"><div class="act-name">'+a.name+'</div><div class="act-date">'+a.date+'</div></div><div class="act-right"><div class="act-dist">'+a.dist.toFixed(1)+' km</div><div class="act-pace">'+paceStr(a.dist,a.movingTime)+' /km</div></div></div>';
+  document.getElementById('all-runs').innerHTML=runs.map(function(a){
+    return '<div class="seance-item"><div class="seance-icon">🏃<\/div><div class="seance-info"><div class="seance-name">'+a.name+'<\/div><div class="seance-date">'+a.date+'<\/div><\/div><div class="seance-right"><div class="seance-dist">'+a.dist.toFixed(1)+' km<\/div><div class="seance-pace">'+paceStr(a.dist,a.movingTime)+' /km<\/div><\/div><\/div>';
   }).join('');
+  document.getElementById('import-banner').textContent='✓ '+acts.length+' activités · '+runs.length+' courses · '+Math.round(totalKm)+' km';
   document.getElementById('strava-import-section').style.display='none';
   document.getElementById('strava-loaded').style.display='block';
-  document.getElementById('strava-charts').style.display='block';
+  document.getElementById('seances-charts').style.display='block';
 }
 function resetImport(){
   activities=[];
   sbUpsert('marathon_activities',{id:'strava',data:[]});
-  document.getElementById('strava-import-section').style.display='block';
-  document.getElementById('strava-loaded').style.display='none';
-  document.getElementById('strava-charts').style.display='none';
+  ['strava-import-section'].forEach(function(id){document.getElementById(id).style.display='block';});
+  ['strava-loaded','seances-charts'].forEach(function(id){document.getElementById(id).style.display='none';});
   document.getElementById('csv-file').value='';
+  document.getElementById('h-km').innerHTML='—<span class="stat-unit"> km<\/span>';
+  document.getElementById('h-total').innerHTML='—<span class="stat-unit"> km<\/span>';
+  document.getElementById('h-seances').textContent='—';
 }
 
-/* EDIT DAY */
+/* ── EDIT DAY ── */
 var editState={id:null,ds:null};
 function editDay(id,ds){
-  var marathon=new Date('2026-11-15'); marathon.setHours(0,0,0,0);
-  var d=parseDate(ds);
-  if(d.getTime()===marathon.getTime()) return;
   editState={id:id,ds:ds};
-  var cfg=HABITS.find(function(h){return h.id===id;});
-  document.getElementById('edit-habit-name').textContent=cfg.emoji+' '+cfg.name;
+  var h=HABITS.find(function(h){return h.id===id;});
+  document.getElementById('edit-habit-name').textContent=h.label;
   document.getElementById('edit-date').textContent=ds;
   document.getElementById('edit-overlay').style.display='flex';
 }
 async function editLog(val){
-  var id=editState.id, ds=editState.ds;
-  if(!id||!ds) return;
-  if(!habits[id]) habits[id]={};
-  if(val===null){ delete habits[id][ds]; }
-  else{ habits[id][ds]=val; }
-  closeEdit();
-  renderHabitHome();
-  renderSuivi();
-  calcCountdown();
-  await saveH(id);
+  var id=editState.id,ds=editState.ds;if(!id||!ds)return;
+  if(!habits[id])habits[id]={};
+  if(val===null){delete habits[id][ds];}else{habits[id][ds]=val;}
+  closeEdit();renderTargets();calcCountdown();
+  if(document.getElementById('tab-suivi').classList.contains('active'))renderSuivi();
+  await sbUpsert('marathon_habits',{id:id,data:habits[id]||{}});
 }
 function closeEdit(e){
-  if(e&&e.target!==document.getElementById('edit-overlay')) return;
+  if(e&&e.target!==document.getElementById('edit-overlay'))return;
   document.getElementById('edit-overlay').style.display='none';
   editState={id:null,ds:null};
 }
 
-/* INIT */
+/* ── COACH IA ── */
+var SYSTEM_PROMPT=`Tu es le coach marathon de l'utilisateur. Profil :
+- Objectif : Marathon de Deauville le 15 novembre 2026, sub 3h30 (allure 4'58"/km)
+- Niveau : Semi 1h37, Marathon 4h00, 30-50km/semaine actuellement
+- Morpho : 67kg, 174cm. Poids cible J-1 : 63kg
+- Sommeil : 6-7h (objectif 7h min), Hydratation : 1-1.5L (objectif 2.5L)
+- Rythme : télétravail, enfants, court le matin. Pas d'alcool
+- Coach séances : Nolio (1 semaine à l'avance max)
+- Forerunner 965 : surveiller FC repos, +7 bpm = repos
+
+Tu gères tout sauf les séances (c'est Nolio). Récupération, nutrition, sommeil, mental, organisation quotidienne.
+Réponses courtes, directes, personnalisées. Pas de généralités.`;
+
+function addMsg(role,text){
+  var msgs=document.getElementById('chat-msgs');
+  var div=document.createElement('div');div.className='msg '+role;
+  var time=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  div.innerHTML='<div class="msg-bubble">'+text.replace(/[<]/g,'&lt;').replace(/[>]/g,'&gt;').replace(/\n/g,'<br>')+'<\/div><div class="msg-time">'+(role==='user'?'Toi':'Coach · '+time)+'<\/div>';
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+function showTyping(){
+  var msgs=document.getElementById('chat-msgs');
+  var div=document.createElement('div');div.className='msg ai';div.id='typing-ind';
+  div.innerHTML='<div class="msg-bubble"><div class="typing"><span><\/span><span><\/span><span><\/span><\/div><\/div>';
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+function removeTyping(){var t=document.getElementById('typing-ind');if(t)t.remove();}
+async function sendMsg(){
+  var input=document.getElementById('chat-input');
+  var text=input.value.trim();if(!text)return;
+  input.value='';input.style.height='auto';
+  addMsg('user',text);
+  chatHistory.push({role:'user',content:text});
+  if(!CLAUDE_KEY){
+    showTyping();
+    setTimeout(function(){removeTyping();addMsg('ai','Le Coach IA nécessite une clé API Claude (configurer CLAUDE_KEY dans le code).');},800);
+    return;
+  }
+  showTyping();
+  try{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYSTEM_PROMPT,messages:chatHistory})});
+    var d=await r.json();removeTyping();
+    var reply=d.content&&d.content[0]?d.content[0].text:'Erreur.';
+    addMsg('ai',reply);chatHistory.push({role:'assistant',content:reply});
+  }catch(e){removeTyping();addMsg('ai','Erreur de connexion.');}
+}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+
+/* ── NAV ── */
+function showTab(id,btn,isSidebar){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
+  document.querySelectorAll('.nbtn,.snav-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  var ids=['accueil','objectifs','seances','suivi','coach'];
+  var idx=ids.indexOf(id);
+  if(isSidebar){var mbs=document.querySelectorAll('.nbtn');if(mbs[idx])mbs[idx].classList.add('active');}
+  else{var sbs=document.querySelectorAll('.snav-btn');if(sbs[idx])sbs[idx].classList.add('active');}
+  if(id==='suivi')renderSuivi();
+}
+
+/* ── INIT ── */
 async function loadAll(){
   try{
-    var [h,a]=await Promise.all([sbGet('marathon_habits'),sbGet('marathon_activities')]);
+    var[h,a]=await Promise.all([sbGet('marathon_habits'),sbGet('marathon_activities')]);
     habits={};
-    if(Array.isArray(h)) h.forEach(function(row){habits[row.id]=row.data||{};});
-    var acts=Array.isArray(a)?a:[];
-    var strava=acts.find(function(r){return r.id==='strava';});
-    if(strava&&strava.data&&strava.data.length){
-      activities=strava.data;
-      renderCourse(activities,'');
-    }
-  }catch(e){console.error(e);}
+    if(Array.isArray(h))h.forEach(function(row){habits[row.id]=row.data||{};});
+    var strava=(Array.isArray(a)?a:[]).find(function(r){return r.id==='strava';});
+    if(strava&&strava.data&&strava.data.length){activities=strava.data;renderCourse(activities);}
+  }catch(e){}
+  renderCitation();
   calcCountdown();
-  renderHabitHome();
-  renderSuivi();
+  renderTargets();
+  renderNutriToday();
+  renderProgTable();
+  renderNutritionPhases();
 }
 loadAll();
 </script>
-
-<!-- EDIT POPUP -->
-<div id="edit-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:100;align-items:flex-end;justify-content:center" onclick="closeEdit(event)">
-  <div style="background:#1A1A1A;border-radius:20px 20px 0 0;padding:1.5rem 1.25rem 2.5rem;width:100%;max-width:480px" onclick="event.stopPropagation()">
-    <div style="width:36px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 1.25rem"></div>
-    <div style="font-size:13px;color:#555;margin-bottom:4px" id="edit-habit-name"></div>
-    <div style="font-size:18px;font-weight:700;margin-bottom:1.25rem;color:#F2F2F2" id="edit-date"></div>
-    <div style="display:flex;gap:10px;margin-bottom:10px">
-      <button onclick="editLog(true)" style="flex:1;padding:14px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;border-radius:12px;border:1.5px solid #2ECC8A;background:rgba(46,204,138,0.15);color:#2ECC8A;cursor:pointer">✓ Réussi</button>
-      <button onclick="editLog(false)" style="flex:1;padding:14px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;border-radius:12px;border:1.5px solid #FF5A5A;background:rgba(255,90,90,0.15);color:#FF5A5A;cursor:pointer">✗ Raté</button>
-    </div>
-    <button onclick="editLog(null)" style="width:100%;padding:11px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;border:1px solid rgba(255,255,255,0.12);border-radius:10px;background:transparent;color:#888;cursor:pointer">Effacer ce jour</button>
-  </div>
-</div>
 </body>
 </html>
