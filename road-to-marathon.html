@@ -256,8 +256,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:colu
 
   <div class="stat-grid">
     <div class="stat-box"><div class="stat-lbl">km semaine</div><div class="stat-val" id="h-km">—<span class="stat-unit"> km</span></div></div>
-    <div class="stat-box"><div class="stat-lbl">km total</div><div class="stat-val" id="h-total">—<span class="stat-unit"> km</span></div></div>
-    <div class="stat-box"><div class="stat-lbl">séances</div><div class="stat-val" id="h-seances">—</div></div>
+    <div class="stat-box"><div class="stat-lbl">km depuis 27 avril</div><div class="stat-val" id="h-total">—<span class="stat-unit"> km</span></div></div>
+    <div class="stat-box"><div class="stat-lbl">séances de prépa</div><div class="stat-val" id="h-seances">—</div></div>
   </div>
 
   <a class="nolio-link" href="https://www.nolio.io/calendar/" target="_blank">
@@ -395,6 +395,7 @@ Qu'est-ce qui se passe ?</div>
 const SUPA_URL='https://jqjkvlafjgdsnodsdzwz.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxamt2bGFmamdkc25vZHNkend6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MzM5NTEsImV4cCI6MjA5MjIwOTk1MX0.9Suc58I_vBcnSA_UmQxCklr6QpYRns64OmiftgkYAHg';
 const CLAUDE_KEY='';
+const PREP_START=new Date('2026-04-27T00:00:00');
 
 async function sbGet(t){try{const r=await fetch(`${SUPA_URL}/rest/v1/${t}?select=*`,{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});return r.json();}catch(e){return[];}}
 async function sbUpsert(t,d){try{await fetch(`${SUPA_URL}/rest/v1/${t}`,{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},body:JSON.stringify(d)});}catch(e){}}
@@ -671,22 +672,24 @@ async function parseAndDisplay(text){
 function renderCourse(acts){
   var runs=acts.filter(function(a){var t=a.type.toLowerCase();return t.includes('run')||t.includes('course')||t.includes('trail');});
   var totalKm=runs.reduce(function(s,a){return s+a.dist;},0);
-  document.getElementById('s-seances').textContent=runs.length;
-  document.getElementById('h-seances').textContent=runs.length;
+  var prepRuns=runs.filter(function(a){return new Date(a.date)>=PREP_START;});
+  var prepKm=prepRuns.reduce(function(s,a){return s+a.dist;},0);
+  document.getElementById('s-seances').textContent=prepRuns.length;
+  document.getElementById('h-seances').textContent=prepRuns.length;
   document.getElementById('s-total').innerHTML=Math.round(totalKm)+'<span class="stat-unit"> km<\/span>';
   document.getElementById('h-total').innerHTML=Math.round(totalKm)+'<span class="stat-unit"> km<\/span>';
   var now=new Date();
   var wkStart=new Date(now);wkStart.setDate(now.getDate()-(now.getDay()===0?6:now.getDay()-1));wkStart.setHours(0,0,0,0);
-  var weekKm=runs.filter(function(a){return new Date(a.date)>=wkStart;}).reduce(function(s,a){return s+a.dist;},0);
+  var weekKm=prepRuns.filter(function(a){return new Date(a.date)>=wkStart;}).reduce(function(s,a){return s+a.dist;},0);
   document.getElementById('h-km').innerHTML=weekKm.toFixed(1)+'<span class="stat-unit"> km<\/span>';
   var monthlyMap={};
-  runs.forEach(function(a){var mk=a.date?a.date.slice(0,7):'';if(mk)monthlyMap[mk]=(monthlyMap[mk]||0)+a.dist;});
+  prepRuns.forEach(function(a){var mk=a.date?a.date.slice(0,7):'';if(mk)monthlyMap[mk]=(monthlyMap[mk]||0)+a.dist;});
   var sortedM=Object.entries(monthlyMap).sort(function(a,b){return a[0].localeCompare(b[0]);});
   var maxK=Math.max.apply(null,sortedM.map(function(w){return w[1];}).concat([1]));
   document.getElementById('month-bars').innerHTML=sortedM.map(function(e){
     return '<div class="bar-row"><div class="bar-lbl">'+e[0].slice(5)+'<\/div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(e[1]/maxK*100)+'%"><\/div><\/div><div class="bar-val">'+Math.round(e[1])+'km<\/div><\/div>';
   }).join('');
-  document.getElementById('all-runs').innerHTML=runs.map(function(a){
+  document.getElementById('all-runs').innerHTML=prepRuns.map(function(a){
     return '<div class="seance-item"><div class="seance-icon">🏃<\/div><div class="seance-info"><div class="seance-name">'+a.name+'<\/div><div class="seance-date">'+a.date+'<\/div><\/div><div class="seance-right"><div class="seance-dist">'+a.dist.toFixed(1)+' km<\/div><div class="seance-pace">'+paceStr(a.dist,a.movingTime)+' /km<\/div><\/div><\/div>';
   }).join('');
   document.getElementById('import-banner').textContent='✓ '+acts.length+' activités · '+runs.length+' courses · '+Math.round(totalKm)+' km';
