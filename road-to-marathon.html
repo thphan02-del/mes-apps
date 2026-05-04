@@ -662,7 +662,7 @@ async function parseAndDisplay(text){
     var cols=parseCSVLine(lines[i]);if(cols.length<3)continue;
     var dist=parseFloat(cols[iDist]||'0')||0;
     var distKm=dist>500?dist/1000:dist;
-    acts.push({name:(cols[iName]||'Activité').replace(/^"|"$/g,''),date:(cols[iDate]||'').replace(/^"|"$/g,'').slice(0,10),type:(cols[iType]||'Run').replace(/^"|"$/g,''),dist:distKm,movingTime:parseInt(cols[iTime]||'0')||0});
+    acts.push({name:(cols[iName]||'Activité').replace(/^"|"$/g,''),date:(function(d){d=d.replace(/^"|"$/g,'');var m=d.match(/(\d{4})-(\d{2})-(\d{2})/);if(m)return m[0];var p=new Date(d);return isNaN(p)?d:p.toISOString().slice(0,10);})((cols[iDate]||'')),type:(cols[iType]||'Run').replace(/^"|"$/g,''),dist:distKm,movingTime:parseInt(cols[iTime]||'0')||0});
   }
   if(!acts.length){alert('Aucune activité trouvée');return;}
   activities=acts;
@@ -672,7 +672,9 @@ async function parseAndDisplay(text){
 function renderCourse(acts){
   var runs=acts.filter(function(a){var t=a.type.toLowerCase();return t.includes('run')||t.includes('course')||t.includes('trail');});
   var totalKm=runs.reduce(function(s,a){return s+a.dist;},0);
-  var prepRuns=runs.filter(function(a){return new Date(a.date)>=PREP_START;});
+  if(runs.length)console.log('First run date sample:',runs[0].date,'parsed:',new Date(runs[0].date).toISOString());
+  var prepRuns=runs.filter(function(a){var d=new Date(a.date);return !isNaN(d)&&d>=PREP_START;});
+  console.log('Total runs:',runs.length,'Prep runs:',prepRuns.length);
   var prepKm=prepRuns.reduce(function(s,a){return s+a.dist;},0);
   document.getElementById('s-seances').textContent=prepRuns.length;
   document.getElementById('h-seances').textContent=prepRuns.length;
