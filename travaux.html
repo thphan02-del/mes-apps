@@ -22,7 +22,29 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text)}
-body{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:column;overflow:hidden;max-width:600px;margin:0 auto}
+body{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:column;overflow:hidden}
+
+/* DESKTOP KANBAN */
+@media(min-width:860px){
+  .content{overflow:hidden!important;display:flex!important;flex-direction:column!important;padding-bottom:72px!important}
+  .filter-bar{flex-shrink:0}
+  .mobile-list{display:none}
+  .kanban-board{display:flex!important;gap:12px;overflow-x:auto;flex:1;min-height:0;padding-bottom:4px;align-items:flex-start;scrollbar-width:thin;scrollbar-color:var(--border-md) transparent}
+  .kanban-board::-webkit-scrollbar{height:6px}
+  .kanban-board::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:3px}
+  .kanban-col{flex:0 0 270px;display:flex;flex-direction:column;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);max-height:100%;overflow:hidden}
+  .kanban-col-header{padding:10px 14px 8px;background:var(--bg4);border-bottom:1px solid var(--border);flex-shrink:0}
+  .kanban-col-title{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted)}
+  .kanban-col-count{font-size:11px;color:var(--text-hint);margin-top:1px}
+  .kanban-col-body{flex:1;overflow-y:auto;padding:8px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+  .kanban-col-body::-webkit-scrollbar{width:4px}
+  .kanban-col-body::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:2px}
+  .done-row{display:none}
+  .addbar{max-width:none}
+}
+@media(max-width:859px){
+  .kanban-board{display:none}
+}
 
 /* HEADER */
 .header{padding:1.1rem 1.25rem 0.75rem;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border-md)}
@@ -469,39 +491,51 @@ function renderTasks(){
     </div>`;
   }
 
-  function groupedHtml(items){
-    if(items.length===0)return'';
+  function dropZone(groupVal,items,hideGroup){
+    const esc=groupVal.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+    return`<div class="drop-zone" data-group="${groupVal.replace(/"/g,'&quot;')}"
+      ondragover="onDragOver(event,'${esc}')"
+      ondrop="onDrop(event,'${esc}')">
+      ${items.map(t=>taskHtml(t,hideGroup)).join("")}
+      ${items.length===0?`<div class="dz-empty">Déposer ici</div>`:""}
+    </div>`;
+  }
+
+  // --- MOBILE LIST (sections empilées) ---
+  function mobileGroupHtml(items){
+    if(!items.length)return'';
     let html='';
     if(filterMode==="piece"){
-      const groups=usedPieces.filter(p=>items.some(t=>t.piece===p));
-      // Also show empty pieces as drop targets if we have more than one group
-      const allGroups=pieces;
-      allGroups.forEach(p=>{
-        const grouped=items.filter(t=>t.piece===p);
-        const hasAny=tasks.some(t=>t.piece===p); // piece exists in all tasks
-        if(!grouped.length&&!hasAny)return;
-        if(!grouped.length&&!groups.includes(p))return;
-        html+=`<div class="section-lbl">${p}${grouped.length?` — ${grouped.length}`:""}</div>`;
-        html+=`<div class="drop-zone" data-group="${p}"
-          ondragover="onDragOver(event,'${p.replace(/'/g,"\\'")}')"
-          ondrop="onDrop(event,'${p.replace(/'/g,"\\'")}')">
-          ${grouped.map(t=>taskHtml(t,true)).join("")}
-          ${grouped.length===0?`<div class="dz-empty">Déposer ici</div>`:""}
-        </div>`;
+      usedPieces.forEach(p=>{
+        const g=items.filter(t=>t.piece===p);
+        if(!g.length)return;
+        html+=`<div class="section-lbl">${p} — ${g.length}</div>${dropZone(p,g,true)}`;
       });
     } else {
       PRIOS.forEach(p=>{
-        const grouped=items.filter(t=>t.priorite===p.v);
-        html+=`<div class="section-lbl">${p.l}${grouped.length?` — ${grouped.length}`:""}</div>`;
-        html+=`<div class="drop-zone" data-group="${p.v}"
-          ondragover="onDragOver(event,'${p.v}')"
-          ondrop="onDrop(event,'${p.v}')">
-          ${grouped.map(t=>taskHtml(t,true)).join("")}
-          ${grouped.length===0?`<div class="dz-empty">Déposer ici</div>`:""}
-        </div>`;
+        const g=items.filter(t=>t.priorite===p.v);
+        if(!g.length)return;
+        html+=`<div class="section-lbl">${p.l} — ${g.length}</div>${dropZone(p.v,g,true)}`;
       });
     }
     return html;
+  }
+
+  // --- DESKTOP KANBAN (colonnes) ---
+  function kanbanHtml(todoItems){
+    const groups=filterMode==="piece"
+      ?usedPieces.map(p=>({key:p,label:p,items:todoItems.filter(t=>t.piece===p)}))
+      :PRIOS.map(p=>({key:p.v,label:p.l,items:todoItems.filter(t=>t.priorite===p.v)}));
+
+    return`<div class="kanban-board">${groups.map(g=>`
+      <div class="kanban-col">
+        <div class="kanban-col-header">
+          <div class="kanban-col-title">${g.label}</div>
+          <div class="kanban-col-count">${g.items.length} tâche${g.items.length>1?"s":""}</div>
+        </div>
+        <div class="kanban-col-body">${dropZone(g.key,g.items,true)}</div>
+      </div>`).join("")}
+    </div>`;
   }
 
   document.getElementById("content-root").innerHTML=`
@@ -512,9 +546,12 @@ function renderTasks(){
       </div>
       <div class="chips">${chips.join("")}</div>
     </div>
-    ${todoList.length===0?`<div class="empty">Tout est fait 🎉</div>`:groupedHtml(todoList)}
-    ${showDone&&doneList.length>0?`<div class="section-lbl" style="margin-top:1rem;opacity:.6">Terminés — ${doneList.length}</div><div style="opacity:.55">${doneList.map(t=>taskHtml(t,false)).join("")}</div>`:""}
-    ${doneList.length>0?`<div class="done-row"><button class="done-toggle" onclick="showDone=!showDone;render()">${showDone?"Masquer les terminés":"Voir les terminés ("+doneList.length+")"}</button></div>`:""}
+    ${kanbanHtml(todoList)}
+    <div class="mobile-list">
+      ${todoList.length===0?`<div class="empty">Tout est fait 🎉</div>`:mobileGroupHtml(todoList)}
+      ${showDone&&doneList.length>0?`<div class="section-lbl" style="margin-top:1rem;opacity:.6">Terminés — ${doneList.length}</div><div style="opacity:.55">${doneList.map(t=>taskHtml(t,false)).join("")}</div>`:""}
+      ${doneList.length>0?`<div class="done-row"><button class="done-toggle" onclick="showDone=!showDone;render()">${showDone?"Masquer les terminés":"Voir les terminés ("+doneList.length+")"}</button></div>`:""}
+    </div>
     <div class="addbar">
       <input id="quick-input" placeholder="Ajouter un travail..." onkeydown="if(event.key==='Enter'&&this.value.trim()){quickAdd(this.value);this.value=''}">
       <button class="add-btn" onclick="const i=document.getElementById('quick-input');if(i.value.trim()){quickAdd(i.value);i.value=''}else{openAdd()}">+</button>
