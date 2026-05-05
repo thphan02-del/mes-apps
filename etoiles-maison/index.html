@@ -578,6 +578,10 @@ const ICONS = {
   pool:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 21c2-2 4-2 6 0s4 2 6 0 4-2 6 0M6 13V5a2 2 0 014 0v8M14 13V5a2 2 0 014 0v8"/></svg>',
   home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9M5 10v10h14V10"/></svg>',
   star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>',
+  heart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-9-9a5 5 0 019-3 5 5 0 019 3c-2 4.5-9 9-9 9z"/></svg>',
+  hands:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11V6a2 2 0 014 0v6M9 11V4a2 2 0 014 0v8M13 11V5a2 2 0 014 0v8M5 11c-2 0-3 1-3 3v3c0 3 3 6 7 6h3c4 0 7-2 7-6v-5a2 2 0 00-2-2"/></svg>',
+  smile:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="9.5" r="0.8" fill="currentColor"/><circle cx="15" cy="9.5" r="0.8" fill="currentColor"/></svg>',
+  sparkle:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2zM19 14l1 2 2 1-2 1-1 2-1-2-2-1 2-1zM5 14l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"/></svg>',
 };
 
 const ICON_COLOR = {
@@ -588,6 +592,7 @@ const ICON_COLOR = {
   gift:'pink', cinema:'purple', game:'blue', candy:'coral', money:'green',
   toy:'amber', park:'teal', pizza:'coral', bike:'green', sleep:'purple',
   book2:'amber', car:'gray', home:'pink',
+  heart:'pink', hands:'green', smile:'amber', sparkle:'purple',
 };
 
 const CATEGORIES = {
@@ -614,66 +619,84 @@ const DEFAULT_STATE = {
   familyTotalEarned: 0,
   tasks: [
     // === HYGIÈNE & ROUTINE (persos) ===
-    { id: 't1', name: 'Faire son lit', icon: 'bed', points: 2, frequency: 'daily', category: 'hygiene', shared: false },
+    { id: 't1', name: 'Faire son lit', icon: 'bed', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
     { id: 't2a', name: 'Se laver les dents (matin)', icon: 'tooth', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
     { id: 't2b', name: 'Se laver les dents (soir)', icon: 'tooth', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
-    { id: 't3', name: 'Prendre sa douche / son bain', icon: 'shower', points: 2, frequency: 'daily', category: 'hygiene', shared: false },
-    { id: 't25', name: "S'habiller seul(e) le matin", icon: 'shower', points: 2, frequency: 'daily', category: 'hygiene', shared: false },
+    { id: 't3', name: 'Prendre sa douche / son bain', icon: 'shower', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
+    { id: 't25', name: "S'habiller seul(e) le matin", icon: 'shower', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
     { id: 't26', name: 'Mettre ses chaussures et son manteau seul', icon: 'bag', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
 
     // === MAISON ===
-    { id: 't4', name: 'Ranger sa chambre', icon: 'broom', points: 4, frequency: 'daily', category: 'house', shared: false },
+    { id: 't4', name: 'Ranger sa chambre', icon: 'broom', points: 2, frequency: 'daily', category: 'house', shared: false },
     { id: 't27', name: 'Sortir le linge sale (panier)', icon: 'laundry', points: 1, frequency: 'daily', category: 'house', shared: false },
-    { id: 't7', name: 'Mettre la table', icon: 'table', points: 4, frequency: 'daily', category: 'house', shared: true },
-    { id: 't8', name: 'Débarrasser la table', icon: 'dish', points: 4, frequency: 'daily', category: 'house', shared: true },
-    { id: 't9', name: 'Aider à la vaisselle', icon: 'dish', points: 5, frequency: 'daily', category: 'house', shared: true },
-    { id: 't10', name: 'Sortir les poubelles', icon: 'trash', points: 6, frequency: 'weekly', category: 'house', shared: true },
-    { id: 't11', name: 'Plier le linge', icon: 'laundry', points: 5, frequency: 'weekly', category: 'house', shared: true },
+    { id: 't7', name: 'Mettre la table', icon: 'table', points: 2, frequency: 'daily', category: 'house', shared: true },
+    { id: 't8', name: 'Débarrasser la table', icon: 'dish', points: 2, frequency: 'daily', category: 'house', shared: true },
+    { id: 't9', name: 'Aider à la vaisselle', icon: 'dish', points: 3, frequency: 'daily', category: 'house', shared: true },
+    { id: 't10', name: 'Sortir les poubelles', icon: 'trash', points: 4, frequency: 'weekly', category: 'house', shared: true },
+    { id: 't11', name: 'Plier le linge', icon: 'laundry', points: 3, frequency: 'weekly', category: 'house', shared: true },
 
     // === ÉCOLE (persos) ===
-    { id: 't5', name: 'Faire ses devoirs', icon: 'book', points: 5, frequency: 'weekday', category: 'school', shared: false },
-    { id: 't6', name: 'Préparer son cartable', icon: 'bag', points: 2, frequency: 'weekday', category: 'school', shared: false },
-    { id: 't28', name: 'Préparer ses vêtements pour le lendemain', icon: 'bag', points: 2, frequency: 'weekday', category: 'school', shared: false },
+    { id: 't5', name: 'Faire ses devoirs', icon: 'book', points: 3, frequency: 'weekday', category: 'school', shared: false },
+    { id: 't6', name: 'Préparer son cartable', icon: 'bag', points: 1, frequency: 'weekday', category: 'school', shared: false },
+    { id: 't28', name: 'Préparer ses vêtements pour le lendemain', icon: 'bag', points: 1, frequency: 'weekday', category: 'school', shared: false },
     { id: 't29', name: 'Faire son sac de sport / activités', icon: 'bag', points: 2, frequency: 'asneeded', category: 'school', shared: false },
 
     // === ANIMAUX (partagées) ===
-    { id: 't12', name: 'Donner à manger au chien', icon: 'dog', points: 3, frequency: 'daily', category: 'pet', shared: true },
-    { id: 't13', name: 'Sortir / promener le chien', icon: 'dog', points: 5, frequency: 'daily', category: 'pet', shared: true },
-    { id: 't30', name: 'Câliner / jouer avec le chien', icon: 'paw', points: 2, frequency: 'daily', category: 'pet', shared: true },
-    { id: 't14', name: 'Donner à manger aux petits animaux', icon: 'rabbit', points: 3, frequency: 'daily', category: 'pet', shared: true },
-    { id: 't15', name: "Changer l'eau des animaux", icon: 'water', points: 2, frequency: 'daily', category: 'pet', shared: true },
-    { id: 't16', name: 'Nettoyer la cage / clapier', icon: 'rabbit', points: 8, frequency: 'weekly', category: 'pet', shared: true },
-    { id: 't17', name: 'Ramasser les œufs', icon: 'sun', points: 2, frequency: 'asneeded', category: 'pet', shared: true },
-    { id: 't31', name: 'Donner à manger aux oiseaux', icon: 'sun', points: 2, frequency: 'asneeded', category: 'pet', shared: true },
+    { id: 't12', name: 'Donner à manger au chien', icon: 'dog', points: 2, frequency: 'daily', category: 'pet', shared: true },
+    { id: 't13', name: 'Sortir / promener le chien', icon: 'dog', points: 3, frequency: 'daily', category: 'pet', shared: true },
+    { id: 't30', name: 'Câliner / jouer avec le chien', icon: 'paw', points: 1, frequency: 'daily', category: 'pet', shared: true },
+    { id: 't14', name: 'Donner à manger aux petits animaux', icon: 'rabbit', points: 2, frequency: 'daily', category: 'pet', shared: true },
+    { id: 't15', name: "Changer l'eau des animaux", icon: 'water', points: 1, frequency: 'daily', category: 'pet', shared: true },
+    { id: 't16', name: 'Nettoyer la cage / clapier', icon: 'rabbit', points: 5, frequency: 'weekly', category: 'pet', shared: true },
+    { id: 't17', name: 'Ramasser les œufs', icon: 'sun', points: 1, frequency: 'asneeded', category: 'pet', shared: true },
+    { id: 't31', name: 'Donner à manger aux oiseaux', icon: 'sun', points: 1, frequency: 'asneeded', category: 'pet', shared: true },
 
     // === JARDIN (partagées) ===
-    { id: 't18', name: 'Arroser les plantes du jardin', icon: 'plant', points: 4, frequency: 'asneeded', category: 'garden', shared: true },
-    { id: 't19', name: 'Ramasser les feuilles', icon: 'leaf', points: 5, frequency: 'asneeded', category: 'garden', shared: true },
-    { id: 't21', name: 'Ramasser les jouets dans le jardin', icon: 'toy', points: 3, frequency: 'asneeded', category: 'garden', shared: true },
-    { id: 't22', name: 'Ramasser les crottes du chien', icon: 'paw', points: 5, frequency: 'asneeded', category: 'garden', shared: true },
+    { id: 't18', name: 'Arroser les plantes du jardin', icon: 'plant', points: 3, frequency: 'asneeded', category: 'garden', shared: true },
+    { id: 't19', name: 'Ramasser les feuilles', icon: 'leaf', points: 4, frequency: 'asneeded', category: 'garden', shared: true },
+    { id: 't21', name: 'Ramasser les jouets dans le jardin', icon: 'toy', points: 2, frequency: 'asneeded', category: 'garden', shared: true },
+    { id: 't22', name: 'Ramasser les crottes du chien', icon: 'paw', points: 4, frequency: 'asneeded', category: 'garden', shared: true },
 
     // === BONUS ===
-    { id: 't23', name: 'Aider à laver la voiture', icon: 'car', points: 8, frequency: 'asneeded', category: 'bonus', shared: true },
+    { id: 't23', name: 'Aider à laver la voiture', icon: 'car', points: 6, frequency: 'asneeded', category: 'bonus', shared: true },
   ],
   rewardsPerso: [
-    { id: 'rp1', name: '15 min de jeu vidéo', icon: 'game', cost: 12 },
-    { id: 'rp2', name: 'Un bonbon ou friandise', icon: 'candy', cost: 8 },
-    { id: 'rp3', name: 'Choisir le menu du repas', icon: 'pizza', cost: 15 },
-    { id: 'rp4', name: '30 min de jeu vidéo', icon: 'game', cost: 22 },
-    { id: 'rp5', name: '1h de jeu vidéo', icon: 'game', cost: 40 },
-    { id: 'rp6', name: 'Petit jouet (5€ max)', icon: 'toy', cost: 80 },
-    { id: 'rp7', name: '5€ argent de poche', icon: 'money', cost: 120 },
-    { id: 'rp8', name: 'Gros cadeau / livre / jeu', icon: 'gift', cost: 250 },
+    // Petites (1-3 par semaine)
+    { id: 'rp2', name: 'Un bonbon ou friandise', icon: 'candy', cost: 10 },
+    { id: 'rp1', name: '15 min de jeu vidéo', icon: 'game', cost: 15 },
+    { id: 'rp3', name: 'Choisir le menu du repas', icon: 'pizza', cost: 20 },
+    // Moyennes (1 par bonne semaine)
+    { id: 'rp4', name: '30 min de jeu vidéo', icon: 'game', cost: 30 },
+    { id: 'rp5', name: '1h de jeu vidéo', icon: 'game', cost: 55 },
+    // Grosses (épargne sur 2-3 semaines)
+    { id: 'rp6', name: 'Petit jouet (5€ max)', icon: 'toy', cost: 150 },
+    { id: 'rp7', name: '5€ argent de poche', icon: 'money', cost: 200 },
+    { id: 'rp8', name: 'Gros cadeau / livre / jeu', icon: 'gift', cost: 400 },
   ],
   rewardsFamille: [
-    { id: 'rf1', name: 'Sortie au parc en famille', icon: 'park', cost: 40 },
-    { id: 'rf2', name: 'Soirée pizza maison', icon: 'pizza', cost: 60 },
-    { id: 'rf4', name: 'Sortie vélo en famille', icon: 'bike', cost: 70 },
-    { id: 'rf3', name: 'Soirée cinéma à la maison', icon: 'cinema', cost: 80 },
-    { id: 'rf6', name: 'Sortie piscine', icon: 'pool', cost: 100 },
-    { id: 'rf5', name: 'Cinéma en famille', icon: 'cinema', cost: 130 },
-    { id: 'rf7', name: 'Sortie spéciale (bowling, laser)', icon: 'gift', cost: 200 },
-    { id: 'rf8', name: 'Restaurant en famille', icon: 'pizza', cost: 250 },
+    // Activités weekend faciles (1 par bonne semaine)
+    { id: 'rf1', name: 'Sortie au parc en famille', icon: 'park', cost: 80 },
+    { id: 'rf2', name: 'Soirée pizza maison', icon: 'pizza', cost: 120 },
+    { id: 'rf4', name: 'Sortie vélo en famille', icon: 'bike', cost: 130 },
+    { id: 'rf3', name: 'Soirée cinéma à la maison', icon: 'cinema', cost: 150 },
+    // Sorties intermédiaires (1 toutes les 1-2 semaines)
+    { id: 'rf6', name: 'Sortie piscine', icon: 'pool', cost: 200 },
+    { id: 'rf5', name: 'Cinéma en famille', icon: 'cinema', cost: 250 },
+    // Grosses sorties (épargne sur 2-3 semaines)
+    { id: 'rf7', name: 'Sortie spéciale (bowling, laser)', icon: 'gift', cost: 400 },
+    { id: 'rf8', name: 'Restaurant en famille', icon: 'pizza', cost: 500 },
+  ],
+  penalties: [
+    { id: 'b1', name: 'Honnêteté (a dit la vérité)', icon: 'heart', cost: 3 },
+    { id: 'b2', name: 'A aidé son frère / sa sœur', icon: 'hands', cost: 3 },
+    { id: 'b3', name: 'A partagé spontanément', icon: 'hands', cost: 2 },
+    { id: 'b4', name: 'Politesse exemplaire', icon: 'smile', cost: 2 },
+    { id: 'b5', name: 'A bien géré une émotion forte', icon: 'heart', cost: 3 },
+    { id: 'b6', name: 'A pris une initiative', icon: 'sparkle', cost: 3 },
+    { id: 'b7', name: 'A rangé sans qu\'on demande', icon: 'sparkle', cost: 3 },
+    { id: 'b8', name: 'A consolé quelqu\'un', icon: 'heart', cost: 2 },
+    { id: 'b9', name: 'A fait des excuses sincères', icon: 'smile', cost: 2 },
+    { id: 'b10', name: 'A persévéré sur une difficulté', icon: 'sparkle', cost: 3 },
   ],
   completedShared: {},
   completedPerso: { 'leo': {}, 'chloe': {} },
@@ -779,6 +802,20 @@ function setBinId(id) {
   localStorage.setItem(LS_BIN, id);
 }
 
+function migrateState(s) {
+  // Ajoute les champs manquants pour la rétrocompatibilité
+  if (!s.penalties) s.penalties = clone(DEFAULT_STATE.penalties);
+  if (!s.completedShared) s.completedShared = {};
+  if (!s.completedPerso) s.completedPerso = { 'leo': {}, 'chloe': {} };
+  if (!s.weeklyLog) s.weeklyLog = { 'leo': {}, 'chloe': {}, 'family': {} };
+  if (!s.weeklyLog.family) s.weeklyLog.family = {};
+  if (!s.history) s.history = [];
+  if (s.familyPoints === undefined) s.familyPoints = 0;
+  if (s.familyTotalEarned === undefined) s.familyTotalEarned = 0;
+  if (!s.rewardView) s.rewardView = 'perso';
+  return s;
+}
+
 async function loadState() {
   setSync('loading', 'Chargement…');
   const local = loadLocal();
@@ -796,7 +833,7 @@ async function loadState() {
     if (remote && remote.lastSaved) {
       // Compare avec local
       if (!local || (remote.lastSaved || 0) >= (local.lastSaved || 0)) {
-        state = remote;
+        state = migrateState(remote);
         saveLocal();
         setSync('ok', 'Synchronisé');
         return;
@@ -805,7 +842,7 @@ async function loadState() {
   }
 
   if (local) {
-    state = local;
+    state = migrateState(local);
     if (binId && CONFIG.USE_CLOUD) {
       // Push local vers cloud
       await updateBin(binId, state);
@@ -861,7 +898,7 @@ async function pollUpdates() {
       const kid = state.activeKidId;
       const unlocked = state.parentUnlocked;
       const rview = state.rewardView;
-      state = remote;
+      state = migrateState(remote);
       state.activeTab = tab;
       state.activeKidId = kid;
       state.parentUnlocked = unlocked;
@@ -1265,6 +1302,46 @@ function renderParent() {
       `).join('')}
     </div>
 
+    <div class="panel" style="background:#EAF3DE;border-color:#27500A;">
+      <h4 style="color:#27500A;">🌟 Bonus pour bon comportement</h4>
+      <p style="font-size:12px;color:var(--ink-soft);margin:0 0 10px;">On valorise les bonnes attitudes ! Sélectionnez l'enfant en haut, puis cliquez sur le bonus mérité.</p>
+      <div class="task-list">
+        ${state.penalties.map(p => html`<div class="card" style="background:#FFF;">
+          ${iconBlock(p.icon)}
+          <div class="card-content">
+            <div class="card-name">${p.name}</div>
+            <div class="card-meta"><span style="color:var(--green);font-weight:600;">+${p.cost} ★</span></div>
+          </div>
+          <button class="btn btn-success" data-action="apply-penalty" data-id="${p.id}">Donner à ${activeKid().name}</button>
+        </div>`).join('')}
+      </div>
+      <div class="section-head" style="margin-top:1rem;">
+        <span style="font-size:13px;color:var(--ink-soft);">Personnaliser les bonus</span>
+        <button class="btn btn-icon" data-action="toggle-form" data-id="penalty-form">+</button>
+      </div>
+      <div class="add-form" id="penalty-form">
+        <input type="text" id="npName" class="form-input" placeholder="Nom du bon comportement">
+        <div class="row-cols">
+          <input type="number" id="npCost" class="form-input" placeholder="+★" value="5" min="1" max="20">
+          <select id="npIcon" class="form-select">
+            <option value="heart">cœur</option>
+            <option value="hands">entraide</option>
+            <option value="smile">sourire</option>
+            <option value="sparkle">étoiles</option>
+            <option value="star">étoile</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" data-action="save-penalty">Ajouter</button>
+        <button class="btn" data-action="toggle-form" data-id="penalty-form">Annuler</button>
+      </div>
+      ${state.penalties.length > 0 ? html`<div style="margin-top:8px;">
+        ${state.penalties.map(p => html`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;">
+          <span>${p.name} <span style="color:var(--green);">+${p.cost} ★</span></span>
+          <button class="btn btn-icon" style="color:var(--accent);" data-action="del-penalty" data-id="${p.id}">×</button>
+        </div>`).join('')}
+      </div>` : ''}
+    </div>
+
     <div class="section-head">
       <h4>Tâches (${state.tasks.length})</h4>
       <button class="btn btn-primary" data-action="toggle-form" data-id="task-form">+ Ajouter</button>
@@ -1398,14 +1475,16 @@ function render() {
 
 // === ACTIONS ===
 function applyDelta(kid, v, label) {
-  kid.points += v;
-  if (v > 0) kid.totalEarned += v;
+  // On empêche d'aller en dessous de 0 sur le solde
+  const realDelta = v < 0 ? -Math.min(kid.points, -v) : v;
+  kid.points += realDelta;
+  if (realDelta > 0) kid.totalEarned += realDelta;
   const time = formatTime();
-  state.history.push({ id: 'h'+Date.now(), kidId: kid.id, type: v > 0 ? 'task' : 'reward', name: label, points: v, date: 'Aujourd\'hui ' + time });
-  if (v > 0) {
+  state.history.push({ id: 'h'+Date.now(), kidId: kid.id, type: realDelta > 0 ? 'task' : 'reward', name: label, points: realDelta, date: 'Aujourd\'hui ' + time });
+  if (realDelta > 0) {
     const dk = todayKey();
     state.weeklyLog[kid.id] = state.weeklyLog[kid.id] || {};
-    state.weeklyLog[kid.id][dk] = (state.weeklyLog[kid.id][dk] || 0) + v;
+    state.weeklyLog[kid.id][dk] = (state.weeklyLog[kid.id][dk] || 0) + realDelta;
   }
 }
 
@@ -1607,6 +1686,43 @@ function handleClick(e) {
       render();
       break;
     }
+
+    case 'apply-penalty': {
+      const bonus = state.penalties.find(p => p.id === id);
+      if (!bonus) break;
+      const kid = activeKid();
+      if (!confirm(`Donner le bonus "${bonus.name}" (+${bonus.cost} ★) à ${kid.name} ?`)) break;
+      // On donne les points à l'enfant ET on alimente la cagnotte famille (comme une tâche normale)
+      applyDelta(kid, bonus.cost, '🌟 ' + bonus.name);
+      state.familyPoints += bonus.cost;
+      state.familyTotalEarned += bonus.cost;
+      const dk = todayKey();
+      state.weeklyLog.family = state.weeklyLog.family || {};
+      state.weeklyLog.family[dk] = (state.weeklyLog.family[dk] || 0) + bonus.cost;
+      logFamilyHistory(bonus.cost, '↳ 🌟 ' + bonus.name);
+      debouncedSave();
+      render();
+      break;
+    }
+
+    case 'save-penalty': {
+      const name = document.getElementById('npName').value.trim();
+      if (!name) return;
+      const cost = parseInt(document.getElementById('npCost').value) || 5;
+      const icon = document.getElementById('npIcon').value;
+      state.penalties.push({ id: 'p'+Date.now(), name, cost, icon });
+      debouncedSave();
+      render();
+      break;
+    }
+
+    case 'del-penalty':
+      if (confirm('Supprimer cette pénalité ?')) {
+        state.penalties = state.penalties.filter(p => p.id !== id);
+        debouncedSave();
+        render();
+      }
+      break;
 
     case 'toggle-form': {
       const f = document.getElementById(id);
