@@ -1166,7 +1166,9 @@ function renderAll(){
 
 function sortActive(a,b){
   var PRIO={urgent:0,important:1,someday:2};
-  var po=(PRIO[a.prio]||2)-(PRIO[b.prio]||2);if(po!==0)return po;
+  var pa=PRIO[a.prio];if(pa===undefined)pa=2;
+  var pb=PRIO[b.prio];if(pb===undefined)pb=2;
+  if(pa!==pb)return pa-pb;
   // dans la même prio : échéance d'abord (proche en haut), puis ancienneté (vieux en haut)
   if(a.due&&b.due){var dc=a.due.localeCompare(b.due);if(dc!==0)return dc;}
   else if(a.due)return -1;
@@ -1281,7 +1283,8 @@ function pickDailyFocus(active,today){
   if(!pool.length)return null;
   pool.forEach(function(t){
     var s=0;
-    s += (PRIO[t.prio]||2) * 100;            // 0/100/200 — la prio domine
+    var pv=PRIO[t.prio];if(pv===undefined)pv=2;
+    s += pv * 100;                            // 0/100/200 — la prio domine
     if(t.due){
       var diff=Math.floor((new Date(t.due+'T00:00:00')-new Date(today+'T00:00:00'))/86400000);
       if(diff<0) s -= 200;                    // en retard = très prioritaire
