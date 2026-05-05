@@ -376,6 +376,50 @@ body {
 .phbar-wrap { background: var(--bg2); border-radius: 3px; height: 4px; overflow: hidden; margin-top: 8px; }
 .phbar { height: 100%; background: var(--amber); border-radius: 3px; transition: width .5s; }
 .empty { text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); font-size: 13px; line-height: 1.8; font-style: italic; font-weight: 300; }
+
+/* =============================================
+   LESSON DIAGRAMS (Phase 1, 2, 3)
+   ============================================= */
+.ldiag { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 14px; margin: 1rem 0; }
+.ldiag-cap { font-size: 11px; color: var(--text-muted); font-weight: 300; line-height: 1.55; margin-bottom: 10px; font-style: italic; }
+.ldiag-cap b { color: var(--amber); font-weight: 500; font-style: normal; }
+.ldiag-board-wrap { display: flex; flex-direction: column; align-items: center; }
+.ldiag-bwc { display: flex; align-items: stretch; }
+.ldiag-branks { display: flex; flex-direction: column; justify-content: space-around; padding: 2px 4px 2px 0; width: 14px; flex-shrink: 0; }
+.ldiag-rl { font-size: 8px; color: var(--text-muted); text-align: center; line-height: 1; }
+.ldiag-bbw { display: flex; flex-direction: column; }
+.ldiag-bfiles { display: grid; grid-template-columns: repeat(8, 1fr); padding-top: 2px; }
+.ldiag-fl { font-size: 8px; color: var(--text-muted); text-align: center; }
+.ldiag-binner { border: 1px solid var(--border-md); border-radius: 5px; overflow: hidden; box-shadow: 0 2px 12px rgba(60,40,10,.07); position: relative; }
+.ldiag-grid { display: grid; grid-template-columns: repeat(8, 1fr); width: min(240px, calc(100vw - 100px)); aspect-ratio: 1; position: relative; }
+.ldiag-grid .sq { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; padding: 3%; position: relative; cursor: default; }
+.ldiag-grid .sq svg { width: 100%; height: 100%; display: block; pointer-events: none; }
+.ldiag-grid .sq.light { background: var(--board-light); }
+.ldiag-grid .sq.dark { background: var(--board-dark); }
+/* Highlight types */
+.ldiag-grid .sq.hl-amber { box-shadow: inset 0 0 0 3px rgba(184,115,42,.85); }
+.ldiag-grid .sq.hl-rose { box-shadow: inset 0 0 0 3px rgba(196,97,74,.85); }
+.ldiag-grid .sq.hl-sage { box-shadow: inset 0 0 0 3px rgba(74,122,90,.85); }
+.ldiag-grid .sq.hl-slate { box-shadow: inset 0 0 0 3px rgba(74,95,122,.85); }
+.ldiag-grid .sq.hl-amber-dim { background: rgba(184,115,42,.32) !important; }
+.ldiag-grid .sq.hl-rose-dim { background: rgba(196,97,74,.32) !important; }
+.ldiag-grid .sq.hl-sage-dim { background: rgba(74,122,90,.32) !important; }
+.ldiag-grid .sq.hl-slate-dim { background: rgba(74,95,122,.32) !important; }
+.ldiag-grid .sq.hl-target::after { content: ''; position: absolute; width: 24%; height: 24%; border-radius: 50%; background: rgba(196,97,74,.55); pointer-events: none; }
+/* Arrows overlay */
+.ldiag-arrows { position: absolute; inset: 0; pointer-events: none; width: 100%; height: 100%; }
+
+/* Phase 1 — interactive opening replay */
+.ldiag-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 11px; }
+.ldiag-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border-md); background: var(--card); color: var(--text-hint); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all .15s; flex-shrink: 0; font-family: 'Inter', sans-serif; }
+.ldiag-btn:hover:not(:disabled) { border-color: var(--amber-border); color: var(--amber); }
+.ldiag-btn:disabled { opacity: .35; cursor: not-allowed; }
+.ldiag-move { flex: 1; text-align: center; font-size: 12px; color: var(--text); font-family: 'Playfair Display', serif; font-weight: 600; min-height: 18px; }
+.ldiag-move .ldiag-step { font-size: 9px; color: var(--text-muted); font-weight: 400; letter-spacing: 1px; text-transform: uppercase; font-family: 'Inter', sans-serif; display: block; margin-bottom: 2px; }
+.ldiag-progress { display: flex; gap: 3px; margin-top: 8px; justify-content: center; flex-wrap: wrap; }
+.ldiag-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border-md); transition: background .15s; }
+.ldiag-dot.done { background: var(--amber); }
+.ldiag-dot.cur { background: var(--amber); transform: scale(1.5); }
 </style>
 </head>
 <body>
@@ -1014,6 +1058,7 @@ function openLesson(id){
   var html='<div class="eyebrow">'+CL[l.cat]+'<\/div>'+
     '<div class="bigtitle" style="margin-bottom:14px">'+l.title+'<\/div>'+
     '<div class="lbody">'+body+'<\/div>'+
+    lessonDiagramsHTML(l)+
     '<div class="anec-box"><div class="anec-lbl">Anecdote<\/div><div class="anec-txt">'+l.anecdote+'<\/div><\/div>';
   if(l.masters&&l.masters.length)html+='<div class="masters-box"><div class="masters-lbl">Grands ma\u00eetres associ\u00e9s<\/div>'+l.masters.map(function(m){return'<span class="mchip">'+m+'<\/span>';}).join('')+'<\/div>';
   if(l.hasPractice)html+='<button class="btn '+col+'" onclick="launchPrac(\''+l.id+'\')">Pratiquer cette ouverture<\/button>';
@@ -1045,6 +1090,306 @@ function mkSVG(c,s){
 }
 var PIECES={};
 ['w','b'].forEach(function(c){['K','Q','R','B','N','P'].forEach(function(s){PIECES[c+s]=mkSVG(c,s);});});
+
+/* === LESSON DIAGRAMS (Phase 1, 2, 3) === */
+/* Parse FEN to 8x8 board (board only, ignore rest) */
+function fen2board(fen){
+  var b=[],rows=fen.split(' ')[0].split('/');
+  for(var r=0;r<8;r++){
+    var row=[],s=rows[r];
+    for(var i=0;i<s.length;i++){
+      var ch=s[i];
+      if(ch>='1'&&ch<='8'){for(var j=0;j<parseInt(ch);j++)row.push(null);}
+      else{var col=ch===ch.toUpperCase()?'w':'b';row.push(col+ch.toUpperCase());}
+    }
+    b.push(row);
+  }
+  return b;
+}
+/* Render a static board into an element id from FEN, with optional highlights and arrows */
+function renderDiag(elId,fen,opts){
+  opts=opts||{};
+  var el=document.getElementById(elId);if(!el)return;
+  var b=fen2board(fen);
+  var flipped=opts.flipped===true;
+  var hl=opts.highlights||{}; // { 'e4': 'amber-dim', 'd5': 'target', ... }
+  var arrows=opts.arrows||[]; // [{from:'e2', to:'e4', color:'amber'}]
+  var html='';
+  for(var ri=0;ri<8;ri++){
+    for(var ci=0;ci<8;ci++){
+      var r=flipped?7-ri:ri,c=flipped?7-ci:ci;
+      var sqName='abcdefgh'[c]+(8-r);
+      var hlClass=hl[sqName]?(' hl-'+hl[sqName]):'';
+      var sqClass='sq '+((r+c)%2===0?'light':'dark')+hlClass;
+      html+='<div class="'+sqClass+'" data-sq="'+sqName+'">'+(b[r][c]?PIECES[b[r][c]]:'')+'</div>';
+    }
+  }
+  /* Add arrows SVG overlay */
+  if(arrows.length){
+    var aSvg='<svg class="ldiag-arrows" viewBox="0 0 800 800" preserveAspectRatio="none"><defs>';
+    var seen={};
+    arrows.forEach(function(a){
+      var col=a.color||'amber';
+      var hex={amber:'#B8732A',rose:'#C4614A',sage:'#4A7A5A',slate:'#4A5F7A'}[col]||'#B8732A';
+      if(!seen[col]){seen[col]=1;aSvg+='<marker id="ah-'+col+'" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="'+hex+'"/></marker>';}
+    });
+    aSvg+='</defs>';
+    arrows.forEach(function(a){
+      var col=a.color||'amber',hex={amber:'#B8732A',rose:'#C4614A',sage:'#4A7A5A',slate:'#4A5F7A'}[col]||'#B8732A';
+      var fc='abcdefgh'.indexOf(a.from[0]),fr=8-parseInt(a.from[1]);
+      var tc='abcdefgh'.indexOf(a.to[0]),tr=8-parseInt(a.to[1]);
+      if(flipped){fr=7-fr;fc=7-fc;tr=7-tr;tc=7-tc;}
+      var x1=fc*100+50,y1=fr*100+50,x2=tc*100+50,y2=tr*100+50;
+      /* shorten arrow */
+      var dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
+      if(len>0){var sh=22;x2-=dx/len*sh;y2-=dy/len*sh;}
+      aSvg+='<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+hex+'" stroke-width="14" stroke-linecap="round" opacity="0.82" marker-end="url(#ah-'+col+')"/>';
+    });
+    aSvg+='</svg>';
+    html+=aSvg;
+  }
+  el.innerHTML=html;
+  /* Render rank/file labels if containers exist */
+  var ranksEl=document.getElementById(elId+'-ranks');
+  var filesEl=document.getElementById(elId+'-files');
+  if(ranksEl){
+    var rk=flipped?['1','2','3','4','5','6','7','8']:['8','7','6','5','4','3','2','1'];
+    ranksEl.innerHTML=rk.map(function(x){return'<div class="ldiag-rl">'+x+'</div>';}).join('');
+  }
+  if(filesEl){
+    var fl=flipped?['h','g','f','e','d','c','b','a']:['a','b','c','d','e','f','g','h'];
+    filesEl.innerHTML=fl.map(function(x){return'<div class="ldiag-fl">'+x+'</div>';}).join('');
+  }
+}
+/* Build the HTML scaffold for a static diagram (Phase 2/3) */
+function diagStaticHTML(uid,caption){
+  return '<div class="ldiag">'+
+    (caption?'<div class="ldiag-cap">'+caption+'</div>':'')+
+    '<div class="ldiag-board-wrap"><div class="ldiag-bwc">'+
+      '<div class="ldiag-branks" id="'+uid+'-ranks"></div>'+
+      '<div class="ldiag-bbw">'+
+        '<div class="ldiag-binner"><div class="ldiag-grid" id="'+uid+'"></div></div>'+
+        '<div class="ldiag-bfiles" id="'+uid+'-files"></div>'+
+      '</div>'+
+    '</div></div>'+
+  '</div>';
+}
+/* Build the HTML scaffold for an interactive replay (Phase 1) */
+function diagReplayHTML(uid,caption){
+  return '<div class="ldiag">'+
+    (caption?'<div class="ldiag-cap">'+caption+'</div>':'')+
+    '<div class="ldiag-board-wrap"><div class="ldiag-bwc">'+
+      '<div class="ldiag-branks" id="'+uid+'-ranks"></div>'+
+      '<div class="ldiag-bbw">'+
+        '<div class="ldiag-binner"><div class="ldiag-grid" id="'+uid+'"></div></div>'+
+        '<div class="ldiag-bfiles" id="'+uid+'-files"></div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="ldiag-progress" id="'+uid+'-prog"></div>'+
+    '<div class="ldiag-nav">'+
+      '<button class="ldiag-btn" id="'+uid+'-prev" onclick="diagStep(\''+uid+'\',-1)" aria-label="Précédent">‹</button>'+
+      '<div class="ldiag-move" id="'+uid+'-lbl"></div>'+
+      '<button class="ldiag-btn" id="'+uid+'-next" onclick="diagStep(\''+uid+'\',1)" aria-label="Suivant">›</button>'+
+    '</div></div>'+
+  '</div>';
+}
+/* Replay state — keyed by uid */
+var DREP={};
+/* Apply moves[0..n-1] to a starting board */
+function applyMoves(moves,n){
+  /* clone initial board */
+  var b=initBoard();
+  for(var i=0;i<n;i++){
+    var ec=coords(moves[i]);
+    var fr=ec[0],fc=ec[1],tr=ec[2],tc=ec[3];
+    var p=b[fr][fc];
+    /* castling — king moving 2 squares */
+    if(p&&p[1]==='K'&&Math.abs(tc-fc)===2){
+      var row=fr;
+      if(tc===6){b[row][6]=b[row][4];b[row][4]=null;b[row][5]=b[row][7];b[row][7]=null;}
+      else if(tc===2){b[row][2]=b[row][4];b[row][4]=null;b[row][3]=b[row][0];b[row][0]=null;}
+    } else {
+      b[tr][tc]=p;b[fr][fc]=null;
+    }
+  }
+  return b;
+}
+/* Convert board back to FEN (board portion only) */
+function board2fen(b){
+  var rows=[];
+  for(var r=0;r<8;r++){
+    var s='',n=0;
+    for(var c=0;c<8;c++){
+      if(!b[r][c]){n++;}
+      else{
+        if(n){s+=n;n=0;}
+        var pc=b[r][c],ch=pc[1];
+        s+=pc[0]==='w'?ch:ch.toLowerCase();
+      }
+    }
+    if(n)s+=n;
+    rows.push(s);
+  }
+  return rows.join('/');
+}
+/* Init a replay diagram */
+function initReplay(uid,moves,labels,flipped){
+  DREP[uid]={moves:moves,labels:labels,idx:0,flipped:!!flipped};
+  diagShow(uid);
+}
+/* Display state idx for replay */
+function diagShow(uid){
+  var s=DREP[uid];if(!s)return;
+  var b=applyMoves(s.moves,s.idx);
+  var fen=board2fen(b);
+  /* Highlight last move from/to */
+  var hl={};
+  if(s.idx>0){
+    var lm=s.moves[s.idx-1];
+    hl[lm.slice(0,2)]='amber-dim';
+    hl[lm.slice(2,4)]='amber-dim';
+  }
+  renderDiag(uid,fen,{flipped:s.flipped,highlights:hl});
+  /* Update label */
+  var lblEl=document.getElementById(uid+'-lbl');
+  if(lblEl){
+    if(s.idx===0){lblEl.innerHTML='<span class="ldiag-step">Position de départ</span>—';}
+    else{lblEl.innerHTML='<span class="ldiag-step">Coup '+s.idx+' / '+s.moves.length+'</span>'+s.labels[s.idx-1];}
+  }
+  /* Update buttons */
+  var pb=document.getElementById(uid+'-prev'),nb=document.getElementById(uid+'-next');
+  if(pb)pb.disabled=s.idx===0;
+  if(nb)nb.disabled=s.idx>=s.moves.length;
+  /* Update progress dots */
+  var pe=document.getElementById(uid+'-prog');
+  if(pe){
+    var dots='';
+    for(var i=0;i<s.moves.length;i++){
+      var cl='ldiag-dot'+(i<s.idx?' done':'')+(i===s.idx-1?' cur':'');
+      dots+='<div class="'+cl+'"></div>';
+    }
+    pe.innerHTML=dots;
+  }
+}
+function diagStep(uid,dir){
+  var s=DREP[uid];if(!s)return;
+  var ni=s.idx+dir;
+  if(ni<0||ni>s.moves.length)return;
+  s.idx=ni;diagShow(uid);
+}
+
+/* === Diagram data for tactics (Phase 2) and concepts (Phase 3) === */
+var LESSON_DIAGRAMS={
+  /* Phase 3 — règles & concepts */
+  basics:[
+    {fen:'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR',caption:'<b>Position de départ.</b> Les blancs en bas, les noirs en haut. Chaque joueur a 16 pièces : 8 pions, 2 tours, 2 cavaliers, 2 fous, une dame et un roi.',highlights:{e4:'amber-dim',d4:'amber-dim',e5:'amber-dim',d5:'amber-dim'},capExtra:'Les 4 cases jaunes au centre (e4, d4, e5, d5) sont les cases les plus importantes.'}
+  ],
+  castling:[
+    {fen:'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R',caption:'<b>Petit roque (O-O).</b> Le roi va en g1, la tour en f1. Les cases entre le roi et la tour doivent être vides.',highlights:{g1:'sage-dim',f1:'sage-dim',g8:'sage-dim',f8:'sage-dim'},arrows:[{from:'e1',to:'g1',color:'amber'},{from:'h1',to:'f1',color:'sage'}]},
+    {fen:'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R',caption:'<b>Grand roque (O-O-O).</b> Le roi va en c1, la tour en d1. Trois cases doivent être vides entre eux.',highlights:{c1:'sage-dim',d1:'sage-dim',c8:'sage-dim',d8:'sage-dim'},arrows:[{from:'e1',to:'c1',color:'amber'},{from:'a1',to:'d1',color:'sage'}]}
+  ],
+  en_passant:[
+    {fen:'rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR',caption:'<b>La situation.</b> Pion blanc en e5. Le pion noir vient de d7-d5 (double pas).',highlights:{d5:'rose-dim',e5:'amber-dim'},arrows:[{from:'d7',to:'d5',color:'rose'}]},
+    {fen:'rnbqkbnr/ppp1pppp/3P4/8/8/8/PPPP1PPP/RNBQKBNR',caption:'<b>Après la prise en passant.</b> Le pion blanc capture en d6 — comme si le pion noir n\'avait avancé que d\'une case. À jouer immédiatement, sinon le droit est perdu.',highlights:{d6:'sage-dim'},arrows:[{from:'e5',to:'d6',color:'sage'}]}
+  ],
+  promotion:[
+    {fen:'8/3P4/8/8/8/8/8/4K2k',caption:'<b>Promotion imminente.</b> Le pion blanc en d7 atteindra d8 au prochain coup et se transformera en n\'importe quelle pièce — presque toujours en dame.',highlights:{d7:'amber-dim',d8:'sage-dim'},arrows:[{from:'d7',to:'d8',color:'sage'}]}
+  ],
+  stalemate:[
+    {fen:'7k/5Q2/6K1/8/8/8/8/8',caption:'<b>Pat (nul !).</b> Le roi noir n\'est pas en échec mais ne peut bouger nulle part — toutes les cases voisines sont contrôlées par la dame ou le roi blancs. Pat = nulle.',highlights:{h8:'rose-dim',g8:'rose-dim',h7:'rose-dim',g7:'rose-dim'}}
+  ],
+  /* Phase 1 — ouvertures (replay) — handled via lesson.moves directly */
+  /* Phase 2 — tactiques */
+  fork:[
+    {fen:'r3k2r/ppp2ppp/8/3p4/3N4/8/PPP2PPP/R3K2R',caption:'<b>La fourchette royale.</b> Le cavalier blanc en d4 attaque simultanément le roi noir en e8 et la tour en a8 — impossible à parer.',highlights:{e8:'rose-dim',a8:'rose-dim',d4:'amber-dim'},arrows:[{from:'d4',to:'e6',color:'rose'}],capExtra:'Note : ici, jouer Cxe6+ donnerait échec et menacerait la tour. Le roi doit fuir, la tour est perdue.'}
+  ],
+  pin:[
+    {fen:'r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R',caption:'<b>Le clouage.</b> Le fou blanc en b5 cloue le cavalier en c6 — ce cavalier protège... rien d\'immédiat ici, mais s\'il bouge, le fou peut prendre le pion en e8 ou créer une menace.',highlights:{c6:'rose-dim'},arrows:[{from:'b5',to:'c6',color:'amber'}]},
+    {fen:'rnbqk2r/ppp2ppp/3p1n2/4p1B1/3PP3/2N5/PPP2PPP/R2QKBNR',caption:'<b>Clouage absolu.</b> Le fou blanc en g5 cloue le cavalier f6 contre la dame en d8. Le cavalier est paralysé — il ne peut bouger sans perdre la dame.',highlights:{f6:'rose-dim',d8:'rose-dim'},arrows:[{from:'g5',to:'d8',color:'rose'}]}
+  ],
+  skewer:[
+    {fen:'8/8/8/4k3/8/4q3/4R3/4K3',caption:'<b>L\'enfilage.</b> La tour blanche attaque le roi noir. Le roi doit bouger — la dame derrière lui est perdue.',highlights:{e5:'rose-dim',e3:'rose-dim'},arrows:[{from:'e2',to:'e5',color:'rose'}]}
+  ],
+  discovered:[
+    {fen:'r1bqkb1r/pppp1ppp/2n2n2/4N3/2B1P3/8/PPPP1PPP/RNBQK2R',caption:'<b>Échec découvert.</b> Si le cavalier en e5 bouge (ex: Cxf7), le fou en c4 donne échec au roi en e8. Le cavalier peut aussi capturer librement en sortant du chemin.',highlights:{e5:'amber-dim',c4:'amber-dim',e8:'rose-dim'},arrows:[{from:'c4',to:'e8',color:'rose'}]}
+  ],
+  back_rank:[
+    {fen:'6k1/5ppp/8/8/8/8/8/4R1K1',caption:'<b>Mat de dos.</b> La tour blanche arrive en e8 — mat ! Le roi noir est enfermé par ses propres pions f7, g7, h7. Aucune fuite possible.',highlights:{e8:'rose-dim',g8:'rose-dim'},arrows:[{from:'e1',to:'e8',color:'rose'}]}
+  ],
+  scholars_mate:[
+    {fen:'r1bqkbnr/pppp1Qpp/2n2n2/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR',caption:'<b>Mat du Berger.</b> Après 1.e4 e5 2.Fc4 Cc6 3.Dh5 Cf6?? 4.Dxf7#. La dame mate sur f7, soutenue par le fou c4. Le roi n\'a aucune case de fuite.',highlights:{f7:'rose-dim',e8:'rose-dim'},arrows:[{from:'h5',to:'f7',color:'rose'},{from:'c4',to:'f7',color:'sage'}]}
+  ],
+  legal_mate:[
+    {fen:'r1bqkbnr/pppp1Bpp/2n5/4N3/4P3/2N5/PPPP1PPP/R1B1k2R',caption:'<b>Mat de Légal.</b> Après le sacrifice de dame, le roi noir est forcé en e7 où il est maté par la combinaison Cd5 (cavalier) avec le soutien du fou f7 et du cavalier e5.',highlights:{e7:'rose-dim'},capExtra:'Position simplifiée — illustrative du principe : trois pièces mineures peuvent mater là où la dame seule échoue.'}
+  ],
+  smothered_mate:[
+    {fen:'6rk/6pp/8/6N1/8/8/8/4K3',caption:'<b>Mat à l\'étouffé.</b> Le cavalier en f7 mate le roi en h8. Toutes les cases de fuite (g8, g7, h7) sont bloquées par les pièces noires elles-mêmes.',highlights:{h8:'rose-dim',f7:'amber-dim'},arrows:[{from:'g5',to:'f7',color:'rose'}]}
+  ],
+  greek_gift:[
+    {fen:'r1bq1rk1/pppn1ppp/3b1n2/8/2BP4/2N1PN2/PPP2PPP/R1BQ1RK1',caption:'<b>Position type pour Fxh7+.</b> Le fou blanc en c4 vise h7, défendu seulement par le roi. Le cavalier f3 peut sauter en g5 après la prise.',highlights:{h7:'rose-dim',c4:'amber-dim',f3:'amber-dim'},arrows:[{from:'c4',to:'h7',color:'rose'}]}
+  ],
+  /* Phase 3 — concepts stratégiques */
+  center:[
+    {fen:'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR',caption:'<b>Le centre — e4 et e5.</b> Les 4 cases centrales (e4, d4, e5, d5) contrôlent le maximum de cases. Un cavalier en e4 attaque 8 cases, un cavalier en a1 seulement 2.',highlights:{e4:'amber-dim',d4:'amber',e5:'amber-dim',d5:'amber'}}
+  ],
+  seventh_rank:[
+    {fen:'4k3/R6R/8/8/8/8/8/4K3',caption:'<b>Tours doublées sur la 7e rangée.</b> Position de domination totale. Les deux tours blanches attaquent tous les pions adverses et coupent le roi noir.',highlights:{a7:'amber-dim',h7:'amber-dim'},capExtra:'On parle de "tours cochons" — elles dévorent tout sur leur passage.'}
+  ],
+  outpost:[
+    {fen:'r1bq1rk1/pp3ppp/2n1pn2/2pp4/3P1B2/2N1PN2/PPP2PPP/R2QKB1R',caption:'<b>Avant-poste.</b> Imagine un cavalier blanc en d5 — case soutenue par le pion c4 (ou e4) et qu\'aucun pion noir ne peut chasser. Pièce intouchable.',highlights:{d5:'sage-dim',e5:'sage-dim'}}
+  ],
+  weak_squares:[
+    {fen:'rnbqkbnr/ppp2ppp/3p4/4p3/4P3/3P4/PPP2PPP/RNBQKBNR',caption:'<b>Cases faibles.</b> Les cases noires d5 et f5 sont faibles côté blanc — aucun pion blanc ne peut plus les défendre. Un cavalier noir y serait imprenable.',highlights:{d5:'rose-dim',f5:'rose-dim'}}
+  ],
+  bishop_pair:[
+    {fen:'4k3/8/8/8/8/8/8/2B1KB2',caption:'<b>La paire de fous.</b> Les deux fous contrôlent à eux seuls toutes les cases de l\'échiquier — couleurs noires et blanches confondues. Redoutable en position ouverte.',highlights:{a3:'sage-dim',b4:'sage-dim',c5:'sage-dim',d6:'sage-dim',e7:'sage-dim',f8:'sage-dim',h3:'sage-dim',g4:'sage-dim',e5:'sage-dim',d4:'sage-dim',c3:'sage-dim',b2:'sage-dim',a2:'sage-dim',a4:'sage-dim'}}
+  ],
+  open_files:[
+    {fen:'r3k2r/pp3ppp/8/8/8/8/PP3PPP/R3K2R',caption:'<b>Colonnes ouvertes c, d, e.</b> Aucun pion ne bloque ces colonnes. Les tours qui les occupent atteignent toute la profondeur de l\'échiquier.',highlights:{c1:'amber-dim',d1:'amber-dim',e1:'amber-dim',c8:'rose-dim',d8:'rose-dim',e8:'rose-dim'}}
+  ],
+  passed_pawns:[
+    {fen:'4k3/8/8/3P4/8/8/8/4K3',caption:'<b>Pion passé.</b> Le pion blanc en d5 n\'a aucun pion noir devant lui ni sur les colonnes adjacentes. Rien ne peut l\'arrêter sauf le roi noir — course à la promotion !',highlights:{d5:'amber-dim',d6:'sage-dim',d7:'sage-dim',d8:'sage-dim'},arrows:[{from:'d5',to:'d8',color:'sage'}]}
+  ],
+  endgame_king:[
+    {fen:'8/8/8/3k4/3K4/8/8/8',caption:'<b>L\'opposition des rois.</b> Les deux rois face à face, une case entre eux. Celui qui doit jouer est désavantagé — il doit céder le passage. Concept clé en finale.',highlights:{d4:'amber-dim',d5:'rose-dim'}}
+  ],
+  zugzwang:[
+    {fen:'8/8/4k3/4P3/4K3/8/8/8',caption:'<b>Zugzwang classique.</b> Si c\'est aux noirs de jouer, le roi noir doit reculer et perdre l\'opposition. Le pion blanc avancera et promouvra. Tout coup détériore la position.',highlights:{e6:'rose-dim'}}
+  ],
+  pawn_structure:[
+    {fen:'4k3/p1p3p1/2p5/8/8/2P2P2/P5PP/4K3',caption:'<b>Structure de pions.</b> Pions doublés blancs sur la colonne f. Pions isolés noirs en a et g. Chaque faiblesse est exploitable en finale.',highlights:{f3:'rose-dim',f2:'rose-dim',a7:'slate-dim',g7:'slate-dim'}}
+  ],
+  fortress:[
+    {fen:'8/8/8/3k4/8/3KB3/8/8',caption:'<b>Forteresse.</b> Roi + fou contre roi seul = nulle. Le roi solitaire ne peut pas progresser. Même avec un avantage matériel, certaines positions sont imprenables.',highlights:{d3:'sage-dim',e3:'sage-dim'}}
+  ]
+};
+
+/* Build diagrams HTML for a lesson */
+function lessonDiagramsHTML(lesson){
+  var html='';
+  /* Phase 1 — opening replay */
+  if(lesson.hasPractice&&lesson.moves&&lesson.moves.length){
+    var uid='diag-'+lesson.id+'-replay';
+    var flipped=lesson.practiceColor==='black';
+    var caption='<b>Suis l\'ouverture pas à pas.</b> Utilise les flèches pour avancer dans la séquence — tu visualises chaque coup directement sur l\'échiquier.';
+    html+=diagReplayHTML(uid,caption);
+    /* defer init until DOM is in place */
+    setTimeout(function(){initReplay(uid,lesson.moves,lesson.labels,flipped);},0);
+  }
+  /* Phase 2 & 3 — static diagrams */
+  var diags=LESSON_DIAGRAMS[lesson.id];
+  if(diags&&diags.length){
+    diags.forEach(function(d,i){
+      var uid='diag-'+lesson.id+'-'+i;
+      var cap=d.caption+(d.capExtra?'<br><br>'+d.capExtra:'');
+      html+=diagStaticHTML(uid,cap);
+      setTimeout(function(){
+        renderDiag(uid,d.fen,{highlights:d.highlights||{},arrows:d.arrows||[],flipped:!!d.flipped});
+      },0);
+    });
+  }
+  return html;
+}
 
 var BS={board:null,sel:null,turn:'w',moves:[],onMove:null,flipped:false,frozen:false};
 function initBoard(){return[['bR','bN','bB','bQ','bK','bB','bN','bR'],['bP','bP','bP','bP','bP','bP','bP','bP'],[null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null],['wP','wP','wP','wP','wP','wP','wP','wP'],['wR','wN','wB','wQ','wK','wB','wN','wR']];}
