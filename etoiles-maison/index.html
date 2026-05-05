@@ -64,7 +64,7 @@
   .display { font-family: 'Fraunces', Georgia, serif; font-weight: 600; letter-spacing: -0.02em; }
 
   /* === LAYOUT === */
-  .app { max-width: 720px; margin: 0 auto; padding: 1rem 1rem 6rem; }
+  .app { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.5rem 6rem; }
 
   /* Top bar */
   .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
@@ -504,6 +504,44 @@
   .setup-card .btn { padding: 12px 20px; font-size: 14px; margin-top: 12px; width: 100%; }
 
   /* === RESPONSIVE === */
+
+  /* Desktop large : 2 colonnes pour les tâches & récompenses */
+  @media (min-width: 900px) {
+    .app { padding: 2rem 2rem 6rem; }
+    .logo-mark { font-size: 36px; }
+    .top-section { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: stretch; }
+    .top-section .kids { margin-bottom: 0; }
+    .top-section .family-bar { margin-bottom: 0; }
+    .task-list, .reward-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .stats { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .stat { padding: 16px 18px; }
+    .stat-value { font-size: 28px; }
+    .leaderboard { gap: 14px; }
+    .lb-value { font-size: 30px; }
+    .family-points { font-size: 34px; }
+    .kid { padding: 18px 20px; }
+    .kid-avatar { width: 52px; height: 52px; font-size: 24px; }
+    .kid-name { font-size: 19px; }
+    .week-grid { padding: 18px; }
+    .day-letter { font-size: 14px; }
+    .day-points { font-size: 11px; }
+    /* Banners et leaderboard restent pleine largeur */
+    .banner { font-size: 14px; padding: 14px 18px; }
+  }
+
+  /* Très grand écran : 3 colonnes pour les tâches */
+  @media (min-width: 1300px) {
+    .app { max-width: 1280px; }
+    .task-list, .reward-list {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+
+  /* Mobile */
   @media (max-width: 480px) {
     .app { padding: 0.75rem 0.75rem 5rem; }
     .stats { grid-template-columns: 1fr 1fr; }
@@ -1465,8 +1503,10 @@ function render() {
   }
   document.getElementById('root').innerHTML = html`
     ${renderTopbar()}
-    ${renderKidSelector()}
-    ${renderFamilyBar()}
+    <div class="top-section">
+      ${renderKidSelector()}
+      ${renderFamilyBar()}
+    </div>
     ${renderStats()}
     ${renderTabs()}
     <div id="tabContent">${renderTabContent()}</div>
