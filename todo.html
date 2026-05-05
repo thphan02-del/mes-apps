@@ -140,13 +140,14 @@ h1,h2,h3,.heading,.app-name,.section-lbl,.drawer-title,.perso-title{font-family:
     width:100%;
   }
   /* mobile-only elements hidden on desktop */
-  .header,.nav{display:none}
+  body > .main-area > .header,
+  body > .main-area > .nav{display:none !important}
   .main-area .header-desktop{display:flex}
   .perso-btn{display:none}
 }
 @media(max-width:899px){
   .sidebar{display:none}
-  .header-desktop{display:none}
+  .header-desktop{display:none !important}
 }
 
 /* HEADER */
@@ -203,6 +204,23 @@ h1,h2,h3,.heading,.app-name,.section-lbl,.drawer-title,.perso-title{font-family:
 .task-del{width:26px;height:26px;border:none;background:transparent;cursor:pointer;color:var(--ink-hint);font-size:13px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:0;transition:opacity 0.15s}
 .task-item:hover .task-del{opacity:1}
 @media(hover:none){.task-del{opacity:1}}
+
+/* PRIO GROUP HEADERS */
+.prio-group-hdr{
+  font-family:'Montserrat',sans-serif;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:0.8px;
+  text-transform:uppercase;
+  padding:0.6rem 0 0.3rem;
+  color:var(--ink-muted);
+  border-bottom:1px solid var(--border);
+  margin-bottom:0.2rem;
+}
+.prio-group-hdr:first-child{padding-top:0.2rem}
+.prio-group-hdr.urgent{color:var(--red)}
+.prio-group-hdr.important{color:var(--gold-dark)}
+.prio-group-hdr.someday{color:var(--ink-hint)}
 
 /* CAT COLORS — accents discrets sur ivoire */
 .cat-em{background:#E1E8F2;color:#3B5577}
@@ -1079,8 +1097,14 @@ function renderAll(){
 function sortActive(a,b){
   var PRIO={urgent:0,important:1,someday:2};
   var po=(PRIO[a.prio]||2)-(PRIO[b.prio]||2);if(po!==0)return po;
-  if(a.due&&b.due)return a.due.localeCompare(b.due);if(a.due)return-1;if(b.due)return 1;
-  return b.createdAt-a.createdAt;
+  // dans la même prio : échéance d'abord (proche en haut), puis ancienneté (vieux en haut)
+  if(a.due&&b.due){var dc=a.due.localeCompare(b.due);if(dc!==0)return dc;}
+  else if(a.due)return -1;
+  else if(b.due)return 1;
+  // Fallback ancienneté : compatibilité created_at (snake) ou createdAt (camel)
+  var ca=a.created_at||a.createdAt||0;
+  var cb=b.created_at||b.createdAt||0;
+  return ca-cb; // plus vieux d'abord (pour vider la liste)
 }
 
 function filterT(list){return currentFilter==='all'?list:list.filter(function(t){return t.cat===currentFilter;});}
@@ -1349,7 +1373,23 @@ async function cycleHabit(id){
 function renderList(elId,list,isDone){
   var el=document.getElementById(elId);
   if(!list.length){el.innerHTML='<div class="empty-state"><div class="es-icon">'+(isDone?'✨':'📋')+'</div>'+(isDone?'Rien pour l\'instant':'Aucune tâche ici')+'</div>';return;}
-  el.innerHTML=list.map(function(t){return taskHTML(t);}).join('');
+  if(isDone){
+    el.innerHTML=list.map(function(t){return taskHTML(t);}).join('');
+    return;
+  }
+  // active : intercaler des en-têtes de prio
+  var PRIO_HDR={
+    urgent:'<div class="prio-group-hdr urgent">🔴 Urgent</div>',
+    important:'<div class="prio-group-hdr important">🟡 Important</div>',
+    someday:'<div class="prio-group-hdr someday">⚪ Un jour</div>'
+  };
+  var html='',lastPrio=null;
+  list.forEach(function(t){
+    var p=t.prio||'someday';
+    if(p!==lastPrio){html+=PRIO_HDR[p]||'';lastPrio=p;}
+    html+=taskHTML(t);
+  });
+  el.innerHTML=html;
 }
 
 function taskHTML(t){
