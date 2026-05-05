@@ -533,7 +533,7 @@
 // ============================================================================
 
 const CONFIG = {
-  PARENT_PIN: '1234',
+  PARENT_PIN: '2209',
   POLL_INTERVAL: 5000, // ms
   // Si vous voulez héberger vos propres données, créez un compte gratuit sur
   // https://jsonbin.io et remplacez ces valeurs. Pour l'instant on stocke en local
@@ -1212,7 +1212,7 @@ function renderParent() {
     return html`
       <div class="parent-lock">
         <h3>Espace parents</h3>
-        <p>Code par défaut : 1234</p>
+        <p>Entrez votre code à 4 chiffres</p>
         <input type="password" id="pinInput" class="pin-input" maxlength="4" placeholder="••••" inputmode="numeric" autocomplete="off">
         <button class="btn btn-primary" data-action="unlock">Déverrouiller</button>
         <div id="pinError" style="font-size:12px;color:var(--accent);min-height:18px;margin-top:10px;"></div>
