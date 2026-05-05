@@ -122,6 +122,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:colu
 .piece-del:hover{color:var(--red)}
 .piece-row{cursor:grab}
 .piece-row.piece-dz-over{background:var(--red-dim);border-color:var(--red-border);border-radius:var(--rs)}
+.pieces-list{display:flex;flex-direction:column}
+.piece-insert-line{height:3px;background:var(--red);border-radius:2px;margin:1px 0;opacity:0;transition:opacity .1s;pointer-events:none}
+.piece-insert-line.show{opacity:1}
 .add-piece-row{display:flex;gap:8px;margin-top:16px}
 .add-piece-input{flex:1;background:var(--bg2);border:1.5px solid var(--border-md);border-radius:var(--rs);padding:10px 13px;font-size:14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none}
 .add-piece-input:focus{border-color:var(--red-border)}
@@ -350,12 +353,13 @@ function showLoading(on){
 }
 
 // Polling toutes les 15s pour sync multi-appareils
+let _isDraggingPiece=false;
 function startPolling(){
   setInterval(async()=>{
-    if(modal)return; // ne pas rafraîchir pendant une édition
+    if(modal||_isDraggingPiece)return;
     try{
       const [t,p]=await Promise.all([sbGet('travaux_tasks'),sbGet('travaux_pieces')]);
-      if(Array.isArray(p)&&p.length>0) pieces=p.map(r=>r.name);
+      if(Array.isArray(p)&&p.length>0) pieces=p.sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)).map(r=>r.name);
       if(Array.isArray(t)&&t.length>0) tasks=t;
       render();
     }catch(e){}
@@ -756,43 +760,57 @@ function renderTasks(){
     </div>`;
 }
 
-let dragPiece=null,dragOverPiece=null;
+let dragPiece=null,dragOverPiece=null,dragBeforePiece=null;
 let _pTouchTimer=null,_pTouchDragging=false,_pTouchStartY=0,_pTouchClone=null,_pTouchName=null;
 
 function onPieceDragStart(e,name){
   dragPiece=name;
+  _isDraggingPiece=true;
   e.dataTransfer.effectAllowed='move';
   setTimeout(()=>{const el=document.querySelector(`.piece-row[data-piece="${CSS.escape(name)}"]`);if(el)el.style.opacity='0.35';},0);
 }
 function onPieceDragEnd(e){
   document.querySelectorAll('.piece-row').forEach(r=>{r.style.opacity='';r.classList.remove('piece-dz-over');});
-  dragPiece=null;dragOverPiece=null;
+  document.querySelectorAll('.piece-insert-line').forEach(l=>l.classList.remove('show'));
+  dragPiece=null; dragOverPiece=null; dragBeforePiece=null;
+  setTimeout(()=>{_isDraggingPiece=false;},500);
 }
 function onPieceDragOver(e,name){
   e.preventDefault();
   if(name===dragPiece)return;
   document.querySelectorAll('.piece-row').forEach(r=>r.classList.remove('piece-dz-over'));
-  const el=document.querySelector(`.piece-row[data-piece="${CSS.escape(name)}"]`);
-  if(el)el.classList.add('piece-dz-over');
-  dragOverPiece=name;
+  document.querySelectorAll('.piece-insert-line').forEach(l=>l.classList.remove('show'));
+  // show insert line before this piece
+  const line=document.querySelector(`.piece-insert-line[data-before="${CSS.escape(name)}"]`);
+  if(line)line.classList.add('show');
+  dragBeforePiece=name;
 }
-async function onPieceDrop(e,name){
+async function onPieceDropZone(e){
   e.preventDefault();
   document.querySelectorAll('.piece-row').forEach(r=>{r.style.opacity='';r.classList.remove('piece-dz-over');});
-  if(!dragPiece||dragPiece===name)return;
-  const from=pieces.indexOf(dragPiece), to=pieces.indexOf(name);
-  if(from<0||to<0)return;
-  pieces.splice(from,1);pieces.splice(to,0,dragPiece);
-  dragPiece=null;dragOverPiece=null;
-  await sbUpsert('travaux_pieces',pieces.map((n,i)=>({name:n,sort_order:i})));
-  render();
+  document.querySelectorAll('.piece-insert-line').forEach(l=>l.classList.remove('show'));
+  if(!dragPiece)return;
+  await reorderPiece(dragPiece, dragBeforePiece);
+  dragPiece=null; dragBeforePiece=null;
+  setTimeout(()=>{_isDraggingPiece=false;},500);
 }
 
-// Touch for pieces
+async function reorderPiece(name, beforeName){
+  const from=pieces.indexOf(name);
+  if(from<0)return;
+  pieces.splice(from,1);
+  const to=beforeName?pieces.indexOf(beforeName):pieces.length;
+  pieces.splice(to<0?pieces.length:to,0,name);
+  render();
+  await sbUpsert('travaux_pieces',pieces.map((n,i)=>({name:n,sort_order:i})));
+}
+
+// Touch for pieces — long press
 function onPieceTouchStart(e,name){
   _pTouchStartY=e.touches[0].clientY; _pTouchDragging=false; _pTouchName=name;
   _pTouchTimer=setTimeout(()=>{
     _pTouchDragging=true;
+    _isDraggingPiece=true;
     const row=e.currentTarget;
     const rect=row.getBoundingClientRect();
     _pTouchClone=row.cloneNode(true);
@@ -809,49 +827,60 @@ function onPieceTouchMove(e){
   }
   e.preventDefault();
   const t=e.touches[0];
-  _pTouchClone.style.top=(t.clientY-20)+'px';
+  _pTouchClone.style.top=(t.clientY-24)+'px';
   _pTouchClone.style.display='none';
   const el=document.elementFromPoint(t.clientX,t.clientY);
   _pTouchClone.style.display='';
-  document.querySelectorAll('.piece-row').forEach(r=>r.classList.remove('piece-dz-over'));
+  document.querySelectorAll('.piece-insert-line').forEach(l=>l.classList.remove('show'));
   const row=el?.closest('.piece-row');
-  if(row&&row.dataset.piece!==_pTouchName){row.classList.add('piece-dz-over');dragOverPiece=row.dataset.piece;}
-  else dragOverPiece=null;
+  if(row&&row.dataset.piece&&row.dataset.piece!==_pTouchName){
+    dragBeforePiece=row.dataset.piece;
+    const line=document.querySelector(`.piece-insert-line[data-before="${CSS.escape(dragBeforePiece)}"]`);
+    if(line)line.classList.add('show');
+  } else if(!row){
+    dragBeforePiece=null; // drop at end
+  }
 }
 async function onPieceTouchEnd(e){
   clearTimeout(_pTouchTimer);_pTouchTimer=null;
   if(_pTouchClone){_pTouchClone.remove();_pTouchClone=null;}
   document.querySelectorAll('.piece-row').forEach(r=>{r.style.opacity='';r.classList.remove('piece-dz-over');});
-  if(_pTouchDragging&&_pTouchName&&dragOverPiece&&_pTouchName!==dragOverPiece){
-    const from=pieces.indexOf(_pTouchName), to=pieces.indexOf(dragOverPiece);
-    if(from>=0&&to>=0){pieces.splice(from,1);pieces.splice(to,0,_pTouchName);}
-    await sbUpsert('travaux_pieces',pieces.map((n,i)=>({name:n,sort_order:i})));
-    render();
+  document.querySelectorAll('.piece-insert-line').forEach(l=>l.classList.remove('show'));
+  if(_pTouchDragging&&_pTouchName){
+    await reorderPiece(_pTouchName, dragBeforePiece);
   }
-  _pTouchDragging=false;_pTouchName=null;dragOverPiece=null;
+  _pTouchDragging=false; _pTouchName=null; dragBeforePiece=null;
+  setTimeout(()=>{_isDraggingPiece=false;},500);
 }
 
 function renderPieces(){
   document.getElementById("content-root").innerHTML=`
     <div class="section-lbl">${pieces.length} pièce(s) — <span style="font-weight:400;text-transform:none;letter-spacing:0">glisser pour réordonner</span></div>
-    ${pieces.map(p=>{
-      const count=tasks.filter(t=>t.piece===p).length;
-      const esc=p.replace(/'/g,"\\'");
-      return`<div class="piece-row" data-piece="${p.replace(/"/g,'&quot;')}"
-        draggable="true"
-        ondragstart="onPieceDragStart(event,'${esc}')"
-        ondragend="onPieceDragEnd(event)"
-        ondragover="onPieceDragOver(event,'${esc}')"
-        ondrop="onPieceDrop(event,'${esc}')"
-        ontouchstart="onPieceTouchStart(event,'${esc}')"
-        ontouchmove="onPieceTouchMove(event)"
-        ontouchend="onPieceTouchEnd(event)">
-        <span class="drag-handle" style="margin-right:4px">⠿</span>
-        <span class="piece-name">${p}</span>
-        <span class="piece-count">${count} tâche${count>1?"s":""}</span>
-        <button class="piece-del" onclick="deletePiece('${esc}')" title="Supprimer">×</button>
-      </div>`;
-    }).join("")}
+    <div class="pieces-list"
+      ondragover="event.preventDefault()"
+      ondrop="onPieceDropZone(event)">
+      ${pieces.map(p=>{
+        const count=tasks.filter(t=>t.piece===p).length;
+        const esc=p.replace(/'/g,"\\'");
+        const escData=p.replace(/"/g,'&quot;');
+        return`
+          <div class="piece-insert-line" data-before="${escData}"></div>
+          <div class="piece-row" data-piece="${escData}"
+            draggable="true"
+            ondragstart="onPieceDragStart(event,'${esc}')"
+            ondragend="onPieceDragEnd(event)"
+            ondragover="onPieceDragOver(event,'${esc}')"
+            ontouchstart="onPieceTouchStart(event,'${esc}')"
+            ontouchmove="onPieceTouchMove(event)"
+            ontouchend="onPieceTouchEnd(event)">
+            <span class="drag-handle" style="margin-right:4px">⠿</span>
+            <span class="piece-name">${p}</span>
+            <span class="piece-count">${count} tâche${count>1?"s":""}</span>
+            <button class="piece-del" onclick="deletePiece('${esc}')" title="Supprimer">×</button>
+          </div>`;
+      }).join("")}
+      <div class="piece-insert-line" data-before="__end__"></div>
+    </div>
     <div class="add-piece-row">
       <input class="add-piece-input" id="new-piece-input" placeholder="Nom de la nouvelle pièce..." onkeydown="if(event.key==='Enter')addPiece()">
       <button class="btn-add-piece" onclick="addPiece()">Ajouter</button>
