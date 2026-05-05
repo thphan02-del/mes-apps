@@ -257,6 +257,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:colu
   <div class="stat-grid">
     <div class="stat-box"><div class="stat-lbl">km depuis 27 avril</div><div class="stat-val" id="h-total">—<span class="stat-unit"> km</span></div></div>
     <div class="stat-box"><div class="stat-lbl">séances de prépa</div><div class="stat-val" id="h-seances">—</div></div>
+    <div class="stat-box"><div class="stat-lbl">poids ce matin</div><div class="stat-val" id="h-poids" style="color:var(--text)">—</div></div>
   </div>
 
   <a class="nolio-link" href="https://www.nolio.io/calendar/" target="_blank">
@@ -525,8 +526,10 @@ async function toggleTarget(id){
   else delete habits[id][today];
   renderTargets();
   calcCountdown();
+  renderPoidsBox();
   if(document.getElementById('tab-suivi').classList.contains('active'))renderSuivi();
   await sbUpsert('marathon_habits',{id:id,data:habits[id]||{}});
+  if(id==='poids')renderPoidsBox();
 }
 
 /* ── NUTRITION TODAY ── */
@@ -721,6 +724,7 @@ async function editLog(val){
   closeEdit();renderTargets();calcCountdown();
   if(document.getElementById('tab-suivi').classList.contains('active'))renderSuivi();
   await sbUpsert('marathon_habits',{id:id,data:habits[id]||{}});
+  if(id==='poids')renderPoidsBox();
 }
 function closeEdit(e){
   if(e&&e.target!==document.getElementById('edit-overlay'))return;
@@ -769,6 +773,21 @@ async function sendMsg(){
 function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
 function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
 
+function renderPoidsBox(){
+  var el=document.getElementById('h-poids');if(!el)return;
+  var today=todayStr();
+  var val=getSavedMetric('poids',today);
+  var md=getCurrentMonthData();
+  var target=md?md.poidsCible:null;
+  if(val&&parseFloat(val)>0){
+    var diff=parseFloat(val)-(target||99);
+    el.style.color=diff<=0?'var(--green)':diff<=0.5?'var(--text)':'var(--red)';
+    el.innerHTML=val+'<span class="stat-unit"> / '+target+'kg</span>';
+  } else {
+    el.style.color='var(--text)';
+    el.innerHTML='—<span class="stat-unit"> cible: '+target+'kg</span>';
+  }
+}
 function renderConseil(){
   var el=document.getElementById('conseil-card');if(!el)return;
   var session=getTodaySession();
@@ -795,6 +814,31 @@ function renderConseil(){
   }
   el.innerHTML='<div style="font-size:13px;line-height:1.6;color:var(--text)">'+text+'<\/div>'+
     (session?'<div style="font-size:11px;color:var(--text-hint);margin-top:6px;border-top:1px solid var(--border);padding-top:6px">Seance : '+session+'<\/div>':'');
+}
+
+function renderPoidsBox(){
+  var el=document.getElementById('h-poids');
+  var target=document.getElementById('h-poids-target');
+  var box=document.getElementById('poids-stat-box');
+  if(!el)return;
+  var today=todayStr();
+  var md=getCurrentMonthData();
+  var entry=habits['poids']&&habits['poids'][today];
+  var val='';
+  if(entry&&typeof entry==='object'&&entry.val)val=entry.val;
+  else if(entry&&typeof entry==='string')val=entry;
+  if(val){
+    var num=parseFloat(val);
+    var cible=md.poidsCible;
+    var diff=num-cible;
+    var color=diff<=0?'var(--green)':diff<=1?'var(--gold)':'var(--red)';
+    el.innerHTML='<span style="color:'+color+'">'+num+'</span><span class="stat-unit"> kg</span>';
+    if(target)target.innerHTML=' / '+cible+'kg';
+    if(box){box.style.cursor='pointer';box.title='Tap pour modifier';}
+  } else {
+    el.innerHTML='—<span class="stat-unit"> kg</span>';
+    if(target)target.innerHTML=' cible '+md.poidsCible+'kg';
+  }
 }
 
 /* ── NAV ── */
@@ -828,6 +872,8 @@ async function loadAll(){
   renderProgTable();
   renderNutritionPhases();
   renderConseil();
+  renderPoidsBox();
+  renderPoidsBox();
 }
 loadAll();
 </script>
