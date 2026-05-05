@@ -285,7 +285,11 @@ async function sbGetPieces(){
   try{const r=await fetch(`${SUPA_URL}/rest/v1/travaux_pieces?select=*&order=sort_order.asc`,{headers:H});return r.json();}catch(e){return[];}
 }
 async function sbUpsert(table,data){
-  try{await fetch(`${SUPA_URL}/rest/v1/${table}`,{method:'POST',headers:{...H,'Prefer':'resolution=merge-duplicates'},body:JSON.stringify(data)});}catch(e){}
+  try{
+    const r=await fetch(`${SUPA_URL}/rest/v1/${table}`,{method:'POST',headers:{...H,'Prefer':'resolution=merge-duplicates'},body:JSON.stringify(data)});
+    if(!r.ok){const err=await r.text();console.error('sbUpsert',table,r.status,err);}
+    return r;
+  }catch(e){console.error('sbUpsert error',e);}
 }
 async function sbDelete(table,col,val){
   try{await fetch(`${SUPA_URL}/rest/v1/${table}?${col}=eq.${encodeURIComponent(val)}`,{method:'DELETE',headers:H});}catch(e){}
@@ -299,14 +303,19 @@ let modal=null,recognition=null,isListening=false;
 let _loaded=false;
 
 async function savePieces(){
-  // upsert all pieces
   await sbUpsert('travaux_pieces', pieces.map(name=>({name})));
 }
-async function saveTasks(){
-  // handled per-operation (upsertTask / deleteTask)
-}
+async function saveTasks(){}
 async function upsertTask(t){
-  await sbUpsert('travaux_tasks',[t]);
+  await sbUpsert('travaux_tasks',[{
+    id:t.id,
+    titre:t.titre||"",
+    piece:t.piece||"Autre",
+    priorite:t.priorite||"normale",
+    statut:t.statut||"todo",
+    notes:t.notes||"",
+    "order":t.order||0
+  }]);
 }
 async function deleteTaskDB(id){
   await sbDelete('travaux_tasks','id',id);
@@ -895,10 +904,20 @@ function renderPieces(){
 }
 
 function render(){
+  // Save kanban scroll position before re-render
+  const board=document.querySelector('.kanban-board');
+  const scrollLeft=board?board.scrollLeft:0;
+
   renderHeader();
   renderNav();
   if(currentTab==="tasks")renderTasks();
   else renderPieces();
+
+  // Restore kanban scroll position after re-render
+  if(scrollLeft>0){
+    const newBoard=document.querySelector('.kanban-board');
+    if(newBoard) newBoard.scrollLeft=scrollLeft;
+  }
 }
 
 loadAll();
