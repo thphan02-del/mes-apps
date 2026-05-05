@@ -29,18 +29,20 @@ body{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:colu
   .content{overflow:hidden!important;display:flex!important;flex-direction:column!important;padding-bottom:72px!important}
   .filter-bar{flex-shrink:0}
   .mobile-list{display:none}
-  .kanban-board{display:flex!important;gap:12px;overflow-x:auto;flex:1;min-height:0;padding-bottom:4px;align-items:flex-start;scrollbar-width:thin;scrollbar-color:var(--border-md) transparent}
+  .kanban-board{display:flex!important;gap:12px;overflow-x:auto;flex:1;min-height:0;padding-bottom:8px;align-items:stretch;scrollbar-width:thin;scrollbar-color:var(--border-md) transparent}
   .kanban-board::-webkit-scrollbar{height:6px}
   .kanban-board::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:3px}
-  .kanban-col{flex:0 0 270px;display:flex;flex-direction:column;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);max-height:100%;overflow:hidden}
+  .kanban-col{flex:0 0 270px;display:flex;flex-direction:column;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;height:100%}
   .kanban-col-header{padding:10px 14px 8px;background:var(--bg4);border-bottom:1px solid var(--border);flex-shrink:0}
   .kanban-col-title{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted)}
   .kanban-col-count{font-size:11px;color:var(--text-hint);margin-top:1px}
-  .kanban-col-body{flex:1;overflow-y:auto;padding:8px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+  .kanban-col-body{flex:1;overflow-y:auto;padding:8px;min-height:0;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
   .kanban-col-body::-webkit-scrollbar{width:4px}
   .kanban-col-body::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:2px}
   .done-row{display:none}
   .addbar{max-width:none}
+  .drop-insert-line{height:3px;background:var(--red);border-radius:2px;margin:2px 0;display:none}
+  .drop-insert-line.show{display:block}
 }
 @media(max-width:859px){
   .kanban-board{display:none}
@@ -495,43 +497,86 @@ function renderNav(){
     <button class="nbtn${currentTab==="pieces"?" active":""}" onclick="currentTab='pieces';render()">🏠 Pièces</button>`;
 }
 
-let dragId=null;
+let dragId=null, dragOverId=null, dragGroup=null;
 
-function onDragStart(e,id){
-  dragId=id;
+function onDragStart(e,id,group){
+  dragId=id; dragGroup=group;
   e.dataTransfer.effectAllowed='move';
-  setTimeout(()=>e.target.style.opacity='0.4',0);
+  e.dataTransfer.setData('text/plain',id);
+  setTimeout(()=>{const el=document.querySelector(`[data-task-id="${id}"]`);if(el)el.style.opacity='0.35';},0);
 }
 function onDragEnd(e){
-  e.target.style.opacity='';
+  document.querySelectorAll('.task-card').forEach(c=>c.style.opacity='');
+  document.querySelectorAll('.drop-insert-line').forEach(l=>l.classList.remove('show'));
   document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('dz-over'));
+  dragId=null; dragOverId=null; dragGroup=null;
 }
-function onDragOver(e,groupVal){
+function onDragOverCard(e,id){
+  e.preventDefault(); e.stopPropagation();
+  e.dataTransfer.dropEffect='move';
+  // show insert line above this card
+  document.querySelectorAll('.drop-insert-line').forEach(l=>l.classList.remove('show'));
+  const line=document.querySelector(`.drop-insert-line[data-before="${id}"]`);
+  if(line)line.classList.add('show');
+  dragOverId=id;
+}
+function onDragOverZone(e,groupVal){
   e.preventDefault();
   e.dataTransfer.dropEffect='move';
-  document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('dz-over'));
-  const zone=document.querySelector(`.drop-zone[data-group="${CSS.escape(groupVal)}"]`);
-  if(zone)zone.classList.add('dz-over');
+  dragGroup=groupVal;
+}
+async function onDropCard(e,beforeId,groupVal){
+  e.preventDefault(); e.stopPropagation();
+  document.querySelectorAll('.drop-insert-line').forEach(l=>l.classList.remove('show'));
+  if(dragId===null)return;
+  await reorderTask(dragId, beforeId, groupVal);
+  dragId=null; dragOverId=null;
 }
 async function onDrop(e,groupVal){
   e.preventDefault();
   document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('dz-over'));
+  document.querySelectorAll('.drop-insert-line').forEach(l=>l.classList.remove('show'));
   if(dragId===null)return;
-  const t=tasks.find(x=>x.id===dragId);
-  if(!t){dragId=null;return;}
-  tasks=tasks.map(x=>{
-    if(x.id!==dragId)return x;
-    if(filterMode==="piece")return{...x,piece:groupVal};
-    else return{...x,priorite:groupVal};
-  });
-  render();
-  await upsertTask(tasks.find(x=>x.id===dragId));
+  // dropped on empty zone or zone bottom → move to end of group
+  await reorderTask(dragId, null, groupVal);
   dragId=null;
 }
 
+async function reorderTask(id, beforeId, groupVal){
+  // 1. Update group (piece or prio) if changed
+  let task=tasks.find(t=>t.id===id);
+  if(!task)return;
+  const groupChanged = groupVal && (filterMode==="piece" ? task.piece!==groupVal : task.priorite!==groupVal);
+
+  // 2. Get items in target group (after potential group change)
+  const getGroup=(t)=>filterMode==="piece"?t.piece:t.priorite;
+  let groupItems=tasks
+    .filter(t=>t.id!==id && t.statut!=="done" && getGroup(t)===(groupChanged?groupVal:getGroup(task)))
+    .sort((a,b)=>(a.order||0)-(b.order||0));
+
+  // 3. Insert at position
+  const insertIdx = beforeId ? groupItems.findIndex(t=>t.id===beforeId) : groupItems.length;
+  const idx = insertIdx<0 ? groupItems.length : insertIdx;
+  groupItems.splice(idx,0,{...task});
+
+  // 4. Reassign order values
+  const updates=[];
+  groupItems.forEach((t,i)=>{
+    const newOrder=(i+1)*1000;
+    const isMovedTask=(t.id===id);
+    const newPiece=isMovedTask&&filterMode==="piece"&&groupChanged?groupVal:t.piece;
+    const newPrio=isMovedTask&&filterMode==="prio"&&groupChanged?groupVal:t.priorite;
+    tasks=tasks.map(x=>x.id===t.id?{...x,order:newOrder,piece:newPiece,priorite:newPrio}:x);
+    updates.push(tasks.find(x=>x.id===t.id));
+  });
+  render();
+  for(const u of updates) await upsertTask(u);
+}
+
 // Touch drag support
-let touchDragId=null,touchClone=null,touchGroup=null;
-function onTouchStart(e,id){
+let touchDragId=null,touchClone=null,touchTargetGroup=null,touchBeforeId=null;
+function onTouchStart(e,id,group){
+  if(e.touches.length>1)return;
   touchDragId=id;
   const card=e.currentTarget;
   const rect=card.getBoundingClientRect();
@@ -539,6 +584,7 @@ function onTouchStart(e,id){
   touchClone.style.cssText=`position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;opacity:0.85;pointer-events:none;z-index:999;border-radius:12px;box-shadow:0 8px 24px rgba(61,43,26,0.25)`;
   document.body.appendChild(touchClone);
   card.style.opacity='0.3';
+  touchTargetGroup=group;
 }
 function onTouchMove(e){
   if(!touchClone)return;
@@ -546,29 +592,30 @@ function onTouchMove(e){
   const t=e.touches[0];
   touchClone.style.left=(t.clientX-touchClone.offsetWidth/2)+'px';
   touchClone.style.top=(t.clientY-30)+'px';
-  // find zone under finger
   touchClone.style.display='none';
   const el=document.elementFromPoint(t.clientX,t.clientY);
   touchClone.style.display='';
-  const zone=el?.closest('.drop-zone');
   document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('dz-over'));
-  if(zone){zone.classList.add('dz-over');touchGroup=zone.dataset.group;}
-  else touchGroup=null;
+  document.querySelectorAll('.drop-insert-line').forEach(l=>l.classList.remove('show'));
+  const zone=el?.closest('.drop-zone');
+  const card=el?.closest('.task-card');
+  if(zone){zone.classList.add('dz-over');touchTargetGroup=zone.dataset.group;}
+  if(card){
+    const bid=parseInt(card.dataset.taskId);
+    touchBeforeId=bid;
+    const line=document.querySelector(`.drop-insert-line[data-before="${bid}"]`);
+    if(line)line.classList.add('show');
+  } else {touchBeforeId=null;}
 }
 async function onTouchEnd(e){
   if(touchClone){touchClone.remove();touchClone=null;}
   document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('dz-over'));
+  document.querySelectorAll('.drop-insert-line').forEach(l=>l.classList.remove('show'));
   document.querySelectorAll('.task-card').forEach(c=>c.style.opacity='');
-  if(touchDragId!==null&&touchGroup!==null){
-    tasks=tasks.map(t=>{
-      if(t.id!==touchDragId)return t;
-      if(filterMode==="piece")return{...t,piece:touchGroup};
-      else return{...t,priorite:touchGroup};
-    });
-    render();
-    await upsertTask(tasks.find(t=>t.id===touchDragId));
+  if(touchDragId!==null&&touchTargetGroup!==null){
+    await reorderTask(touchDragId, touchBeforeId, touchTargetGroup);
   }
-  touchDragId=null;touchGroup=null;
+  touchDragId=null; touchTargetGroup=null; touchBeforeId=null;
 }
 
 function renderTasks(){
@@ -581,35 +628,44 @@ function renderTasks(){
   const todoList=list.filter(t=>t.statut!=="done");
   const doneList=list.filter(t=>t.statut==="done");
 
-  function taskHtml(t,hideGroup){
-    return`<div class="task-card prio-${t.priorite}${t.statut==="done"?" done-card":""}"
-      draggable="${t.statut!=="done"}"
-      ondragstart="onDragStart(event,${t.id})"
-      ondragend="onDragEnd(event)"
-      ontouchstart="onTouchStart(event,${t.id})"
-      ontouchmove="onTouchMove(event)"
-      ontouchend="onTouchEnd(event)"
-      onclick="openEdit(${t.id})">
-      <div class="drag-handle">⠿</div>
-      <div class="task-check${t.statut==="done"?" done":""}" onclick="toggle(${t.id},event)"></div>
-      <div class="task-body">
-        <div class="task-title${t.statut==="done"?" done":""}">${t.titre}</div>
-        <div class="task-meta">
-          ${!hideGroup||filterMode==="piece"?`<span class="prio-pill">${PRIOS.find(p=>p.v===t.priorite)?.l||t.priorite}</span>`:""}
-          ${!hideGroup||filterMode==="prio"?`<span class="task-piece">${t.piece}</span>`:""}
-          ${t.notes?`<span class="task-note">${t.notes}</span>`:""}
+  function taskHtml(t,hideGroup,groupVal){
+    const esc=(s)=>String(s).replace(/'/g,"\\'");
+    const g=groupVal||'';
+    return`
+      <div class="drop-insert-line" data-before="${t.id}"></div>
+      <div class="task-card prio-${t.priorite}${t.statut==="done"?" done-card":""}"
+        data-task-id="${t.id}"
+        draggable="${t.statut!=="done"}"
+        ondragstart="onDragStart(event,${t.id},'${esc(g)}')"
+        ondragend="onDragEnd(event)"
+        ondragover="onDragOverCard(event,${t.id})"
+        ondrop="onDropCard(event,${t.id},'${esc(g)}')"
+        ontouchstart="onTouchStart(event,${t.id},'${esc(g)}')"
+        ontouchmove="onTouchMove(event)"
+        ontouchend="onTouchEnd(event)"
+        onclick="openEdit(${t.id})">
+        <div class="drag-handle">⠿</div>
+        <div class="task-check${t.statut==="done"?" done":""}" onclick="toggle(${t.id},event)"></div>
+        <div class="task-body">
+          <div class="task-title${t.statut==="done"?" done":""}">${t.titre}</div>
+          <div class="task-meta">
+            ${!hideGroup||filterMode==="piece"?`<span class="prio-pill">${PRIOS.find(p=>p.v===t.priorite)?.l||t.priorite}</span>`:""}
+            ${!hideGroup||filterMode==="prio"?`<span class="task-piece">${t.piece}</span>`:""}
+            ${t.notes?`<span class="task-note">${t.notes}</span>`:""}
+          </div>
         </div>
-      </div>
-    </div>`;
+      </div>`;
   }
 
   function dropZone(groupVal,items,hideGroup){
     const esc=groupVal.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+    // sort by order field
+    const sorted=[...items].sort((a,b)=>(a.order||0)-(b.order||0));
     return`<div class="drop-zone" data-group="${groupVal.replace(/"/g,'&quot;')}"
-      ondragover="onDragOver(event,'${esc}')"
+      ondragover="onDragOverZone(event,'${esc}')"
       ondrop="onDrop(event,'${esc}')">
-      ${items.map(t=>taskHtml(t,hideGroup)).join("")}
-      ${items.length===0?`<div class="dz-empty">Déposer ici</div>`:""}
+      ${sorted.map(t=>taskHtml(t,hideGroup,groupVal)).join("")}
+      ${sorted.length===0?`<div class="dz-empty">Déposer ici</div>`:""}
     </div>`;
   }
 
