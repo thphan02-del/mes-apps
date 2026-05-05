@@ -205,6 +205,49 @@ h1,h2,h3,.heading,.app-name,.section-lbl,.drawer-title,.perso-title{font-family:
 .task-item:hover .task-del{opacity:1}
 @media(hover:none){.task-del{opacity:1}}
 
+/* PRIO SUB-TABS (vue Tâches) */
+.prio-tabs{
+  display:flex;
+  gap:4px;
+  margin-bottom:0.75rem;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:3px;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.prio-tabs::-webkit-scrollbar{display:none}
+.ptab{
+  flex:1;
+  min-width:fit-content;
+  padding:7px 10px;
+  font-size:12px;
+  font-weight:600;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  border:none;
+  background:transparent;
+  color:var(--ink-muted);
+  border-radius:6px;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:all 0.12s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.ptab:hover{color:var(--ink)}
+.ptab.active{background:var(--bg);color:var(--ink);box-shadow:var(--shadow-sm);font-weight:700}
+.ptab-cnt{
+  font-size:10px;
+  background:var(--bg-warm);
+  color:var(--ink-muted);
+  padding:1px 6px;
+  border-radius:8px;
+  font-weight:600;
+  min-width:18px;
+  text-align:center;
+}
+.ptab.active .ptab-cnt{background:var(--red-soft);color:var(--red)}
+
 /* PRIO GROUP HEADERS */
 .prio-group-hdr{
   font-family:'Montserrat',sans-serif;
@@ -552,6 +595,12 @@ textarea{resize:none;height:68px;line-height:1.5}
 
   <!-- TÂCHES -->
   <div id="tab-tasks" class="view">
+    <div class="prio-tabs">
+      <button class="ptab active" data-prio="all" onclick="setPrioFilter('all',this)">Toutes <span class="ptab-cnt" id="pt-cnt-all">0</span></button>
+      <button class="ptab" data-prio="urgent" onclick="setPrioFilter('urgent',this)">🔴 Urgent <span class="ptab-cnt" id="pt-cnt-urgent">0</span></button>
+      <button class="ptab" data-prio="important" onclick="setPrioFilter('important',this)">🟡 Important <span class="ptab-cnt" id="pt-cnt-important">0</span></button>
+      <button class="ptab" data-prio="someday" onclick="setPrioFilter('someday',this)">⚪ Un jour <span class="ptab-cnt" id="pt-cnt-someday">0</span></button>
+    </div>
     <div class="cat-filters" id="cat-filters"></div>
     <div id="list-tasks"></div>
   </div>
@@ -946,6 +995,13 @@ var DEFAULT_CATS={em:{label:'Emotion Mobility',cls:'cat-em'},at:{label:'Atalian'
 var CATS=JSON.parse(localStorage.getItem('t_cats')||'null')||Object.assign({},DEFAULT_CATS);
 function saveCats(){localStorage.setItem('t_cats',JSON.stringify(CATS));}
 var currentFilter='all';
+var currentPrioFilter='all';
+function setPrioFilter(p,btn){
+  currentPrioFilter=p;
+  document.querySelectorAll('.ptab').forEach(function(b){b.classList.remove('active');});
+  if(btn) btn.classList.add('active');
+  renderAll();
+}
 
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
 function todayISO(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate();}
@@ -1083,14 +1139,28 @@ function renderAll(){
   var doneTxt=doneToday.length+' faite'+(doneToday.length>1?'s':'')+' aujourd\'hui';
   var b1=document.getElementById('done-badge'); if(b1) b1.textContent=doneTxt;
   var b2=document.getElementById('done-badge-d'); if(b2) b2.textContent=doneTxt;
-  var aLen=filterT(active).length, dLen=done.length;
+  // compteurs onglet "Tâches" : on compte sur la liste filtrée par catégorie
+  var activeByCat=filterT(active);
+  var aLen=activeByCat.length, dLen=done.length;
   var c1=document.getElementById('cnt-tasks'); if(c1) c1.textContent=aLen;
   var c2=document.getElementById('cnt-done'); if(c2) c2.textContent=dLen;
   var s1=document.getElementById('sb-cnt-tasks'); if(s1) s1.textContent=aLen;
   var s2=document.getElementById('sb-cnt-done'); if(s2) s2.textContent=dLen;
+  // compteurs sous-onglets prio
+  var byPrio={urgent:0,important:0,someday:0};
+  activeByCat.forEach(function(t){var p=t.prio||'someday';if(byPrio[p]!==undefined)byPrio[p]++;});
+  var pcAll=document.getElementById('pt-cnt-all'); if(pcAll) pcAll.textContent=activeByCat.length;
+  var pcU=document.getElementById('pt-cnt-urgent'); if(pcU) pcU.textContent=byPrio.urgent;
+  var pcI=document.getElementById('pt-cnt-important'); if(pcI) pcI.textContent=byPrio.important;
+  var pcS=document.getElementById('pt-cnt-someday'); if(pcS) pcS.textContent=byPrio.someday;
 
   renderToday(active,urgent,today);
-  renderList('list-tasks',filterT(active).slice().sort(sortActive),false);
+  // liste filtrée par catégorie + prio
+  var listed=activeByCat;
+  if(currentPrioFilter!=='all'){
+    listed=listed.filter(function(t){return(t.prio||'someday')===currentPrioFilter;});
+  }
+  renderList('list-tasks',listed.slice().sort(sortActive),false);
   renderList('list-done',done.slice().sort(function(a,b){return(b.done_at||'').localeCompare(a.done_at||'');}),true);
 }
 
@@ -1373,11 +1443,12 @@ async function cycleHabit(id){
 function renderList(elId,list,isDone){
   var el=document.getElementById(elId);
   if(!list.length){el.innerHTML='<div class="empty-state"><div class="es-icon">'+(isDone?'✨':'📋')+'</div>'+(isDone?'Rien pour l\'instant':'Aucune tâche ici')+'</div>';return;}
-  if(isDone){
+  // si filtre prio actif (ou liste "terminées"), pas de séparateurs : la vue est déjà cohérente
+  if(isDone||currentPrioFilter!=='all'){
     el.innerHTML=list.map(function(t){return taskHTML(t);}).join('');
     return;
   }
-  // active : intercaler des en-têtes de prio
+  // vue "Toutes" : intercaler les en-têtes de prio
   var PRIO_HDR={
     urgent:'<div class="prio-group-hdr urgent">🔴 Urgent</div>',
     important:'<div class="prio-group-hdr important">🟡 Important</div>',
