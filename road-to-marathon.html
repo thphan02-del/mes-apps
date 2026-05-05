@@ -255,7 +255,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:colu
   </div>
 
   <div class="stat-grid">
-    <div class="stat-box"><div class="stat-lbl">km semaine</div><div class="stat-val" id="h-km">—<span class="stat-unit"> km</span></div></div>
     <div class="stat-box"><div class="stat-lbl">km depuis 27 avril</div><div class="stat-val" id="h-total">—<span class="stat-unit"> km</span></div></div>
     <div class="stat-box"><div class="stat-lbl">séances de prépa</div><div class="stat-val" id="h-seances">—</div></div>
   </div>
@@ -678,12 +677,9 @@ function renderCourse(acts){
   var prepKm=prepRuns.reduce(function(s,a){return s+a.dist;},0);
   document.getElementById('s-seances').textContent=prepRuns.length;
   document.getElementById('h-seances').textContent=prepRuns.length;
-  document.getElementById('s-total').innerHTML=Math.round(totalKm)+'<span class="stat-unit"> km<\/span>';
-  document.getElementById('h-total').innerHTML=Math.round(totalKm)+'<span class="stat-unit"> km<\/span>';
+  document.getElementById('s-total').innerHTML=Math.round(prepKm)+'<span class="stat-unit"> km<\/span>';
+  document.getElementById('h-total').innerHTML=Math.round(prepKm)+'<span class="stat-unit"> km<\/span>';
   var now=new Date();
-  var wkStart=new Date(now);wkStart.setDate(now.getDate()-(now.getDay()===0?6:now.getDay()-1));wkStart.setHours(0,0,0,0);
-  var weekKm=prepRuns.filter(function(a){return new Date(a.date)>=wkStart;}).reduce(function(s,a){return s+a.dist;},0);
-  document.getElementById('h-km').innerHTML=weekKm.toFixed(1)+'<span class="stat-unit"> km<\/span>';
   var monthlyMap={};
   prepRuns.forEach(function(a){var mk=a.date?a.date.slice(0,7):'';if(mk)monthlyMap[mk]=(monthlyMap[mk]||0)+a.dist;});
   var sortedM=Object.entries(monthlyMap).sort(function(a,b){return a[0].localeCompare(b[0]);});
@@ -694,7 +690,7 @@ function renderCourse(acts){
   document.getElementById('all-runs').innerHTML=prepRuns.map(function(a){
     return '<div class="seance-item"><div class="seance-icon">🏃<\/div><div class="seance-info"><div class="seance-name">'+a.name+'<\/div><div class="seance-date">'+a.date+'<\/div><\/div><div class="seance-right"><div class="seance-dist">'+a.dist.toFixed(1)+' km<\/div><div class="seance-pace">'+paceStr(a.dist,a.movingTime)+' /km<\/div><\/div><\/div>';
   }).join('');
-  document.getElementById('import-banner').textContent='✓ '+acts.length+' activités · '+runs.length+' courses · '+Math.round(totalKm)+' km';
+  document.getElementById('import-banner').textContent='✓ '+acts.length+' activités · '+runs.length+' courses · '+Math.round(prepKm)+' km';
   document.getElementById('strava-import-section').style.display='none';
   document.getElementById('strava-loaded').style.display='block';
   document.getElementById('seances-charts').style.display='block';
@@ -705,7 +701,6 @@ function resetImport(){
   ['strava-import-section'].forEach(function(id){document.getElementById(id).style.display='block';});
   ['strava-loaded','seances-charts'].forEach(function(id){document.getElementById(id).style.display='none';});
   document.getElementById('csv-file').value='';
-  document.getElementById('h-km').innerHTML='—<span class="stat-unit"> km<\/span>';
   document.getElementById('h-total').innerHTML='—<span class="stat-unit"> km<\/span>';
   document.getElementById('h-seances').textContent='—';
 }
