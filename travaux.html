@@ -281,6 +281,9 @@ const H={'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'ap
 async function sbGet(table){
   try{const r=await fetch(`${SUPA_URL}/rest/v1/${table}?select=*`,{headers:H});return r.json();}catch(e){return[];}
 }
+async function sbGetPieces(){
+  try{const r=await fetch(`${SUPA_URL}/rest/v1/travaux_pieces?select=*&order=sort_order.asc`,{headers:H});return r.json();}catch(e){return[];}
+}
 async function sbUpsert(table,data){
   try{await fetch(`${SUPA_URL}/rest/v1/${table}`,{method:'POST',headers:{...H,'Prefer':'resolution=merge-duplicates'},body:JSON.stringify(data)});}catch(e){}
 }
@@ -315,23 +318,20 @@ async function deletePieceDB(name){
 async function loadAll(){
   showLoading(true);
   try{
-    const [t,p]=await Promise.all([sbGet('travaux_tasks'),sbGet('travaux_pieces')]);
+    const [t,p]=await Promise.all([sbGet('travaux_tasks'),sbGetPieces()]);
     if(Array.isArray(p)&&p.length>0){
-      pieces=p.sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)).map(r=>r.name);
+      pieces=p.map(r=>r.name);
     } else {
-      // first load — seed pieces
       pieces=[...DEFAULT_PIECES];
-      await sbUpsert('travaux_pieces',pieces.map(name=>({name})));
+      await sbUpsert('travaux_pieces',pieces.map((name,i)=>({name,sort_order:i})));
     }
     if(Array.isArray(t)&&t.length>0){
       tasks=t;
     } else {
-      // first load — seed tasks
       tasks=INITIAL_TASKS.map((t,i)=>({...t,id:i+1,statut:"todo"}));
       await sbUpsert('travaux_tasks',tasks);
     }
   }catch(e){
-    // fallback to localStorage
     pieces=JSON.parse(localStorage.getItem("trvx_pieces")||"null")||[...DEFAULT_PIECES];
     tasks=JSON.parse(localStorage.getItem("trvx_tasks")||"null")||INITIAL_TASKS.map((t,i)=>({...t,id:i+1,statut:"todo"}));
   }
@@ -358,8 +358,8 @@ function startPolling(){
   setInterval(async()=>{
     if(modal||_isDraggingPiece)return;
     try{
-      const [t,p]=await Promise.all([sbGet('travaux_tasks'),sbGet('travaux_pieces')]);
-      if(Array.isArray(p)&&p.length>0) pieces=p.sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)).map(r=>r.name);
+      const [t,p]=await Promise.all([sbGet('travaux_tasks'),sbGetPieces()]);
+      if(Array.isArray(p)&&p.length>0) pieces=p.map(r=>r.name);
       if(Array.isArray(t)&&t.length>0) tasks=t;
       render();
     }catch(e){}
