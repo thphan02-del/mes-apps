@@ -799,10 +799,17 @@ async function reorderPiece(name, beforeName){
   const from=pieces.indexOf(name);
   if(from<0)return;
   pieces.splice(from,1);
-  const to=beforeName?pieces.indexOf(beforeName):pieces.length;
+  const to=beforeName&&beforeName!=='__end__'?pieces.indexOf(beforeName):pieces.length;
   pieces.splice(to<0?pieces.length:to,0,name);
   render();
-  await sbUpsert('travaux_pieces',pieces.map((n,i)=>({name:n,sort_order:i})));
+  // Save each piece's sort_order with explicit PATCH
+  for(let i=0;i<pieces.length;i++){
+    await fetch(`${SUPA_URL}/rest/v1/travaux_pieces?name=eq.${encodeURIComponent(pieces[i])}`,{
+      method:'PATCH',
+      headers:H,
+      body:JSON.stringify({sort_order:i})
+    });
+  }
 }
 
 // Touch for pieces — long press
