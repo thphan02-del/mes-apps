@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Travaux">
+<meta name="theme-color" content="#EDE0C4">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mes Travaux</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDE0C4;--bg2:#F5EDDC;--bg3:#EAE0CC;--bg4:#E0D0B0;
+  --border:rgba(61,43,26,0.1);--border-md:rgba(61,43,26,0.18);
+  --text:#2A1A0A;--text-muted:#6B4A2A;--text-hint:#A08060;
+  --red:#8B1A1A;--red-v:#C0392B;--red-dim:rgba(139,26,26,0.08);--red-border:rgba(139,26,26,0.22);
+  --gold:#C9A84C;--gold-dim:rgba(201,168,76,0.15);--gold-border:rgba(201,168,76,0.4);
+  --green:#3B7A4A;--green-dim:rgba(59,122,74,0.1);--green-border:rgba(59,122,74,0.3);
+  --orange:#B05A1A;--orange-dim:rgba(176,90,26,0.1);--orange-border:rgba(176,90,26,0.25);
+  --r:12px;--rs:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text)}
+body{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:column;overflow:hidden;max-width:600px;margin:0 auto}
+
+/* HEADER */
+.header{padding:1.1rem 1.25rem 0.75rem;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border-md)}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem}
+.header-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:20px;letter-spacing:-0.5px;color:var(--text)}
+.header-title em{color:var(--red);font-style:normal}
+.header-badge{background:var(--red-dim);border:1px solid var(--red-border);border-radius:10px;padding:5px 12px;text-align:center}
+.badge-num{font-size:20px;font-weight:900;font-family:'Montserrat',sans-serif;color:var(--red);line-height:1;letter-spacing:-0.5px}
+.badge-lbl{font-size:9px;color:var(--red);letter-spacing:0.8px;text-transform:uppercase;margin-top:1px;opacity:0.6}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.stat-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:9px 4px;text-align:center}
+.stat-num{font-size:18px;font-weight:800;font-family:'Montserrat',sans-serif;letter-spacing:-0.5px;line-height:1;color:var(--text)}
+.stat-lbl{font-size:9px;color:var(--text-hint);margin-top:2px;letter-spacing:0.5px;text-transform:uppercase}
+
+/* NAV */
+.nav{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0}
+.nbtn{flex:1;padding:10px 4px;font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;text-align:center;border:none;border-bottom:2px solid transparent;cursor:pointer;background:transparent;color:var(--text-muted);transition:all 0.15s}
+.nbtn.active{color:var(--red);border-bottom-color:var(--red);font-weight:700}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:1rem 1.25rem;min-height:0;padding-bottom:80px}
+
+/* FILTER BAR */
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none}
+.filter-bar::-webkit-scrollbar{display:none}
+.seg{display:flex;background:var(--bg3);border-radius:var(--rs);padding:3px;gap:2px;flex-shrink:0;border:1px solid var(--border)}
+.seg-btn{font-size:11px;padding:5px 12px;border-radius:6px;border:none;background:transparent;color:var(--text-muted);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;white-space:nowrap}
+.seg-btn.active{background:var(--bg2);color:var(--red);font-weight:700;box-shadow:0 1px 3px rgba(61,43,26,0.1)}
+.chips{display:flex;gap:6px}
+.chip{font-size:11px;padding:5px 12px;border-radius:20px;background:var(--bg2);color:var(--text-muted);cursor:pointer;border:1px solid var(--border);white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500}
+.chip.on{color:var(--red);border-color:var(--red-border);background:var(--red-dim);font-weight:700}
+.chip.prio-on{border-color:var(--chip-c);color:var(--chip-c);background:transparent}
+
+/* SECTION LABEL */
+.section-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin:1rem 0 0.5rem}
+.section-lbl:first-child{margin-top:0}
+
+/* TASK CARD */
+.task-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:6px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:border-color 0.15s}
+.task-card:hover{border-color:var(--border-md)}
+.task-card:active{transform:scale(0.99)}
+.task-card.done-card{opacity:.55}
+.task-check{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border-md);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s;background:var(--bg)}
+.task-check.done{background:var(--green);border-color:var(--green)}
+.task-check.done::after{content:'✓';font-size:11px;color:#fff;font-weight:700}
+.task-body{flex:1;min-width:0}
+.task-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.4}
+.task-title.done{text-decoration:line-through;color:var(--text-hint)}
+.task-meta{display:flex;gap:8px;margin-top:4px;align-items:center;flex-wrap:wrap}
+.task-piece{font-size:11px;color:var(--text-muted);font-weight:500}
+.task-note{font-size:11px;color:var(--text-hint);font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}
+.prio-pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:0.3px}
+.prio-urgente .prio-pill{background:var(--red-dim);color:var(--red);border:1px solid var(--red-border)}
+.prio-importante .prio-pill{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange-border)}
+.prio-normale .prio-pill{background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-border)}
+.prio-basse .prio-pill{background:rgba(0,0,0,0.04);color:var(--text-hint);border:1px solid var(--border)}
+
+.done-row{text-align:center;padding:8px 0 2px}
+.done-toggle{font-size:11px;color:var(--text-muted);background:none;border:none;cursor:pointer;padding:4px 12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;border-radius:20px;border:1px solid var(--border)}
+.done-toggle:hover{color:var(--red)}
+
+.empty{text-align:center;padding:3rem 1rem;color:var(--text-hint);font-size:14px}
+
+/* PIÈCES SCREEN */
+.piece-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
+.piece-name{flex:1;font-size:14px;font-weight:600;color:var(--text)}
+.piece-count{font-size:11px;color:var(--text-muted);font-weight:500}
+.piece-del{background:none;border:none;color:var(--text-hint);cursor:pointer;font-size:18px;padding:0 4px;line-height:1;font-family:inherit}
+.piece-del:hover{color:var(--red)}
+.add-piece-row{display:flex;gap:8px;margin-top:16px}
+.add-piece-input{flex:1;background:var(--bg2);border:1.5px solid var(--border-md);border-radius:var(--rs);padding:10px 13px;font-size:14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none}
+.add-piece-input:focus{border-color:var(--red-border)}
+.btn-add-piece{background:var(--red);border:none;border-radius:var(--rs);padding:10px 18px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap}
+.btn-add-piece:hover{background:var(--red-v)}
+
+/* ADD BAR */
+.addbar{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border-md);padding:10px 16px;display:flex;align-items:center;gap:10px;z-index:10;max-width:600px;margin:0 auto}
+.addbar input{flex:1;background:var(--bg);border:1.5px solid var(--border-md);border-radius:var(--rs);padding:10px 14px;font-size:14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none}
+.addbar input:focus{border-color:var(--red-border)}
+.addbar input::placeholder{color:var(--text-hint)}
+.add-btn{width:40px;height:40px;border-radius:50%;background:var(--red);border:none;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-weight:700;line-height:1}
+.add-btn:hover{background:var(--red-v)}
+
+/* SHEET */
+.overlay{position:fixed;inset:0;background:rgba(42,26,10,0.5);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:600px;padding:16px 20px 40px;max-height:92vh;overflow-y:auto}
+.sheet-handle{width:36px;height:4px;background:var(--border-md);border-radius:2px;margin:0 auto 16px}
+.sheet-title{font-family:'Montserrat',sans-serif;font-size:17px;font-weight:900;letter-spacing:-0.3px;margin-bottom:16px;color:var(--text)}
+.field{margin-bottom:16px}
+.field label{font-size:10px;font-weight:700;color:var(--text-muted);display:block;margin-bottom:7px;text-transform:uppercase;letter-spacing:.8px}
+.field input,.field textarea{width:100%;background:var(--bg);border:1.5px solid var(--border-md);border-radius:var(--rs);padding:11px 13px;font-size:14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none}
+.field textarea{resize:vertical;min-height:72px}
+.field input:focus,.field textarea:focus{border-color:var(--red-border)}
+.prio-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.prio-opt{padding:10px 4px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--bg);color:var(--text-muted);cursor:pointer;font-size:11px;font-weight:600;text-align:center;font-family:'Plus Jakarta Sans',sans-serif;transition:all .1s}
+.prio-opt.sel-urgente{background:var(--red-dim);border-color:var(--red-border);color:var(--red)}
+.prio-opt.sel-importante{background:var(--orange-dim);border-color:var(--orange-border);color:var(--orange)}
+.prio-opt.sel-normale{background:var(--gold-dim);border-color:var(--gold-border);color:var(--gold)}
+.prio-opt.sel-basse{background:rgba(0,0,0,0.04);border-color:var(--border-md);color:var(--text-hint)}
+.piece-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.piece-opt{padding:9px 4px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--bg);color:var(--text-muted);cursor:pointer;font-size:11px;font-weight:500;text-align:center;font-family:'Plus Jakarta Sans',sans-serif;word-break:break-word;transition:all .1s}
+.piece-opt.sel{border-color:var(--red-border);color:var(--red);background:var(--red-dim);font-weight:700}
+.sheet-footer{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
+.sheet-footer-right{display:flex;gap:8px}
+.btn{font-size:13px;padding:9px 18px;border-radius:var(--rs);border:1px solid var(--border-md);background:var(--bg);color:var(--text-muted);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500}
+.btn:hover{color:var(--text)}
+.btn-save{background:var(--red);border-color:var(--red);color:#fff;font-weight:700}
+.btn-save:hover{background:var(--red-v)}
+.btn-del{color:var(--red);border-color:transparent;background:transparent;font-weight:600}
+
+.voice-row{display:flex;align-items:center;gap:8px;margin-top:7px}
+.voice-btn{display:flex;align-items:center;gap:5px;font-size:11px;padding:5px 11px;border-radius:6px;border:1px solid var(--border-md);background:var(--bg);color:var(--text-muted);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500}
+.voice-btn.on{border-color:var(--red-border);color:var(--red);animation:pulse 1s infinite}
+.mic{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* DRAG & DROP */
+.drag-handle{color:var(--text-hint);font-size:14px;cursor:grab;flex-shrink:0;padding:0 2px;user-select:none;line-height:1;margin-top:3px}
+.drag-handle:active{cursor:grabbing}
+.drop-zone{min-height:52px;border-radius:var(--r);transition:background .15s,border .15s;border:2px dashed transparent;padding:2px}
+.drop-zone.dz-over{background:var(--red-dim);border-color:var(--red-border)}
+.dz-empty{text-align:center;padding:14px;font-size:12px;color:var(--text-hint);font-style:italic}
+</style>
+</head>
+<body>
+<div id="header-root"></div>
+<div class="nav" id="nav-root"></div>
+<div class="content" id="content-root"></div>
+<div id="modal-root"></div>
+
+<script>
+const PRIOS=[
+  {v:"urgente",l:"Urgente",c:"#8B1A1A"},
+  {v:"importante",l:"Importante",c:"#B05A1A"},
+  {v:"normale",l:"Normale",c:"#C9A84C"},
+  {v:"basse",l:"Basse",c:"#A08060"}
+];
+const PORD={urgente:0,importante:1,normale:2,basse:3};
+const DEFAULT_PIECES=["Entrée","Cuisine","Salon","Chambre 1","Chambre 2","Chambre 3","Chambre 4","Salle de bain","WC","Couloir","Garage","Jardin","Extérieur","Autre"];
+
+const INITIAL_TASKS=[
+  {titre:"Porte d'entrée : réparer",piece:"Entrée",priorite:"urgente",notes:""},
+  {titre:"Porte d'entrée : repeindre",piece:"Entrée",priorite:"normale",notes:""},
+  {titre:"Porte d'entrée : changer la serrure",piece:"Entrée",priorite:"normale",notes:"À confirmer"},
+  {titre:"Chauffage : reboucher les trous",piece:"Entrée",priorite:"importante",notes:""},
+  {titre:"Fixer le bureau WFH",piece:"Entrée",priorite:"normale",notes:""},
+  {titre:"Fuite d'eau mur colon / cuisine",piece:"Entrée",priorite:"urgente",notes:""},
+  {titre:"Poignée baie vitrée",piece:"Entrée",priorite:"importante",notes:""},
+  {titre:"Peinture contour des baies / portes",piece:"Entrée",priorite:"normale",notes:""},
+  {titre:"Luminaire salle à manger",piece:"Entrée",priorite:"normale",notes:""},
+  {titre:"Rideaux",piece:"Entrée",priorite:"basse",notes:""},
+  {titre:"Coller la mini porte",piece:"Cuisine",priorite:"normale",notes:""},
+  {titre:"Installer la cuisine",piece:"Cuisine",priorite:"urgente",notes:""},
+  {titre:"Luminaire",piece:"Cuisine",priorite:"normale",notes:""},
+  {titre:"2e couche peinture",piece:"Garage",priorite:"normale",notes:""},
+  {titre:"Lave-linge à installer",piece:"Garage",priorite:"importante",notes:"Grand garage"},
+  {titre:"Bruit de la tuyauterie (sous-sol)",piece:"Garage",priorite:"importante",notes:""},
+  {titre:"Poignée de la porte grand garage",piece:"Garage",priorite:"normale",notes:""},
+  {titre:"Peinture de la porte",piece:"Garage",priorite:"normale",notes:""},
+  {titre:"Poignée porte sous-sol",piece:"Garage",priorite:"normale",notes:""},
+  {titre:"Encadrement de la porte",piece:"Garage",priorite:"normale",notes:""},
+  {titre:"Contour des fenêtres",piece:"Garage",priorite:"basse",notes:""},
+  {titre:"Joint du lavabo",piece:"Salle de bain",priorite:"importante",notes:""},
+  {titre:"Vérifier peinture",piece:"Salle de bain",priorite:"normale",notes:""},
+  {titre:"Boucher trou fenêtre",piece:"Salle de bain",priorite:"normale",notes:""},
+  {titre:"Boucher trous",piece:"Salle de bain",priorite:"normale",notes:""},
+  {titre:"Peinture contour fenêtre",piece:"Salle de bain",priorite:"normale",notes:""},
+  {titre:"Porte à peindre",piece:"Salle de bain",priorite:"normale",notes:""},
+  {titre:"Porte douche",piece:"Salle de bain",priorite:"importante",notes:""},
+  {titre:"Colonne de douche",piece:"Salle de bain",priorite:"importante",notes:""},
+  {titre:"Peinture plafond douche",piece:"Salle de bain",priorite:"normale",notes:""},
+  {titre:"Boxer câbles",piece:"Salle de bain",priorite:"normale",notes:""},
+  {titre:"Changer panier",piece:"Salle de bain",priorite:"basse",notes:""},
+  {titre:"Joints SDB",piece:"Salle de bain",priorite:"importante",notes:""},
+  {titre:"Boxer tuyau lavabo",piece:"Salle de bain",priorite:"normale",notes:""},
+  {titre:"Luminaire",piece:"Salle de bain",priorite:"normale",notes:""},
+  {titre:"Poignée de la porte des toilettes",piece:"WC",priorite:"normale",notes:""},
+  {titre:"Encadrement de la porte",piece:"WC",priorite:"normale",notes:""},
+  {titre:"1 des 3 luminaires",piece:"WC",priorite:"normale",notes:""},
+  {titre:"Plinthes",piece:"WC",priorite:"basse",notes:""},
+  {titre:"Balcon toilette : à fixer",piece:"WC",priorite:"normale",notes:""},
+  {titre:"Poignée porte",piece:"WC",priorite:"normale",notes:""},
+  {titre:"Peinture baignoire",piece:"Chambre 4",priorite:"normale",notes:""},
+  {titre:"Peinture mur",piece:"Chambre 4",priorite:"normale",notes:""},
+  {titre:"Peinture des plinthes",piece:"Chambre 4",priorite:"normale",notes:""},
+  {titre:"Luminaire",piece:"Chambre 4",priorite:"normale",notes:""},
+  {titre:"Porte à peindre",piece:"Chambre 4",priorite:"normale",notes:""},
+  {titre:"Rideaux",piece:"Chambre 4",priorite:"basse",notes:""},
+  {titre:"Porte à poser",piece:"Chambre 4",priorite:"importante",notes:""},
+  {titre:"Balcon à poser",piece:"Chambre 4",priorite:"importante",notes:""},
+  {titre:"Plinthes mur",piece:"Couloir",priorite:"normale",notes:""},
+  {titre:"Réagréage (ou polissage)",piece:"Couloir",priorite:"normale",notes:""},
+  {titre:"Parquet",piece:"Couloir",priorite:"normale",notes:""},
+  {titre:"Peinture là où nécessaire",piece:"Couloir",priorite:"normale",notes:""},
+  {titre:"Boucher trous sol",piece:"Couloir",priorite:"normale",notes:""},
+  {titre:"Balcon : peindre",piece:"Couloir",priorite:"normale",notes:""},
+  {titre:"Peinture escalier",piece:"Couloir",priorite:"normale",notes:""},
+  {titre:"Lustre",piece:"Couloir",priorite:"basse",notes:""},
+  {titre:"Changer chauffage",piece:"Salon",priorite:"normale",notes:"À confirmer"},
+  {titre:"Accrocher la télé",piece:"Salon",priorite:"normale",notes:""},
+  {titre:"Luminaire",piece:"Salon",priorite:"normale",notes:""},
+  {titre:"Rideaux",piece:"Salon",priorite:"basse",notes:"À confirmer"},
+  {titre:"Luminaire",piece:"Chambre 1",priorite:"normale",notes:""},
+  {titre:"Rideaux",piece:"Chambre 1",priorite:"basse",notes:""},
+  {titre:"Patte et fermeture",piece:"Chambre 1",priorite:"normale",notes:""},
+  {titre:"Luminaire",piece:"Chambre 2",priorite:"normale",notes:""},
+  {titre:"Rideaux",piece:"Chambre 2",priorite:"basse",notes:""},
+  {titre:"Boucher trou fenêtre",piece:"Chambre 2",priorite:"normale",notes:""},
+  {titre:"Patte et fermeture",piece:"Chambre 2",priorite:"normale",notes:""},
+  {titre:"Luminaire",piece:"Chambre 3",priorite:"normale",notes:""},
+  {titre:"Rideaux",piece:"Chambre 3",priorite:"basse",notes:""},
+  {titre:"Porte et fermeture",piece:"Chambre 3",priorite:"normale",notes:""},
+  {titre:"Portail à peindre",piece:"Jardin",priorite:"normale",notes:""},
+  {titre:"Poignée portail à ajouter",piece:"Jardin",priorite:"normale",notes:""},
+  {titre:"Verrou à fixer",piece:"Jardin",priorite:"normale",notes:""},
+];
+
+let pieces=JSON.parse(localStorage.getItem("trvx_pieces")||"null")||[...DEFAULT_PIECES];
+let tasks=JSON.parse(localStorage.getItem("trvx_tasks")||"null")||INITIAL_TASKS.map((t,i)=>({...t,id:i+1,statut:"todo"}));
+let currentTab="tasks";
+let filterMode="piece",filterVal=null,showDone=false;
+let modal=null,recognition=null,isListening=false;
+
+function savePieces(){localStorage.setItem("trvx_pieces",JSON.stringify(pieces));}
+function saveTasks(){localStorage.setItem("trvx_tasks",JSON.stringify(tasks));}
+function pc(v){return PRIOS.find(p=>p.v===v)?.c||"#A08060";}
+
+function addPiece(){
+  const inp=document.getElementById("new-piece-input");
+  const name=inp?.value?.trim();
+  if(!name||pieces.includes(name))return;
+  pieces.push(name);savePieces();inp.value="";render();
+}
+function deletePiece(name){
+  const count=tasks.filter(t=>t.piece===name).length;
+  if(count>0&&!confirm(`"${name}" a ${count} tâche(s). Supprimer quand même ?`))return;
+  pieces=pieces.filter(p=>p!==name);savePieces();
+  if(filterVal===name)filterVal=null;render();
+}
+function filtered(){
+  return tasks
+    .filter(t=>showDone||t.statut!=="done")
+    .filter(t=>!filterVal||(filterMode==="piece"?t.piece===filterVal:t.priorite===filterVal))
+    .sort((a,b)=>{
+      if(a.statut==="done"&&b.statut!=="done")return 1;
+      if(b.statut==="done"&&a.statut!=="done")return -1;
+      return a.piece.localeCompare(b.piece)||PORD[a.priorite]-PORD[b.priorite];
+    });
+}
+function toggle(id,e){e&&e.stopPropagation();tasks=tasks.map(t=>t.id===id?{...t,statut:t.statut==="done"?"todo":"done"}:t);saveTasks();render();}
+function del(id){if(confirm("Supprimer cette tâche ?")){tasks=tasks.filter(t=>t.id!==id);saveTasks();modal=null;document.getElementById("modal-root").innerHTML="";render();}}
+function quickAdd(titre){if(!titre.trim())return;tasks.push({id:Date.now(),titre:titre.trim(),piece:pieces[0]||"Autre",priorite:"normale",statut:"todo",notes:""});saveTasks();render();}
+function openEdit(id){modal={mode:"edit",id,form:{...tasks.find(t=>t.id===id)}};renderSheet();}
+function openAdd(){modal={mode:"add",form:{titre:"",piece:pieces[0]||"Autre",priorite:"normale",statut:"todo",notes:""}};renderSheet();}
+function closeModal(){modal=null;if(isListening)recognition?.stop();document.getElementById("modal-root").innerHTML="";render();}
+function setPiece(p){if(modal){modal.form.piece=p;renderSheet();}}
+function setPrio(v){if(modal){modal.form.priorite=v;renderSheet();}}
+function saveModal(){
+  const titre=document.getElementById("f-titre")?.value?.trim();
+  if(!titre)return;
+  const notes=document.getElementById("f-notes")?.value||"";
+  const{piece,priorite}=modal.form;
+  if(modal.mode==="add")tasks.push({id:Date.now(),titre,piece,priorite,statut:"todo",notes});
+  else tasks=tasks.map(t=>t.id===modal.id?{...t,titre,piece,priorite,notes}:t);
+  saveTasks();modal=null;document.getElementById("modal-root").innerHTML="";render();
+}
+function initVoice(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return false;recognition=new SR();recognition.lang="fr-FR";recognition.continuous=false;recognition.interimResults=false;return true;}
+function startVoice(fid){
+  if(!recognition&&!initVoice()){alert("Dictée vocale non supportée.");return;}
+  if(isListening){recognition.stop();return;}
+  recognition.onstart=()=>{isListening=true;renderSheet();}
+  recognition.onend=()=>{isListening=false;renderSheet();}
+  recognition.onresult=(e)=>{const t=e.results[0][0].transcript;const el=document.getElementById(fid);if(el)el.value=(el.value?el.value+" ":"")+t;}
+  recognition.onerror=()=>{isListening=false;renderSheet();}
+  recognition.start();
+}
+
+function renderSheet(){
+  const root=document.getElementById("modal-root");
+  if(!modal){root.innerHTML="";return;}
+  const f=modal.form;
+  const vs=!!(window.SpeechRecognition||window.webkitSpeechRecognition);
+  root.innerHTML=`<div class="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">${modal.mode==="add"?"Nouvelle tâche":"Modifier"}</div>
+    <div class="field">
+      <label>Titre</label>
+      <input id="f-titre" value="${(f.titre||"").replace(/"/g,'&quot;')}" placeholder="Décris le travail..." onkeydown="if(event.key==='Enter')saveModal()" autofocus>
+      ${vs?`<div class="voice-row"><button class="voice-btn${isListening?" on":""}" onclick="startVoice('f-titre')"><span class="mic"></span>${isListening?"Écoute...":"Dicter"}</button></div>`:''}
+    </div>
+    <div class="field">
+      <label>Pièce</label>
+      <div class="piece-grid">${pieces.map(p=>`<button class="piece-opt${f.piece===p?" sel":""}" onclick="setPiece('${p.replace(/'/g,"\\'")}')">${p}</button>`).join("")}</div>
+    </div>
+    <div class="field">
+      <label>Priorité</label>
+      <div class="prio-grid">${PRIOS.map(p=>`<button class="prio-opt${f.priorite===p.v?" sel-"+p.v:""}" onclick="setPrio('${p.v}')">${p.l}</button>`).join("")}</div>
+    </div>
+    <div class="field">
+      <label>Notes</label>
+      <textarea id="f-notes" placeholder="Matériaux, mesures, détails...">${f.notes||""}</textarea>
+      ${vs?`<div class="voice-row"><button class="voice-btn${isListening?" on":""}" onclick="startVoice('f-notes')"><span class="mic"></span>Dicter</button></div>`:''}
+    </div>
+    <div class="sheet-footer">
+      <div>${modal.mode==="edit"?`<button class="btn btn-del" onclick="del(${modal.id})">Supprimer</button>`:""}</div>
+      <div class="sheet-footer-right">
+        <button class="btn" onclick="closeModal()">Annuler</button>
+        <button class="btn btn-save" onclick="saveModal()">Enregistrer</button>
+      </div>
+    </div>
+  </div></div>`;
+}
+
+function renderHeader(){
+  const todo=tasks.filter(t=>t.statut!=="done").length;
+  const done=tasks.filter(t=>t.statut==="done").length;
+  const urgent=tasks.filter(t=>t.priorite==="urgente"&&t.statut!=="done").length;
+  document.getElementById("header-root").innerHTML=`
+  <div class="header">
+    <div class="header-top">
+      <div class="header-title">Mes <em>Travaux</em></div>
+      <div class="header-badge">
+        <div class="badge-num">${todo}</div>
+        <div class="badge-lbl">à faire</div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num">${tasks.length}</div><div class="stat-lbl">Total</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:var(--green)">${done}</div><div class="stat-lbl">Terminés</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:var(--red)">${urgent}</div><div class="stat-lbl">Urgentes</div></div>
+    </div>
+  </div>`;
+}
+
+function renderNav(){
+  document.getElementById("nav-root").innerHTML=`
+    <button class="nbtn${currentTab==="tasks"?" active":""}" onclick="currentTab='tasks';render()">Tâches</button>
+    <button class="nbtn${currentTab==="pieces"?" active":""}" onclick="currentTab='pieces';render()">🏠 Pièces</button>`;
+}
+
+let dragId=null;
+
+function onDragStart(e,id){
+  dragId=id;
+  e.dataTransfer.effectAllowed='move';
+  setTimeout(()=>e.target.style.opacity='0.4',0);
+}
+function onDragEnd(e){
+  e.target.style.opacity='';
+  document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('dz-over'));
+}
+function onDragOver(e,groupVal){
+  e.preventDefault();
+  e.dataTransfer.dropEffect='move';
+  document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('dz-over'));
+  const zone=document.querySelector(`.drop-zone[data-group="${CSS.escape(groupVal)}"]`);
+  if(zone)zone.classList.add('dz-over');
+}
+function onDrop(e,groupVal){
+  e.preventDefault();
+  document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('dz-over'));
+  if(dragId===null)return;
+  tasks=tasks.map(t=>{
+    if(t.id!==dragId)return t;
+    if(filterMode==="piece")return{...t,piece:groupVal};
+    else return{...t,priorite:groupVal};
+  });
+  saveTasks();dragId=null;render();
+}
+
+// Touch drag support
+let touchDragId=null,touchClone=null,touchGroup=null;
+function onTouchStart(e,id){
+  touchDragId=id;
+  const card=e.currentTarget;
+  const rect=card.getBoundingClientRect();
+  touchClone=card.cloneNode(true);
+  touchClone.style.cssText=`position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;opacity:0.85;pointer-events:none;z-index:999;border-radius:12px;box-shadow:0 8px 24px rgba(61,43,26,0.25)`;
+  document.body.appendChild(touchClone);
+  card.style.opacity='0.3';
+}
+function onTouchMove(e){
+  if(!touchClone)return;
+  e.preventDefault();
+  const t=e.touches[0];
+  touchClone.style.left=(t.clientX-touchClone.offsetWidth/2)+'px';
+  touchClone.style.top=(t.clientY-30)+'px';
+  // find zone under finger
+  touchClone.style.display='none';
+  const el=document.elementFromPoint(t.clientX,t.clientY);
+  touchClone.style.display='';
+  const zone=el?.closest('.drop-zone');
+  document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('dz-over'));
+  if(zone){zone.classList.add('dz-over');touchGroup=zone.dataset.group;}
+  else touchGroup=null;
+}
+function onTouchEnd(e){
+  if(touchClone){touchClone.remove();touchClone=null;}
+  document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('dz-over'));
+  document.querySelectorAll('.task-card').forEach(c=>c.style.opacity='');
+  if(touchDragId!==null&&touchGroup!==null){
+    tasks=tasks.map(t=>{
+      if(t.id!==touchDragId)return t;
+      if(filterMode==="piece")return{...t,piece:touchGroup};
+      else return{...t,priorite:touchGroup};
+    });
+    saveTasks();render();
+  }
+  touchDragId=null;touchGroup=null;
+}
+
+function renderTasks(){
+  const list=filtered();
+  const usedPieces=pieces.filter(p=>tasks.some(t=>t.piece===p));
+  const chips=filterMode==="piece"
+    ?usedPieces.map(p=>`<button class="chip${filterVal===p?" on":""}" onclick="filterVal=filterVal===\`${p}\`?null:\`${p}\`;render()">${p}</button>`)
+    :PRIOS.map(p=>`<button class="chip${filterVal===p.v?" prio-on":""}" style="${filterVal===p.v?`--chip-c:${p.c}`:""}" onclick="filterVal=filterVal===\`${p.v}\`?null:\`${p.v}\`;render()">${p.l}</button>`);
+
+  const todoList=list.filter(t=>t.statut!=="done");
+  const doneList=list.filter(t=>t.statut==="done");
+
+  function taskHtml(t,hideGroup){
+    return`<div class="task-card prio-${t.priorite}${t.statut==="done"?" done-card":""}"
+      draggable="${t.statut!=="done"}"
+      ondragstart="onDragStart(event,${t.id})"
+      ondragend="onDragEnd(event)"
+      ontouchstart="onTouchStart(event,${t.id})"
+      ontouchmove="onTouchMove(event)"
+      ontouchend="onTouchEnd(event)"
+      onclick="openEdit(${t.id})">
+      <div class="drag-handle">⠿</div>
+      <div class="task-check${t.statut==="done"?" done":""}" onclick="toggle(${t.id},event)"></div>
+      <div class="task-body">
+        <div class="task-title${t.statut==="done"?" done":""}">${t.titre}</div>
+        <div class="task-meta">
+          ${!hideGroup||filterMode==="piece"?`<span class="prio-pill">${PRIOS.find(p=>p.v===t.priorite)?.l||t.priorite}</span>`:""}
+          ${!hideGroup||filterMode==="prio"?`<span class="task-piece">${t.piece}</span>`:""}
+          ${t.notes?`<span class="task-note">${t.notes}</span>`:""}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function groupedHtml(items){
+    if(items.length===0)return'';
+    let html='';
+    if(filterMode==="piece"){
+      const groups=usedPieces.filter(p=>items.some(t=>t.piece===p));
+      // Also show empty pieces as drop targets if we have more than one group
+      const allGroups=pieces;
+      allGroups.forEach(p=>{
+        const grouped=items.filter(t=>t.piece===p);
+        const hasAny=tasks.some(t=>t.piece===p); // piece exists in all tasks
+        if(!grouped.length&&!hasAny)return;
+        if(!grouped.length&&!groups.includes(p))return;
+        html+=`<div class="section-lbl">${p}${grouped.length?` — ${grouped.length}`:""}</div>`;
+        html+=`<div class="drop-zone" data-group="${p}"
+          ondragover="onDragOver(event,'${p.replace(/'/g,"\\'")}')"
+          ondrop="onDrop(event,'${p.replace(/'/g,"\\'")}')">
+          ${grouped.map(t=>taskHtml(t,true)).join("")}
+          ${grouped.length===0?`<div class="dz-empty">Déposer ici</div>`:""}
+        </div>`;
+      });
+    } else {
+      PRIOS.forEach(p=>{
+        const grouped=items.filter(t=>t.priorite===p.v);
+        html+=`<div class="section-lbl">${p.l}${grouped.length?` — ${grouped.length}`:""}</div>`;
+        html+=`<div class="drop-zone" data-group="${p.v}"
+          ondragover="onDragOver(event,'${p.v}')"
+          ondrop="onDrop(event,'${p.v}')">
+          ${grouped.map(t=>taskHtml(t,true)).join("")}
+          ${grouped.length===0?`<div class="dz-empty">Déposer ici</div>`:""}
+        </div>`;
+      });
+    }
+    return html;
+  }
+
+  document.getElementById("content-root").innerHTML=`
+    <div class="filter-bar">
+      <div class="seg">
+        <button class="seg-btn${filterMode==="piece"?" active":""}" onclick="filterMode='piece';filterVal=null;render()">Pièce</button>
+        <button class="seg-btn${filterMode==="prio"?" active":""}" onclick="filterMode='prio';filterVal=null;render()">Priorité</button>
+      </div>
+      <div class="chips">${chips.join("")}</div>
+    </div>
+    ${todoList.length===0?`<div class="empty">Tout est fait 🎉</div>`:groupedHtml(todoList)}
+    ${showDone&&doneList.length>0?`<div class="section-lbl" style="margin-top:1rem;opacity:.6">Terminés — ${doneList.length}</div><div style="opacity:.55">${doneList.map(t=>taskHtml(t,false)).join("")}</div>`:""}
+    ${doneList.length>0?`<div class="done-row"><button class="done-toggle" onclick="showDone=!showDone;render()">${showDone?"Masquer les terminés":"Voir les terminés ("+doneList.length+")"}</button></div>`:""}
+    <div class="addbar">
+      <input id="quick-input" placeholder="Ajouter un travail..." onkeydown="if(event.key==='Enter'&&this.value.trim()){quickAdd(this.value);this.value=''}">
+      <button class="add-btn" onclick="const i=document.getElementById('quick-input');if(i.value.trim()){quickAdd(i.value);i.value=''}else{openAdd()}">+</button>
+    </div>`;
+}
+
+function renderPieces(){
+  document.getElementById("content-root").innerHTML=`
+    <div class="section-lbl">${pieces.length} pièce(s)</div>
+    ${pieces.map(p=>{
+      const count=tasks.filter(t=>t.piece===p).length;
+      return`<div class="piece-row">
+        <span class="piece-name">${p}</span>
+        <span class="piece-count">${count} tâche${count>1?"s":""}</span>
+        <button class="piece-del" onclick="deletePiece('${p.replace(/'/g,"\\'")}')" title="Supprimer">×</button>
+      </div>`;
+    }).join("")}
+    <div class="add-piece-row">
+      <input class="add-piece-input" id="new-piece-input" placeholder="Nom de la nouvelle pièce..." onkeydown="if(event.key==='Enter')addPiece()">
+      <button class="btn-add-piece" onclick="addPiece()">Ajouter</button>
+    </div>`;
+}
+
+function render(){
+  renderHeader();
+  renderNav();
+  if(currentTab==="tasks")renderTasks();
+  else renderPieces();
+}
+
+render();
+</script>
+</body>
+</html>
