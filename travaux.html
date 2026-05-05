@@ -26,13 +26,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:colu
 
 /* DESKTOP KANBAN */
 @media(min-width:860px){
-  .content{overflow:hidden!important;display:flex!important;flex-direction:column!important;padding-bottom:72px!important}
+  .content{overflow:hidden!important;display:flex!important;flex-direction:column!important;padding-bottom:72px!important;height:100%!important}
   .filter-bar{flex-shrink:0}
   .mobile-list{display:none}
-  .kanban-board{display:flex!important;gap:12px;overflow-x:auto;flex:1;min-height:0;padding-bottom:8px;align-items:stretch;scrollbar-width:thin;scrollbar-color:var(--border-md) transparent}
+  .kanban-board{display:flex!important;gap:12px;overflow-x:auto;flex:1;min-height:0;height:100%;padding-bottom:8px;align-items:stretch;scrollbar-width:thin;scrollbar-color:var(--border-md) transparent}
   .kanban-board::-webkit-scrollbar{height:6px}
   .kanban-board::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:3px}
-  .kanban-col{flex:0 0 270px;display:flex;flex-direction:column;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;height:100%}
+  .kanban-col{flex:0 0 270px;display:flex;flex-direction:column;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;max-height:100%}
   .kanban-col-header{padding:10px 14px 8px;background:var(--bg4);border-bottom:1px solid var(--border);flex-shrink:0}
   .kanban-col-title{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted)}
   .kanban-col-count{font-size:11px;color:var(--text-hint);margin-top:1px}
@@ -573,20 +573,38 @@ async function reorderTask(id, beforeId, groupVal){
   for(const u of updates) await upsertTask(u);
 }
 
-// Touch drag support
+// Touch drag support — long press (400ms) pour démarrer, scroll normal sinon
 let touchDragId=null,touchClone=null,touchTargetGroup=null,touchBeforeId=null;
+let _touchTimer=null,_touchStartY=0,_touchStartX=0,_touchDragging=false;
+
 function onTouchStart(e,id,group){
   if(e.touches.length>1)return;
-  touchDragId=id;
-  const card=e.currentTarget;
-  const rect=card.getBoundingClientRect();
-  touchClone=card.cloneNode(true);
-  touchClone.style.cssText=`position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;opacity:0.85;pointer-events:none;z-index:999;border-radius:12px;box-shadow:0 8px 24px rgba(61,43,26,0.25)`;
-  document.body.appendChild(touchClone);
-  card.style.opacity='0.3';
-  touchTargetGroup=group;
+  const t=e.touches[0];
+  _touchStartX=t.clientX; _touchStartY=t.clientY;
+  _touchDragging=false;
+  _touchTimer=setTimeout(()=>{
+    // Long press — start drag
+    _touchDragging=true;
+    touchDragId=id;
+    const card=e.currentTarget;
+    const rect=card.getBoundingClientRect();
+    touchClone=card.cloneNode(true);
+    touchClone.style.cssText=`position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;opacity:0.85;pointer-events:none;z-index:999;border-radius:12px;box-shadow:0 8px 24px rgba(61,43,26,0.25)`;
+    document.body.appendChild(touchClone);
+    card.style.opacity='0.3';
+    touchTargetGroup=group;
+    // Vibration feedback
+    if(navigator.vibrate) navigator.vibrate(40);
+  },400);
 }
 function onTouchMove(e){
+  if(!_touchDragging){
+    // Not dragging yet — cancel timer if moved too much
+    const t=e.touches[0];
+    const dx=Math.abs(t.clientX-_touchStartX), dy=Math.abs(t.clientY-_touchStartY);
+    if(dx>8||dy>8){clearTimeout(_touchTimer);_touchTimer=null;}
+    return; // let scroll happen normally
+  }
   if(!touchClone)return;
   e.preventDefault();
   const t=e.touches[0];
@@ -608,13 +626,15 @@ function onTouchMove(e){
   } else {touchBeforeId=null;}
 }
 async function onTouchEnd(e){
+  clearTimeout(_touchTimer); _touchTimer=null;
   if(touchClone){touchClone.remove();touchClone=null;}
   document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('dz-over'));
   document.querySelectorAll('.drop-insert-line').forEach(l=>l.classList.remove('show'));
   document.querySelectorAll('.task-card').forEach(c=>c.style.opacity='');
-  if(touchDragId!==null&&touchTargetGroup!==null){
+  if(_touchDragging&&touchDragId!==null&&touchTargetGroup!==null){
     await reorderTask(touchDragId, touchBeforeId, touchTargetGroup);
   }
+  _touchDragging=false;
   touchDragId=null; touchTargetGroup=null; touchBeforeId=null;
 }
 
