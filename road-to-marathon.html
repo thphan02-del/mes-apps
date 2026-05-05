@@ -497,24 +497,51 @@ function getTargetValue(habit,md){
   return{val:'—',unit:'',hint:''};
 }
 
+function getSavedMetric(id,ds){
+  var d=habits[id]||{};var e=d[ds];
+  if(e&&typeof e==='object'&&e.val!==undefined)return e.val;
+  return '';
+}
+async function saveMetric(id,val){
+  var today=todayStr();
+  if(!habits[id])habits[id]={};
+  habits[id][today]={checked:getVal(id,today)===true,val:val};
+  await sbUpsert('marathon_habits',{id:id,data:habits[id]||{}});
+  renderPoidsBox();
+}
 function renderTargets(){
   var md=getCurrentMonthData();
   var today=todayStr();
   var el=document.getElementById('targets-grid');if(!el)return;
-  el.innerHTML=HABITS.map(function(h){
+  var html=HABITS.map(function(h){
     var v=getVal(h.id,today);
     var tv=getTargetValue(h,md);
-    var cls='target-card';
-    var statusHtml='';
-    var valCls='';
-    if(v===true){cls+=' done';statusHtml='<div class="tc-status ok">✓<\/div>';valCls=' done-val';}
-    else if(v===false){cls+=' failed';statusHtml='<div class="tc-status ko">✗<\/div>';valCls=' fail-val';}
-    return '<div class="'+cls+'" onclick="toggleTarget(\''+h.id+'\')">'+
+    var cls='target-card'+(v===true?' done':v===false?' failed':'');
+    var statusHtml=v===true?'<div class="tc-status ok">✓<\/div>':v===false?'<div class="tc-status ko">✗<\/div>':'';
+    var valCls=v===true?' done-val':v===false?' fail-val':'';
+    var needInput=(h.id==='poids'||h.id==='fc');
+    return '<div class="'+cls+'" data-hid="'+h.id+'" onclick="toggleTarget(this.dataset.hid)">'+
       statusHtml+
-      '<div class="tc-value'+valCls+'">'+tv.val+'<span class="tc-unit">'+tv.unit+'<\/span><\/div>'+
+      '<div class="tc-value'+valCls+'">'+tv.val+'<\/div>'+
       '<div class="tc-label">'+tv.hint+'<\/div>'+
+      (needInput?'<div class="tc-input-wrap" data-hid="'+h.id+'"><\/div>':'')+
     '<\/div>';
   }).join('');
+  el.innerHTML=html;
+  ['poids','fc'].forEach(function(id){
+    var wrap=el.querySelector('.tc-input-wrap[data-hid="'+id+'"]');
+    if(!wrap)return;
+    var sv=getSavedMetric(id,today);
+    var inp=document.createElement('input');
+    inp.type='number';
+    inp.step=id==='poids'?'0.1':'1';
+    inp.placeholder=id==='poids'?'kg ce matin':'bpm';
+    inp.value=sv;
+    inp.style.cssText='margin-top:8px;width:100%;background:transparent;border:none;border-bottom:1.5px solid var(--border-md);font-family:Montserrat,sans-serif;font-size:16px;font-weight:700;color:var(--text);outline:none;padding:3px 0;-webkit-appearance:none';
+    inp.addEventListener('click',function(e){e.stopPropagation();});
+    inp.addEventListener('change',function(){saveMetric(id,this.value);});
+    wrap.appendChild(inp);
+  });
 }
 
 async function toggleTarget(id){
