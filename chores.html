@@ -253,6 +253,7 @@
 
   .card-content { flex: 1; min-width: 0; }
   .card-name { font-weight: 600; font-size: 14px; color: var(--ink); margin: 0 0 2px; line-height: 1.3; }
+  .card-name-en { font-weight: 400; font-size: 11px; color: var(--ink-mute); font-style: italic; margin: 0 0 4px; line-height: 1.2; opacity: 0.75; }
   .card-meta { font-size: 11px; color: var(--ink-soft); margin: 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 
   .chip { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
@@ -663,47 +664,49 @@ const DEFAULT_STATE = {
   familyPoints: 0,
   familyTotalEarned: 0,
   tasks: [
-    // === HYGIÈNE & ROUTINE (persos) ===
-    { id: 't1', name: 'Faire son lit', icon: 'bed', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
-    { id: 't2a', name: 'Se laver les dents (matin)', icon: 'tooth', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
-    { id: 't2b', name: 'Se laver les dents (soir)', icon: 'tooth', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
-    { id: 't3', name: 'Prendre sa douche / son bain', icon: 'shower', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
-    { id: 't25', name: "S'habiller seul(e) le matin", icon: 'shower', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
-    { id: 't26', name: 'Mettre ses chaussures et son manteau seul', icon: 'bag', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
+    // ========== MATIN (réveil → départ école) ==========
+    { id: 't1', name: 'Faire son lit', nameEn: 'Make your bed', icon: 'bed', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
+    { id: 't2a', name: 'Se laver les dents (matin)', nameEn: 'Brush teeth (morning)', icon: 'tooth', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
+    { id: 't25', name: "S'habiller seul(e) le matin", nameEn: 'Get dressed by yourself', icon: 'shower', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
+    { id: 't26', name: 'Mettre ses chaussures et son manteau seul', nameEn: 'Put on shoes and coat by yourself', icon: 'bag', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
 
-    // === MAISON ===
-    { id: 't4', name: 'Ranger sa chambre', icon: 'broom', points: 2, frequency: 'daily', category: 'house', shared: false },
-    { id: 't27', name: 'Sortir le linge sale (panier)', icon: 'laundry', points: 1, frequency: 'daily', category: 'house', shared: false },
-    { id: 't7', name: 'Mettre la table', icon: 'table', points: 2, frequency: 'daily', category: 'house', shared: true },
-    { id: 't8', name: 'Débarrasser la table', icon: 'dish', points: 2, frequency: 'daily', category: 'house', shared: true },
-    { id: 't9', name: 'Aider à la vaisselle', icon: 'dish', points: 3, frequency: 'daily', category: 'house', shared: true },
-    { id: 't10', name: 'Sortir les poubelles', icon: 'trash', points: 4, frequency: 'weekly', category: 'house', shared: true },
-    { id: 't11', name: 'Plier le linge', icon: 'laundry', points: 3, frequency: 'weekly', category: 'house', shared: true },
+    // ========== MATIN — animaux ==========
+    { id: 't12', name: 'Donner à manger au chien', nameEn: 'Feed the dog', icon: 'dog', points: 2, frequency: 'daily', category: 'pet', shared: true },
+    { id: 't14', name: 'Donner à manger aux petits animaux', nameEn: 'Feed the small animals', icon: 'rabbit', points: 2, frequency: 'daily', category: 'pet', shared: true },
+    { id: 't15', name: "Changer l'eau des animaux", nameEn: "Refill the animals' water", icon: 'water', points: 1, frequency: 'daily', category: 'pet', shared: true },
+    { id: 't17', name: 'Ramasser les œufs', nameEn: 'Collect the eggs', icon: 'sun', points: 1, frequency: 'asneeded', category: 'pet', shared: true },
+    { id: 't31', name: 'Donner à manger aux oiseaux', nameEn: 'Feed the birds', icon: 'sun', points: 1, frequency: 'asneeded', category: 'pet', shared: true },
 
-    // === ÉCOLE (persos) ===
-    { id: 't5', name: 'Faire ses devoirs', icon: 'book', points: 3, frequency: 'weekday', category: 'school', shared: false },
-    { id: 't6', name: 'Préparer son cartable', icon: 'bag', points: 1, frequency: 'weekday', category: 'school', shared: false },
-    { id: 't28', name: 'Préparer ses vêtements pour le lendemain', icon: 'bag', points: 1, frequency: 'weekday', category: 'school', shared: false },
-    { id: 't29', name: 'Faire son sac de sport / activités', icon: 'bag', points: 2, frequency: 'asneeded', category: 'school', shared: false },
+    // ========== MIDI / DÉJEUNER ==========
+    { id: 't7', name: 'Mettre la table', nameEn: 'Set the table', icon: 'table', points: 2, frequency: 'daily', category: 'house', shared: true },
+    { id: 't8', name: 'Débarrasser la table', nameEn: 'Clear the table', icon: 'dish', points: 2, frequency: 'daily', category: 'house', shared: true },
+    { id: 't9', name: 'Aider à la vaisselle', nameEn: 'Help with the dishes', icon: 'dish', points: 3, frequency: 'daily', category: 'house', shared: true },
 
-    // === ANIMAUX (partagées) ===
-    { id: 't12', name: 'Donner à manger au chien', icon: 'dog', points: 2, frequency: 'daily', category: 'pet', shared: true },
-    { id: 't13', name: 'Sortir / promener le chien', icon: 'dog', points: 3, frequency: 'daily', category: 'pet', shared: true },
-    { id: 't30', name: 'Câliner / jouer avec le chien', icon: 'paw', points: 1, frequency: 'daily', category: 'pet', shared: true },
-    { id: 't14', name: 'Donner à manger aux petits animaux', icon: 'rabbit', points: 2, frequency: 'daily', category: 'pet', shared: true },
-    { id: 't15', name: "Changer l'eau des animaux", icon: 'water', points: 1, frequency: 'daily', category: 'pet', shared: true },
-    { id: 't16', name: 'Nettoyer la cage / clapier', icon: 'rabbit', points: 5, frequency: 'weekly', category: 'pet', shared: true },
-    { id: 't17', name: 'Ramasser les œufs', icon: 'sun', points: 1, frequency: 'asneeded', category: 'pet', shared: true },
-    { id: 't31', name: 'Donner à manger aux oiseaux', icon: 'sun', points: 1, frequency: 'asneeded', category: 'pet', shared: true },
+    // ========== APRÈS-MIDI / FIN DE JOURNÉE ==========
+    { id: 't13', name: 'Sortir / promener le chien', nameEn: 'Walk the dog', icon: 'dog', points: 3, frequency: 'daily', category: 'pet', shared: true },
+    { id: 't30', name: 'Câliner / jouer avec le chien', nameEn: 'Cuddle / play with the dog', icon: 'paw', points: 1, frequency: 'daily', category: 'pet', shared: true },
+    { id: 't5', name: 'Faire ses devoirs', nameEn: 'Do your homework', icon: 'book', points: 3, frequency: 'weekday', category: 'school', shared: false },
 
-    // === JARDIN (partagées) ===
-    { id: 't18', name: 'Arroser les plantes du jardin', icon: 'plant', points: 3, frequency: 'asneeded', category: 'garden', shared: true },
-    { id: 't19', name: 'Ramasser les feuilles', icon: 'leaf', points: 4, frequency: 'asneeded', category: 'garden', shared: true },
-    { id: 't21', name: 'Ramasser les jouets dans le jardin', icon: 'toy', points: 2, frequency: 'asneeded', category: 'garden', shared: true },
-    { id: 't22', name: 'Ramasser les crottes du chien', icon: 'paw', points: 4, frequency: 'asneeded', category: 'garden', shared: true },
+    // ========== TÂCHES PONCTUELLES (jardin / maison) ==========
+    { id: 't18', name: 'Arroser les plantes du jardin', nameEn: 'Water the garden plants', icon: 'plant', points: 3, frequency: 'asneeded', category: 'garden', shared: true },
+    { id: 't21', name: 'Ramasser les jouets dans le jardin', nameEn: 'Pick up toys in the garden', icon: 'toy', points: 2, frequency: 'asneeded', category: 'garden', shared: true },
+    { id: 't22', name: 'Ramasser les crottes du chien', nameEn: 'Pick up dog poop', icon: 'paw', points: 4, frequency: 'asneeded', category: 'garden', shared: true },
+    { id: 't19', name: 'Ramasser les feuilles', nameEn: 'Rake the leaves', icon: 'leaf', points: 4, frequency: 'asneeded', category: 'garden', shared: true },
+    { id: 't23', name: 'Aider à laver la voiture', nameEn: 'Help wash the car', icon: 'car', points: 6, frequency: 'asneeded', category: 'bonus', shared: true },
+    { id: 't29', name: 'Faire son sac de sport / activités', nameEn: 'Pack sports / activity bag', icon: 'bag', points: 2, frequency: 'asneeded', category: 'school', shared: false },
 
-    // === BONUS ===
-    { id: 't23', name: 'Aider à laver la voiture', icon: 'car', points: 6, frequency: 'asneeded', category: 'bonus', shared: true },
+    // ========== HEBDOMADAIRES ==========
+    { id: 't10', name: 'Sortir les poubelles', nameEn: 'Take out the trash', icon: 'trash', points: 4, frequency: 'weekly', category: 'house', shared: true },
+    { id: 't11', name: 'Plier le linge', nameEn: 'Fold the laundry', icon: 'laundry', points: 3, frequency: 'weekly', category: 'house', shared: true },
+    { id: 't16', name: 'Nettoyer la cage / clapier', nameEn: 'Clean the cage / hutch', icon: 'rabbit', points: 5, frequency: 'weekly', category: 'pet', shared: true },
+
+    // ========== SOIR (avant le coucher) ==========
+    { id: 't4', name: 'Ranger sa chambre', nameEn: 'Tidy your room', icon: 'broom', points: 2, frequency: 'daily', category: 'house', shared: false },
+    { id: 't27', name: 'Sortir le linge sale (panier)', nameEn: 'Put dirty laundry in the basket', icon: 'laundry', points: 1, frequency: 'daily', category: 'house', shared: false },
+    { id: 't6', name: 'Préparer son cartable', nameEn: 'Pack your school bag', icon: 'bag', points: 1, frequency: 'weekday', category: 'school', shared: false },
+    { id: 't28', name: 'Préparer ses vêtements pour le lendemain', nameEn: 'Lay out tomorrow\'s clothes', icon: 'bag', points: 1, frequency: 'weekday', category: 'school', shared: false },
+    { id: 't3', name: 'Prendre sa douche / son bain', nameEn: 'Take a shower / bath', icon: 'shower', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
+    { id: 't2b', name: 'Se laver les dents (soir)', nameEn: 'Brush teeth (evening)', icon: 'tooth', points: 1, frequency: 'daily', category: 'hygiene', shared: false },
   ],
   rewardsPerso: [
     // Petites (1-3 par semaine)
@@ -1159,6 +1162,7 @@ function renderTodayTasks() {
           ${iconBlock(t.icon)}
           <div class="card-content">
             <div class="card-name">${t.name}</div>
+            ${t.nameEn ? `<div class="card-name-en">${t.nameEn}</div>` : ''}
             <div class="card-meta">
               <span class="chip ${cat.cls}">${cat.label}</span>
               <span class="chip ${t.shared ? 'chip-shared' : 'chip-perso'}">${t.shared ? 'partagé' : 'perso'}</span>
@@ -1238,6 +1242,7 @@ function renderWeek() {
           ${iconBlock(t.icon)}
           <div class="card-content">
             <div class="card-name">${t.name}</div>
+            ${t.nameEn ? `<div class="card-name-en">${t.nameEn}</div>` : ''}
             <div class="card-meta">
               <span class="chip ${cat.cls}">${cat.label}</span>
               <span style="font-size:11px;">${freqLabel(t.frequency)}</span>
@@ -1405,6 +1410,7 @@ function renderParent() {
     </div>
     <div class="add-form" id="task-form">
       <input type="text" id="ntName" class="form-input" placeholder="Nom de la tâche">
+      <input type="text" id="ntNameEn" class="form-input" placeholder="Translation in English (optional)">
       <div class="row-cols">
         <input type="number" id="ntPoints" class="form-input" placeholder="★" value="3" min="1" max="10">
         <select id="ntIcon" class="form-select">${iconOpts.map(i => `<option value="${i}">${i}</option>`).join('')}</select>
@@ -1434,6 +1440,7 @@ function renderParent() {
             ${iconBlock(t.icon)}
             <div class="card-content">
               <div class="card-name">${t.name}</div>
+              ${t.nameEn ? `<div class="card-name-en">${t.nameEn}</div>` : ''}
               <div class="card-meta">${freqLabel(t.frequency)} · +${t.points} ★ · ${t.shared ? 'partagée' : 'perso'}</div>
             </div>
             <button class="btn btn-icon" style="color:var(--accent);" data-action="del-task" data-id="${t.id}">×</button>
@@ -1795,12 +1802,15 @@ function handleClick(e) {
     case 'save-task': {
       const name = document.getElementById('ntName').value.trim();
       if (!name) return;
+      const nameEn = document.getElementById('ntNameEn').value.trim();
       const points = parseInt(document.getElementById('ntPoints').value) || 3;
       const icon = document.getElementById('ntIcon').value;
       const cat = document.getElementById('ntCat').value;
       const freq = document.getElementById('ntFreq').value;
       const shared = document.getElementById('ntShared1').checked;
-      state.tasks.push({ id: 't'+Date.now(), name, points, icon, frequency: freq, category: cat, shared });
+      const newTask = { id: 't'+Date.now(), name, points, icon, frequency: freq, category: cat, shared };
+      if (nameEn) newTask.nameEn = nameEn;
+      state.tasks.push(newTask);
       debouncedSave();
       render();
       break;
