@@ -265,6 +265,31 @@ h1,h2,h3,.heading,.app-name,.section-lbl,.drawer-title,.perso-title{font-family:
 .prio-group-hdr.important{color:var(--gold-dark)}
 .prio-group-hdr.someday{color:var(--ink-hint)}
 
+/* SECTION TERMINÉES PLIABLE (dans onglet Tâches) */
+.done-section{margin-top:1.5rem;border-top:1px solid var(--border);padding-top:0.5rem}
+.done-section-hdr{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:transparent;
+  border:none;
+  padding:8px 0;
+  cursor:pointer;
+  font-family:'Montserrat',sans-serif;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:0.8px;
+  text-transform:uppercase;
+  color:var(--ink-muted);
+  transition:color 0.12s;
+}
+.done-section-hdr:hover{color:var(--ink)}
+.dsh-caret{font-size:9px;opacity:0.5}
+.done-section-body{padding-top:0.25rem}
+.done-section-body .task-item{opacity:0.7}
+.done-section-body .task-item:hover{opacity:1}
+
 /* CAT COLORS — accents discrets sur ivoire */
 .cat-em{background:#E1E8F2;color:#3B5577}
 .cat-at{background:#E0EBDC;color:#446B3A}
@@ -603,6 +628,7 @@ textarea{resize:none;height:68px;line-height:1.5}
     </div>
     <div class="cat-filters" id="cat-filters"></div>
     <div id="list-tasks"></div>
+    <div id="done-in-tasks"></div>
   </div>
 
   <!-- TERMINÉES -->
@@ -1161,7 +1187,32 @@ function renderAll(){
     listed=listed.filter(function(t){return(t.prio||'someday')===currentPrioFilter;});
   }
   renderList('list-tasks',listed.slice().sort(sortActive),false);
+  // Terminées de la même catégorie (et même prio si filtre actif) : section pliable
+  renderDoneInTasks(done);
   renderList('list-done',done.slice().sort(function(a,b){return(b.done_at||'').localeCompare(a.done_at||'');}),true);
+}
+
+function renderDoneInTasks(allDone){
+  var el=document.getElementById('done-in-tasks');
+  if(!el) return;
+  var doneFiltered=filterT(allDone);
+  if(currentPrioFilter!=='all'){
+    doneFiltered=doneFiltered.filter(function(t){return(t.prio||'someday')===currentPrioFilter;});
+  }
+  if(!doneFiltered.length){el.innerHTML='';return;}
+  var sorted=doneFiltered.slice().sort(function(a,b){return(b.done_at||'').localeCompare(a.done_at||'');});
+  var open=window._doneInTasksOpen===true;
+  el.innerHTML='<div class="done-section">'+
+    '<button class="done-section-hdr'+(open?' open':'')+'" onclick="toggleDoneInTasks()">'+
+      '<span>✓ Terminées '+(sorted.length>0?'('+sorted.length+')':'')+'</span>'+
+      '<span class="dsh-caret">'+(open?'▼':'▶')+'</span>'+
+    '</button>'+
+    (open?'<div class="done-section-body">'+sorted.map(function(t){return taskHTML(t);}).join('')+'</div>':'')+
+  '</div>';
+}
+function toggleDoneInTasks(){
+  window._doneInTasksOpen=!window._doneInTasksOpen;
+  renderAll();
 }
 
 function sortActive(a,b){
@@ -1476,7 +1527,7 @@ function taskHTML(t){
       '<div class="task-text'+(t.done?' done':'')+'">'+esc(t.text)+'</div>'+
       '<div class="task-meta"><div class="prio-dot"></div><span class="cat-tag '+cat.cls+'">'+cat.label+'</span>'+
       (t.due?'<span class="due-lbl'+(overdue?' overdue':'')+'">'+fmtDate(t.due)+'</span>':'')+
-      '</div>'+(t.note?'<div style="font-size:12px;color:#BBBBBB;margin-top:3px;line-height:1.4">'+esc(t.note)+'</div>':'')+
+      '</div>'+(t.note?'<div style="font-size:12px;color:var(--ink-muted);margin-top:3px;line-height:1.4">'+esc(t.note)+'</div>':'')+
     '</div>'+
     '<button class="task-del" onclick="delTask(\''+t.id+'\')">✕</button>'+
   '</div>';
