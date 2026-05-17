@@ -63,6 +63,9 @@
 html,body{height:100%;height:100dvh;overflow:hidden}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;height:100vh;height:100dvh;position:relative}
 h1,h2,h3,.heading,.app-name,.section-lbl,.drawer-title,.perso-title{font-family:'Montserrat',sans-serif}
+
+/* main-area : flex column par défaut (mobile + desktop) */
+.main-area{display:flex;flex-direction:column;flex:1;min-height:0;width:100%}
 @media(min-width:900px){
   html{background:var(--bg-warm)}
   body{
@@ -129,15 +132,9 @@ h1,h2,h3,.heading,.app-name,.section-lbl,.drawer-title,.perso-title{font-family:
     margin-top:0.5rem;
   }
   .main-area{
-    flex:1;
-    min-width:0;
-    display:flex;
-    flex-direction:column;
-    height:100vh;
-    height:100dvh;
+    /* flex/column déjà appliqués par la règle de base */
     max-width:760px;
     margin:0 auto;
-    width:100%;
   }
   /* mobile-only elements hidden on desktop */
   body > .main-area > .header,
@@ -159,6 +156,9 @@ h1,h2,h3,.heading,.app-name,.section-lbl,.drawer-title,.perso-title{font-family:
 .perso-btn{width:34px;height:34px;border-radius:50%;background:var(--gold-soft);border:1px solid var(--gold-mid);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0;color:var(--gold-dark)}
 .header-desktop{display:none;padding:1.25rem 1.5rem 0.5rem;align-items:center;justify-content:space-between;flex-shrink:0}
 .header-desktop .app-name{font-size:24px}
+.hd-breadcrumb{font-family:'Montserrat',sans-serif;font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-0.3px}
+.hd-breadcrumb .crumb-sep{margin:0 8px;color:var(--ink-hint);font-weight:400}
+.hd-breadcrumb .crumb-sub{color:var(--ink-muted);font-weight:500;font-size:15px}
 
 /* NAV */
 .nav{display:flex;border-bottom:1px solid var(--border);margin:0 1.25rem;flex-shrink:0}
@@ -577,7 +577,7 @@ textarea{resize:none;height:68px;line-height:1.5}
 
 <!-- desktop top bar -->
 <div class="header-desktop">
-  <div></div>
+  <div class="hd-breadcrumb" id="hd-breadcrumb">Accueil</div>
   <div class="done-badge" id="done-badge-d">0 faites aujourd'hui</div>
 </div>
 
@@ -1083,6 +1083,22 @@ function showTab(id,btn){
   document.getElementById('tab-'+id).classList.add('active');
   // sync both nav and sidebar
   document.querySelectorAll('[data-tab="'+id+'"]').forEach(function(b){b.classList.add('active');});
+  window._currentTab=id;
+  // Rafraîchir le rendu (notamment pour les sections calculées seulement quand l'onglet est actif)
+  renderAll();
+}
+function updateBreadcrumb(){
+  var el=document.getElementById('hd-breadcrumb');
+  if(!el) return;
+  var tab=window._currentTab||'today';
+  var label={today:'Accueil',tasks:'Tâches',done:'Terminées'}[tab]||'Accueil';
+  var sub='';
+  if(tab==='tasks'){
+    var catLabel=currentFilter==='all'?'Toutes catégories':((CATS[currentFilter]&&CATS[currentFilter].label)||currentFilter);
+    var prioLabel={all:'',urgent:'🔴 Urgent',important:'🟡 Important',someday:'⚪ Un jour'}[currentPrioFilter]||'';
+    sub=catLabel+(prioLabel?' · '+prioLabel:'');
+  }
+  el.innerHTML=esc(label)+(sub?'<span class="crumb-sep">/</span><span class="crumb-sub">'+esc(sub)+'</span>':'');
 }
 
 /* QUICK ADD */
@@ -1156,6 +1172,7 @@ function toggleDictation(){
 /* RENDER */
 function renderAll(){
   renderFilters();
+  updateBreadcrumb();
   var today=todayISO();
   var active=tasks.filter(function(t){return !t.done;});
   var done=tasks.filter(function(t){return t.done;});
@@ -1165,14 +1182,14 @@ function renderAll(){
   var doneTxt=doneToday.length+' faite'+(doneToday.length>1?'s':'')+' aujourd\'hui';
   var b1=document.getElementById('done-badge'); if(b1) b1.textContent=doneTxt;
   var b2=document.getElementById('done-badge-d'); if(b2) b2.textContent=doneTxt;
-  // compteurs onglet "Tâches" : on compte sur la liste filtrée par catégorie
+  // Compteurs onglets : TOUJOURS globaux (non filtrés par catégorie)
+  var totalActive=active.length, totalDone=done.length;
+  var c1=document.getElementById('cnt-tasks'); if(c1) c1.textContent=totalActive;
+  var c2=document.getElementById('cnt-done'); if(c2) c2.textContent=totalDone;
+  var s1=document.getElementById('sb-cnt-tasks'); if(s1) s1.textContent=totalActive;
+  var s2=document.getElementById('sb-cnt-done'); if(s2) s2.textContent=totalDone;
+  // Compteurs sous-onglets prio : filtrés par catégorie courante (logique sur l'onglet Tâches)
   var activeByCat=filterT(active);
-  var aLen=activeByCat.length, dLen=done.length;
-  var c1=document.getElementById('cnt-tasks'); if(c1) c1.textContent=aLen;
-  var c2=document.getElementById('cnt-done'); if(c2) c2.textContent=dLen;
-  var s1=document.getElementById('sb-cnt-tasks'); if(s1) s1.textContent=aLen;
-  var s2=document.getElementById('sb-cnt-done'); if(s2) s2.textContent=dLen;
-  // compteurs sous-onglets prio
   var byPrio={urgent:0,important:0,someday:0};
   activeByCat.forEach(function(t){var p=t.prio||'someday';if(byPrio[p]!==undefined)byPrio[p]++;});
   var pcAll=document.getElementById('pt-cnt-all'); if(pcAll) pcAll.textContent=activeByCat.length;
@@ -1195,6 +1212,9 @@ function renderAll(){
 function renderDoneInTasks(allDone){
   var el=document.getElementById('done-in-tasks');
   if(!el) return;
+  // Inutile de calculer si l'onglet Tâches n'est pas actif
+  var tasksTab=document.getElementById('tab-tasks');
+  if(!tasksTab||!tasksTab.classList.contains('active')){el.innerHTML='';return;}
   var doneFiltered=filterT(allDone);
   if(currentPrioFilter!=='all'){
     doneFiltered=doneFiltered.filter(function(t){return(t.prio||'someday')===currentPrioFilter;});
@@ -1268,7 +1288,7 @@ function submitCat(){
   }
   saveCats();
   document.getElementById('cat-overlay').classList.remove('open');
-  renderFilters();renderAll();renderCatsList();
+  renderAll();renderCatsList();
   updateCatSelectors();
 }
 function deleteCatFromDrawer(){
@@ -1280,7 +1300,7 @@ function deleteCatFromDrawer(){
   saveCats();
   if(currentFilter===editCatId) currentFilter='all';
   document.getElementById('cat-overlay').classList.remove('open');
-  renderFilters();renderAll();renderCatsList();
+  renderAll();renderCatsList();
   updateCatSelectors();
   var updated=tasks.filter(function(t){return t.cat==='au';});
   updated.forEach(function(t){sbUpsert('tasks',{id:t.id,text:t.text,note:t.note,cat:t.cat,prio:t.prio,due:t.due,done:t.done,done_at:t.done_at,created_at:t.created_at});});
