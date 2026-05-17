@@ -5,9 +5,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Travaux">
-<meta name="theme-color" content="#EDE0C4">
+<meta name="theme-color" content="#6B1212">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Mes Travaux</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%236B1212'/%3E%3Cstop offset='100%25' stop-color='%238B1A1A'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23bg)'/%3E%3Crect x='0' y='340' width='512' height='172' fill='%23000' fill-opacity='.08'/%3E%3Ctext x='256' y='355' font-family='Montserrat,Arial Black,sans-serif' font-weight='900' font-size='320' fill='%23F5EDDC' text-anchor='middle'%3ET%3C/text%3E%3Crect x='136' y='378' width='240' height='18' rx='9' fill='%23C9A84C'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%236B1212'/%3E%3Cstop offset='100%25' stop-color='%238B1A1A'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23bg)'/%3E%3Crect x='0' y='340' width='512' height='172' fill='%23000' fill-opacity='.08'/%3E%3Ctext x='256' y='355' font-family='Montserrat,Arial Black,sans-serif' font-weight='900' font-size='320' fill='%23F5EDDC' text-anchor='middle'%3ET%3C/text%3E%3Crect x='136' y='378' width='240' height='18' rx='9' fill='%23C9A84C'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -307,6 +309,7 @@ async function savePieces(){
 }
 async function saveTasks(){}
 async function upsertTask(t){
+  _isSaving=true;
   await sbUpsert('travaux_tasks',[{
     id:t.id,
     titre:t.titre||"",
@@ -316,6 +319,7 @@ async function upsertTask(t){
     notes:t.notes||"",
     "order":t.order||0
   }]);
+  _isSaving=false;
 }
 async function deleteTaskDB(id){
   await sbDelete('travaux_tasks','id',id);
@@ -363,9 +367,13 @@ function showLoading(on){
 
 // Polling toutes les 15s pour sync multi-appareils
 let _isDraggingPiece=false;
+let _isSaving=false; // prevent polling overwrite during save
 function startPolling(){
   setInterval(async()=>{
-    if(modal||_isDraggingPiece)return;
+    if(modal||_isDraggingPiece||_isSaving)return;
+    // Don't re-render if user is typing
+    const active=document.activeElement;
+    if(active&&(active.tagName==='INPUT'||active.tagName==='TEXTAREA'))return;
     try{
       const [t,p]=await Promise.all([sbGet('travaux_tasks'),sbGetPieces()]);
       if(Array.isArray(p)&&p.length>0) pieces=p.map(r=>r.name);
@@ -380,9 +388,10 @@ async function addPiece(){
   const inp=document.getElementById("new-piece-input");
   const name=inp?.value?.trim();
   if(!name||pieces.includes(name))return;
+  const sort_order=pieces.length;
   pieces.push(name);
   inp.value="";
-  await sbUpsert('travaux_pieces',[{name}]);
+  await sbUpsert('travaux_pieces',[{name,sort_order}]);
   render();
 }
 async function deletePiece(name){
@@ -400,7 +409,14 @@ function filtered(){
     .sort((a,b)=>{
       if(a.statut==="done"&&b.statut!=="done")return 1;
       if(b.statut==="done"&&a.statut!=="done")return -1;
-      return a.piece.localeCompare(b.piece)||PORD[a.priorite]-PORD[b.priorite];
+      // primary sort: by group (piece or prio order), secondary: by order field
+      const aGroup=filterMode==="piece"?a.piece:a.priorite;
+      const bGroup=filterMode==="piece"?b.piece:b.priorite;
+      if(aGroup!==bGroup){
+        if(filterMode==="piece") return pieces.indexOf(aGroup)-pieces.indexOf(bGroup);
+        return PORD[aGroup]-PORD[bGroup];
+      }
+      return (a.order||0)-(b.order||0);
     });
 }
 async function toggle(id,e){
@@ -811,7 +827,7 @@ async function reorderPiece(name, beforeName){
   const to=beforeName&&beforeName!=='__end__'?pieces.indexOf(beforeName):pieces.length;
   pieces.splice(to<0?pieces.length:to,0,name);
   render();
-  // Save each piece's sort_order with explicit PATCH
+  _isSaving=true;
   for(let i=0;i<pieces.length;i++){
     await fetch(`${SUPA_URL}/rest/v1/travaux_pieces?name=eq.${encodeURIComponent(pieces[i])}`,{
       method:'PATCH',
@@ -819,6 +835,7 @@ async function reorderPiece(name, beforeName){
       body:JSON.stringify({sort_order:i})
     });
   }
+  _isSaving=false;
 }
 
 // Touch for pieces — long press
@@ -903,21 +920,29 @@ function renderPieces(){
     </div>`;
 }
 
-function render(){
-  // Save kanban scroll position before re-render
-  const board=document.querySelector('.kanban-board');
-  const scrollLeft=board?board.scrollLeft:0;
+let _kanbanScrollLeft=0;
 
+function saveKanbanScroll(){
+  const b=document.querySelector('.kanban-board');
+  if(b) _kanbanScrollLeft=b.scrollLeft;
+}
+function restoreKanbanScroll(){
+  const b=document.querySelector('.kanban-board');
+  if(b&&_kanbanScrollLeft>0) b.scrollLeft=_kanbanScrollLeft;
+}
+function attachKanbanScrollListener(){
+  const b=document.querySelector('.kanban-board');
+  if(b) b.addEventListener('scroll',()=>{_kanbanScrollLeft=b.scrollLeft;},{passive:true});
+}
+
+function render(){
+  saveKanbanScroll();
   renderHeader();
   renderNav();
   if(currentTab==="tasks")renderTasks();
   else renderPieces();
-
-  // Restore kanban scroll position after re-render
-  if(scrollLeft>0){
-    const newBoard=document.querySelector('.kanban-board');
-    if(newBoard) newBoard.scrollLeft=scrollLeft;
-  }
+  restoreKanbanScroll();
+  attachKanbanScrollListener();
 }
 
 loadAll();
