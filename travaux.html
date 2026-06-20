@@ -86,6 +86,11 @@ body{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:colu
 .chip.on{color:var(--red);border-color:var(--red-border);background:var(--red-dim);font-weight:700}
 .chip.prio-on{border-color:var(--chip-c);color:var(--chip-c);background:transparent}
 
+/* TYPE TOGGLE */
+.type-toggle{display:flex;gap:6px;margin-bottom:10px}
+.type-btn{flex:1;font-size:12px;font-weight:600;padding:8px 6px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--bg2);color:var(--text-muted);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;text-align:center}
+.type-btn.active{background:var(--red);border-color:var(--red);color:#fff}
+
 /* SECTION LABEL */
 .section-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin:1rem 0 0.5rem}
 .section-lbl:first-child{margin-top:0}
@@ -109,6 +114,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:colu
 .prio-importante .prio-pill{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange-border)}
 .prio-normale .prio-pill{background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-border)}
 .prio-basse .prio-pill{background:rgba(0,0,0,0.04);color:var(--text-hint);border:1px solid var(--border)}
+.achat-pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:0.3px;background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-border)}
 
 .done-row{text-align:center;padding:8px 0 2px}
 .done-toggle{font-size:11px;color:var(--text-muted);background:none;border:none;cursor:pointer;padding:4px 12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;border-radius:20px;border:1px solid var(--border)}
@@ -122,6 +128,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:colu
 .piece-count{font-size:11px;color:var(--text-muted);font-weight:500}
 .piece-del{background:none;border:none;color:var(--text-hint);cursor:pointer;font-size:18px;padding:0 4px;line-height:1;font-family:inherit}
 .piece-del:hover{color:var(--red)}
+.piece-rename-btn{background:none;border:none;cursor:pointer;font-size:13px;padding:0 4px;opacity:0.5;line-height:1}
+.piece-rename-btn:hover{opacity:1}
+.piece-rename-input{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:600;color:var(--text);background:var(--bg);border:1.5px solid var(--red-border);border-radius:6px;padding:2px 8px;outline:none;min-width:80px}
 .piece-row{cursor:grab}
 .piece-row.piece-dz-over{background:var(--red-dim);border-color:var(--red-border);border-radius:var(--rs)}
 .pieces-list{display:flex;flex-direction:column}
@@ -160,6 +169,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:colu
 .piece-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .piece-opt{padding:9px 4px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--bg);color:var(--text-muted);cursor:pointer;font-size:11px;font-weight:500;text-align:center;font-family:'Plus Jakarta Sans',sans-serif;word-break:break-word;transition:all .1s}
 .piece-opt.sel{border-color:var(--red-border);color:var(--red);background:var(--red-dim);font-weight:700}
+.type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.type-opt{padding:10px 4px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--bg);color:var(--text-muted);cursor:pointer;font-size:13px;font-weight:600;text-align:center;font-family:'Plus Jakarta Sans',sans-serif}
+.type-opt.sel{border-color:var(--red);color:var(--red);background:var(--red-dim)}
 .sheet-footer{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
 .sheet-footer-right{display:flex;gap:8px}
 .btn{font-size:13px;padding:9px 18px;border-radius:var(--rs);border:1px solid var(--border-md);background:var(--bg);color:var(--text-muted);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500}
@@ -300,16 +312,11 @@ async function sbDelete(table,col,val){
 let pieces=[...DEFAULT_PIECES];
 let tasks=[];
 let currentTab="tasks";
-let filterMode="piece",filterVal=null,showDone=false;
+let filterMode="piece",filterVal=null,showDone=false,typeFilter="all";
 let modal=null,recognition=null,isListening=false;
 let _loaded=false;
 
-async function savePieces(){
-  await sbUpsert('travaux_pieces', pieces.map(name=>({name})));
-}
-async function saveTasks(){}
-async function upsertTask(t){
-  _isSaving=true;
+async function upsertTaskRaw(t){
   await sbUpsert('travaux_tasks',[{
     id:t.id,
     titre:t.titre||"",
@@ -317,8 +324,13 @@ async function upsertTask(t){
     priorite:t.priorite||"normale",
     statut:t.statut||"todo",
     notes:t.notes||"",
-    "order":t.order||0
+    "order":t.order||0,
+    type:t.type||"travaux"
   }]);
+}
+async function upsertTask(t){
+  _isSaving=true;
+  await upsertTaskRaw(t);
   _isSaving=false;
 }
 async function deleteTaskDB(id){
@@ -396,15 +408,30 @@ async function addPiece(){
 }
 async function deletePiece(name){
   const count=tasks.filter(t=>t.piece===name).length;
-  if(count>0&&!confirm(`"${name}" a ${count} tâche(s). Supprimer quand même ?`))return;
+  if(count>0&&!confirm(`"${name}" a ${count} tâche(s) qui seront déplacées vers "Autre". Continuer ?`))return;
   pieces=pieces.filter(p=>p!==name);
+  if(!pieces.includes("Autre")){pieces.push("Autre");}
   if(filterVal===name)filterVal=null;
+  // Reassign orphaned tasks to "Autre"
+  const orphans=tasks.filter(t=>t.piece===name);
+  tasks=tasks.map(t=>t.piece===name?{...t,piece:"Autre"}:t);
+  render();
+  _isSaving=true;
   await deletePieceDB(name);
+  if(!pieces.includes("Autre")||orphans.length===0){
+    // ensure "Autre" exists in DB if we just added it
+  }
+  await sbUpsert('travaux_pieces',[{name:"Autre",sort_order:pieces.indexOf("Autre")}]);
+  for(const t of orphans){
+    await upsertTaskRaw({...t,piece:"Autre"});
+  }
+  _isSaving=false;
   render();
 }
 function filtered(){
   return tasks
     .filter(t=>showDone||t.statut!=="done")
+    .filter(t=>typeFilter==="all"||(t.type||"travaux")===typeFilter)
     .filter(t=>!filterVal||(filterMode==="piece"?t.piece===filterVal:t.priorite===filterVal))
     .sort((a,b)=>{
       if(a.statut==="done"&&b.statut!=="done")return 1;
@@ -437,7 +464,8 @@ async function quickAdd(titre){
   if(!titre.trim())return;
   const piece=filterMode==="piece"&&filterVal?filterVal:pieces[0]||"Autre";
   const priorite=filterMode==="prio"&&filterVal?filterVal:"normale";
-  const t={id:Date.now(),titre:titre.trim(),piece,priorite,statut:"todo",notes:""};
+  const type=typeFilter!=="all"?typeFilter:"travaux";
+  const t={id:Date.now(),titre:titre.trim(),piece,priorite,statut:"todo",notes:"",type};
   tasks.push(t);render();
   await upsertTask(t);
 }
@@ -445,19 +473,21 @@ function openEdit(id){modal={mode:"edit",id,form:{...tasks.find(t=>t.id===id)}};
 function openAdd(){
   const piece=filterMode==="piece"&&filterVal?filterVal:pieces[0]||"Autre";
   const priorite=filterMode==="prio"&&filterVal?filterVal:"normale";
-  modal={mode:"add",form:{titre:"",piece,priorite,statut:"todo",notes:""}};renderSheet();
+  const type=typeFilter!=="all"?typeFilter:"travaux";
+  modal={mode:"add",form:{titre:"",piece,priorite,statut:"todo",notes:"",type}};renderSheet();
 }
 function closeModal(){modal=null;if(isListening)recognition?.stop();document.getElementById("modal-root").innerHTML="";render();}
 function setPiece(p){if(modal){modal.form.piece=p;renderSheet();}}
 function setPrio(v){if(modal){modal.form.priorite=v;renderSheet();}}
+function setType(v){if(modal){modal.form.type=v;renderSheet();}}
 async function saveModal(){
   const titre=document.getElementById("f-titre")?.value?.trim();
   if(!titre)return;
   const notes=document.getElementById("f-notes")?.value||"";
-  const{piece,priorite}=modal.form;
+  const{piece,priorite,type}=modal.form;
   let t;
-  if(modal.mode==="add"){t={id:Date.now(),titre,piece,priorite,statut:"todo",notes};tasks.push(t);}
-  else{tasks=tasks.map(x=>x.id===modal.id?{...x,titre,piece,priorite,notes}:x);t=tasks.find(x=>x.id===modal.id);}
+  if(modal.mode==="add"){t={id:Date.now(),titre,piece,priorite,statut:"todo",notes,type:type||"travaux"};tasks.push(t);}
+  else{tasks=tasks.map(x=>x.id===modal.id?{...x,titre,piece,priorite,notes,type:type||"travaux"}:x);t=tasks.find(x=>x.id===modal.id);}
   modal=null;document.getElementById("modal-root").innerHTML="";render();
   await upsertTask(t);
 }
@@ -485,6 +515,13 @@ function renderSheet(){
       <label>Titre</label>
       <input id="f-titre" value="${(f.titre||"").replace(/"/g,'&quot;')}" placeholder="Décris le travail..." onkeydown="if(event.key==='Enter')saveModal()" autofocus>
       ${vs?`<div class="voice-row"><button class="voice-btn${isListening?" on":""}" onclick="startVoice('f-titre')"><span class="mic"></span>${isListening?"Écoute...":"Dicter"}</button></div>`:''}
+    </div>
+    <div class="field">
+      <label>Type</label>
+      <div class="type-grid">
+        <button class="type-opt${(f.type||"travaux")==="travaux"?" sel":""}" onclick="setType('travaux')">🔨 Travaux</button>
+        <button class="type-opt${f.type==="achat"?" sel":""}" onclick="setType('achat')">🛒 Achat</button>
+      </div>
     </div>
     <div class="field">
       <label>Pièce</label>
@@ -609,7 +646,9 @@ async function reorderTask(id, beforeId, groupVal){
     updates.push(tasks.find(x=>x.id===t.id));
   });
   render();
-  for(const u of updates) await upsertTask(u);
+  _isSaving=true;
+  for(const u of updates) await upsertTaskRaw(u);
+  _isSaving=false;
 }
 
 // Touch drag support — long press (400ms) pour démarrer, scroll normal sinon
@@ -679,7 +718,8 @@ async function onTouchEnd(e){
 
 function renderTasks(){
   const list=filtered();
-  const usedPieces=pieces.filter(p=>tasks.some(t=>t.piece===p));
+  const typeMatch=t=>typeFilter==="all"||(t.type||"travaux")===typeFilter;
+  const usedPieces=pieces.filter(p=>tasks.some(t=>t.piece===p&&typeMatch(t)));
   const chips=filterMode==="piece"
     ?usedPieces.map(p=>`<button class="chip${filterVal===p?" on":""}" onclick="filterVal=filterVal===\`${p}\`?null:\`${p}\`;render()">${p}</button>`)
     :PRIOS.map(p=>`<button class="chip${filterVal===p.v?" prio-on":""}" style="${filterVal===p.v?`--chip-c:${p.c}`:""}" onclick="filterVal=filterVal===\`${p.v}\`?null:\`${p.v}\`;render()">${p.l}</button>`);
@@ -708,6 +748,7 @@ function renderTasks(){
         <div class="task-body">
           <div class="task-title${t.statut==="done"?" done":""}">${t.titre}</div>
           <div class="task-meta">
+            ${t.type==="achat"?`<span class="achat-pill">🛒 Achat</span>`:""}
             ${!hideGroup||filterMode==="piece"?`<span class="prio-pill">${PRIOS.find(p=>p.v===t.priorite)?.l||t.priorite}</span>`:""}
             ${!hideGroup||filterMode==="prio"?`<span class="task-piece">${t.piece}</span>`:""}
             ${t.notes?`<span class="task-note">${t.notes}</span>`:""}
@@ -766,6 +807,11 @@ function renderTasks(){
   }
 
   document.getElementById("content-root").innerHTML=`
+    <div class="type-toggle">
+      <button class="type-btn${typeFilter==="all"?" active":""}" onclick="typeFilter='all';render()">Tout</button>
+      <button class="type-btn${typeFilter==="travaux"?" active":""}" onclick="typeFilter='travaux';render()">🔨 Travaux</button>
+      <button class="type-btn${typeFilter==="achat"?" active":""}" onclick="typeFilter='achat';render()">🛒 Achats</button>
+    </div>
     <div class="filter-bar">
       <div class="seg">
         <button class="seg-btn${filterMode==="piece"?" active":""}" onclick="filterMode='piece';filterVal=null;render()">Pièce</button>
@@ -886,9 +932,58 @@ async function onPieceTouchEnd(e){
   setTimeout(()=>{_isDraggingPiece=false;},500);
 }
 
+async function renamePiece(oldName, newName){
+  newName=newName.trim();
+  if(!newName||newName===oldName||pieces.includes(newName))return;
+  _isSaving=true;
+  // Update pieces array
+  pieces=pieces.map(p=>p===oldName?newName:p);
+  // Update all tasks referencing this piece
+  tasks=tasks.map(t=>t.piece===oldName?{...t,piece:newName}:t);
+  // Update filter if needed
+  if(filterVal===oldName)filterVal=newName;
+  render();
+  // Save to Supabase: rename piece row + update all tasks
+  await fetch(`${SUPA_URL}/rest/v1/travaux_pieces?name=eq.${encodeURIComponent(oldName)}`,{
+    method:'PATCH',headers:H,body:JSON.stringify({name:newName})
+  });
+  const tasksToUpdate=tasks.filter(t=>t.piece===newName);
+  for(const t of tasksToUpdate){
+    await fetch(`${SUPA_URL}/rest/v1/travaux_tasks?id=eq.${t.id}`,{
+      method:'PATCH',headers:H,body:JSON.stringify({piece:newName})
+    });
+  }
+  _isSaving=false;
+}
+
+function startRename(name){
+  const esc=name.replace(/"/g,'&quot;');
+  const row=document.querySelector(`.piece-row[data-piece="${esc}"]`);
+  if(!row)return;
+  const nameEl=row.querySelector('.piece-name');
+  const oldW=nameEl.offsetWidth;
+  nameEl.style.display='none';
+  const inp=document.createElement('input');
+  inp.className='piece-rename-input';
+  inp.value=name;
+  inp.style.width=Math.max(oldW,120)+'px';
+  row.insertBefore(inp,nameEl.nextSibling);
+  inp.focus();inp.select();
+  const done=async()=>{
+    const val=inp.value.trim();
+    inp.remove();nameEl.style.display='';
+    if(val&&val!==name)await renamePiece(name,val);
+  };
+  inp.addEventListener('blur',done);
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){e.preventDefault();inp.blur();}
+    if(e.key==='Escape'){inp.value=name;inp.blur();}
+  });
+}
+
 function renderPieces(){
   document.getElementById("content-root").innerHTML=`
-    <div class="section-lbl">${pieces.length} pièce(s) — <span style="font-weight:400;text-transform:none;letter-spacing:0">glisser pour réordonner</span></div>
+    <div class="section-lbl">${pieces.length} pièce(s) — <span style="font-weight:400;text-transform:none;letter-spacing:0">glisser pour réordonner · crayon pour renommer</span></div>
     <div class="pieces-list"
       ondragover="event.preventDefault()"
       ondrop="onPieceDropZone(event)">
@@ -909,6 +1004,7 @@ function renderPieces(){
             <span class="drag-handle" style="margin-right:4px">⠿</span>
             <span class="piece-name">${p}</span>
             <span class="piece-count">${count} tâche${count>1?"s":""}</span>
+            <button class="piece-rename-btn" onclick="startRename('${esc}')" title="Renommer">✏️</button>
             <button class="piece-del" onclick="deletePiece('${esc}')" title="Supprimer">×</button>
           </div>`;
       }).join("")}
