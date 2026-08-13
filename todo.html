@@ -297,6 +297,43 @@ h1, h2, h3, .app-title, .tab-btn, .drawer-title, .section-lbl, .loading-title { 
 .done-body .task-item { opacity: 0.6; }
 .done-body .task-item:hover { opacity: 1; }
 
+/* Room sections (Travaux) */
+.room-section { margin-bottom: 0.5rem; }
+.room-hdr {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  padding: 10px 0 8px;
+  margin-bottom: 0.25rem;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  text-align: left;
+}
+.room-hdr:hover { color: var(--accent); }
+.room-caret {
+  font-size: 9px;
+  color: var(--ink-hint);
+  width: 10px;
+  flex-shrink: 0;
+}
+.room-count {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-hint);
+  background: var(--surface-2);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.room-body .task-item:last-child { border-bottom: 1px solid var(--border); }
+
 /* Input bar */
 .input-bar {
   padding: 0.75rem 1rem;
@@ -426,6 +463,65 @@ input:focus { border-color: var(--accent); }
   cursor: pointer;
   margin-top: 8px;
 }
+.btn-archive {
+  width: 100%;
+  padding: 10px;
+  font-family: inherit;
+  font-size: 13px;
+  border: 1px solid var(--border-md);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--ink);
+  cursor: pointer;
+  margin-top: 8px;
+  font-weight: 500;
+}
+.btn-archive:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+/* Archive drawer list */
+.archive-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--border);
+}
+.archive-item:last-of-type { border-bottom: none; }
+.archive-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.archive-info { flex: 1; min-width: 0; }
+.archive-name { font-size: 13px; font-weight: 600; }
+.archive-meta { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+.archive-restore {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+.archive-restore:hover { background: var(--accent); color: var(--surface); }
+.archive-empty { text-align: center; padding: 2rem 1rem; color: var(--ink-hint); font-size: 13px; }
+
+/* Tab-add and archive button in tabs bar */
+.tab-arch {
+  color: var(--ink-hint);
+  font-size: 14px;
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  flex-shrink: 0;
+  align-self: center;
+  margin: 0 2px 4px 2px;
+  transition: color 0.12s, border-color 0.12s;
+}
+.tab-arch:hover { color: var(--ink); border-color: var(--border-md); }
+.tab-arch.hidden { display: none; }
 
 /* Color grid */
 .color-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 4px; }
@@ -582,7 +678,8 @@ input:focus { border-color: var(--accent); }
       <div class="color-grid" id="color-grid"></div>
     </div>
     <button class="btn-primary" onclick="submitCat()">Enregistrer</button>
-    <button class="btn-danger" id="cat-delete-btn" onclick="deleteCat()" style="display:none">Supprimer cette catégorie</button>
+    <button class="btn-archive" id="cat-archive-btn" onclick="archiveCat()" style="display:none">🗄️ Archiver cette catégorie</button>
+    <button class="btn-danger" id="cat-delete-btn" onclick="deleteCat()" style="display:none">Supprimer définitivement</button>
     <button class="btn-ghost" onclick="closeOverlay(null,'cat-overlay')">Annuler</button>
   </div>
 </div>
@@ -632,6 +729,16 @@ input:focus { border-color: var(--accent); }
     <div class="field"><div class="field-lbl">Date</div><input type="date" id="ms-date"></div>
     <button class="btn-primary" onclick="submitMs()">Ajouter</button>
     <button class="btn-ghost" onclick="closeOverlay(null,'ms-overlay')">Annuler</button>
+  </div>
+</div>
+
+<!-- ARCHIVE DRAWER -->
+<div class="overlay" id="archive-overlay" onclick="closeOverlay(event,'archive-overlay')">
+  <div class="drawer" onclick="event.stopPropagation()">
+    <div class="drawer-handle"></div>
+    <div class="drawer-title">Catégories archivées</div>
+    <div id="archive-list"></div>
+    <button class="btn-ghost" onclick="closeOverlay(null,'archive-overlay')">Fermer</button>
   </div>
 </div>
 
@@ -691,6 +798,9 @@ var DEFAULT_CATS = {
 };
 var CATS = JSON.parse(localStorage.getItem('t_cats_v2') || 'null') || Object.assign({}, DEFAULT_CATS);
 function saveCats() { localStorage.setItem('t_cats_v2', JSON.stringify(CATS)); }
+// Catégories archivées : { id: {label, color, archived_at} }
+var ARCHIVED_CATS = JSON.parse(localStorage.getItem('t_cats_archived_v2') || '{}');
+function saveArchivedCats() { localStorage.setItem('t_cats_archived_v2', JSON.stringify(ARCHIVED_CATS)); }
 
 var HABITS = [
   { id: 'echecs',  emoji: '♟️', name: 'Joué aux échecs' },
@@ -748,14 +858,49 @@ function todayFR() { return new Date().toLocaleDateString('fr-FR'); }
 /* ============================================
    TABS
    ============================================ */
+// Dernière ouverture des vues perso (Habitudes/Livres/Ma vie) — persistée en localStorage
+var VIEW_LAST_USED = JSON.parse(localStorage.getItem('t_view_last_used') || '{}');
+function markViewUsed(viewId) {
+  VIEW_LAST_USED[viewId] = Date.now();
+  try { localStorage.setItem('t_view_last_used', JSON.stringify(VIEW_LAST_USED)); } catch (e) {}
+}
+// Dernière activité d'une catégorie = max(created_at, done_at parsé) sur ses tâches
+function catLastActivity(catKey) {
+  var maxT = 0;
+  for (var i = 0; i < tasks.length; i++) {
+    var t = tasks[i];
+    if (t.cat !== catKey) continue;
+    if (t.created_at && t.created_at > maxT) maxT = t.created_at;
+    if (t.done_at) {
+      // done_at est une string ISO "YYYY-MM-DD" — on la convertit en timestamp
+      var d = Date.parse(t.done_at + 'T12:00:00');
+      if (!isNaN(d) && d > maxT) maxT = d;
+    }
+  }
+  return maxT;
+}
+
 function getTabList() {
-  var list = [{ id: 'all', label: 'Toutes', type: 'all' }];
+  var list = [{ id: 'all', label: 'Toutes', type: 'all', rank: Infinity }]; // toujours en premier
   Object.keys(CATS).forEach(function(k) {
-    list.push({ id: 'cat:' + k, label: CATS[k].label, color: CATS[k].color, catKey: k, type: 'category' });
+    list.push({
+      id: 'cat:' + k,
+      label: CATS[k].label,
+      color: CATS[k].color,
+      catKey: k,
+      type: 'category',
+      rank: catLastActivity(k)
+    });
   });
-  list.push({ id: 'habits', label: 'Habitudes', type: 'view', icon: '✓' });
-  list.push({ id: 'books',  label: 'Livres',    type: 'view', icon: '📚' });
-  list.push({ id: 'life',   label: 'Ma vie',    type: 'view', icon: '⌛' });
+  list.push({ id: 'habits', label: 'Habitudes', type: 'view', icon: '✓', rank: VIEW_LAST_USED['habits'] || 0 });
+  list.push({ id: 'books',  label: 'Livres',    type: 'view', icon: '📚', rank: VIEW_LAST_USED['books']  || 0 });
+  list.push({ id: 'life',   label: 'Ma vie',    type: 'view', icon: '⌛', rank: VIEW_LAST_USED['life']   || 0 });
+  // Tri : "Toutes" (Infinity) toujours en premier, puis le reste par rank décroissant.
+  // Pour les items sans activité (rank=0), on tombe sur un ordre alphabétique stable.
+  list.sort(function(a, b) {
+    if (a.rank !== b.rank) return b.rank - a.rank;
+    return (a.label || '').localeCompare(b.label || '');
+  });
   return list;
 }
 
@@ -774,7 +919,7 @@ function renderTabs() {
     }
     var count = '';
     if (t.type === 'all') {
-      var n = tasks.filter(function(x) { return !x.done; }).length;
+      var n = tasks.filter(function(x) { return !x.done && CATS[x.cat] !== undefined; }).length;
       if (n > 0) count = '<span class="tab-count">' + n + '</span>';
     } else if (t.type === 'category') {
       var n2 = tasks.filter(function(x) { return !x.done && x.cat === t.catKey; }).length;
@@ -789,6 +934,8 @@ function renderTabs() {
     return '<button class="tab-btn' + (isActive ? ' active' : '') + '" ' + handler + '>' + content + count + '</button>';
   }).join('');
   html += '<button class="tab-add" onclick="openCatDrawer(null)" title="Nouvelle catégorie">+</button>';
+  var archCount = Object.keys(ARCHIVED_CATS).length;
+  html += '<button class="tab-arch' + (archCount === 0 ? ' hidden' : '') + '" onclick="openArchiveDrawer()" title="Catégories archivées">🗄️</button>';
   bar.innerHTML = html;
   updateTabsArrows();
 }
@@ -833,6 +980,10 @@ function lpEnd() {
 
 function showTab(id) {
   currentTab = id;
+  // Marque l'usage pour les vues perso (les catégories utilisent l'activité des tâches)
+  if (id === 'habits' || id === 'books' || id === 'life') {
+    markViewUsed(id);
+  }
   renderTabs();
   renderContent();
 }
@@ -900,17 +1051,127 @@ function renderTaskList(active, done, catKey) {
   return html;
 }
 
+function isTaskVisible(t) {
+  // Cacher les tâches dont la catégorie n'existe plus dans CATS actives
+  return CATS[t.cat] !== undefined;
+}
+
 function renderAllTasks() {
-  var active = tasks.filter(function(t) { return !t.done; }).sort(sortTasks);
-  var done   = tasks.filter(function(t) { return t.done; }).sort(sortDone);
+  var active = tasks.filter(function(t) { return !t.done && isTaskVisible(t); }).sort(sortTasks);
+  var done   = tasks.filter(function(t) { return t.done && isTaskVisible(t); }).sort(sortDone);
   return renderTaskList(active, done, null);
 }
 
 function renderCatTasks(catKey) {
   var active = tasks.filter(function(t) { return !t.done && t.cat === catKey; }).sort(sortTasks);
   var done   = tasks.filter(function(t) { return t.done && t.cat === catKey; }).sort(sortDone);
+  // Cas spécial: Travaux → sections par pièce (préfixe "Pièce — ...")
+  if (catKey === 'tr') {
+    return renderRoomGrouped(active, done, catKey);
+  }
   return renderTaskList(active, done, catKey);
 }
+
+/* Parse "Pièce — description" ; renvoie {room, text} */
+function parseRoom(text) {
+  // Séparateur : em-dash (—), en-dash (–) ou hyphen-minus (-) précédé d'espaces
+  var m = text.match(/^([^—–\-]+?)\s*[—–\-]\s+(.+)$/);
+  if (m) return { room: m[1].trim(), text: m[2].trim() };
+  return { room: 'Sans pièce', text: text };
+}
+
+/* Ordre logique des pièces (les autres viennent après par ordre alpha) */
+var ROOM_ORDER = [
+  'Général', 'Sous-sol', 'Bureau',
+  'Salon bas', 'Cuisine', 'Couloir', 'Salon haut',
+  'Chambre Chloé', 'Chambre Millie', 'Chambre Léo', 'Chambre parents',
+  'Salle de bain', 'Balcon (grand)', 'Balcon', 'Jardin',
+  'Sans pièce'
+];
+
+function roomRank(r) {
+  var i = ROOM_ORDER.indexOf(r);
+  return i === -1 ? 999 : i;
+}
+
+function renderRoomGrouped(active, done, catKey) {
+  var html = '';
+  if (active.length === 0 && done.length === 0) {
+    return '<div class="empty"><div class="empty-icon">🔨</div>Aucune tâche ici.<br>Tape ta première ci-dessous.</div>';
+  }
+  // Grouper les actives par pièce
+  var groups = {};
+  active.forEach(function(t) {
+    var p = parseRoom(t.text);
+    if (!groups[p.room]) groups[p.room] = [];
+    groups[p.room].push({ task: t, cleanText: p.text });
+  });
+  var roomKeys = Object.keys(groups).sort(function(a, b) {
+    var ra = roomRank(a), rb = roomRank(b);
+    if (ra !== rb) return ra - rb;
+    return a.localeCompare(b);
+  });
+  if (roomKeys.length === 0) {
+    html += '<div class="empty" style="padding:1.5rem 1rem">Tout est fait ici 🎉</div>';
+  } else {
+    roomKeys.forEach(function(room) {
+      var items = groups[room];
+      var key = 'tr_room_' + room;
+      // Par défaut ouvert. On stocke l'état PLIÉ dans doneOpenByCat (réutilise le même mécanisme, valeur inversée)
+      var isCollapsed = doneOpenByCat[key] === 'collapsed';
+      html += '<div class="room-section">'
+        + '<button class="room-hdr" onclick="toggleRoomSection(\'' + escAttr(key) + '\')">'
+        +   '<span class="room-caret">' + (isCollapsed ? '▶' : '▼') + '</span>'
+        +   '<span>' + esc(room) + '</span>'
+        +   '<span class="room-count">' + items.length + '</span>'
+        + '</button>';
+      if (!isCollapsed) {
+        html += '<div class="room-body">' + items.map(function(item) {
+          return roomTaskHTML(item.task, item.cleanText);
+        }).join('') + '</div>';
+      }
+      html += '</div>';
+    });
+  }
+  // Terminées globales pour Travaux (pas regroupées, comme les autres catégories)
+  if (done.length > 0) {
+    var doneKey = catKey;
+    var isOpen = !!doneOpenByCat[doneKey];
+    html += '<div class="done-section">'
+      + '<button class="done-hdr" onclick="toggleDoneSection(\'' + doneKey + '\')">'
+      +   '<span>✓ Terminées (' + done.length + ')</span>'
+      +   '<span class="done-caret">' + (isOpen ? '▼' : '▶') + '</span>'
+      + '</button>'
+      + (isOpen ? '<div class="done-body">' + done.map(function(t) {
+          var p = parseRoom(t.text);
+          return roomTaskHTML(t, p.room + ' — ' + p.text);
+        }).join('') + '</div>' : '')
+      + '</div>';
+  }
+  return html;
+}
+
+function roomTaskHTML(t, displayText) {
+  var cat = CATS[t.cat] || { label: 'Autres', color: '#8A8A8A' };
+  return '<div class="task-item">'
+    + '<div class="task-check' + (t.done ? ' checked' : '') + '" onclick="toggleDone(\'' + t.id + '\')">' + (t.done ? '✓' : '') + '</div>'
+    + '<div class="task-body">'
+    +   '<div class="task-text' + (t.done ? ' done' : '') + '">'
+    +     '<span class="task-cat-dot" style="background:' + cat.color + '" title="' + esc(cat.label) + '"></span>'
+    +     '<span>' + esc(displayText) + '</span>'
+    +   '</div>'
+    + '</div>'
+    + '<button class="task-del" onclick="delTask(\'' + t.id + '\')" title="Supprimer">✕</button>'
+    + '</div>';
+}
+
+function toggleRoomSection(key) {
+  if (doneOpenByCat[key] === 'collapsed') delete doneOpenByCat[key];
+  else doneOpenByCat[key] = 'collapsed';
+  renderContent();
+}
+
+function escAttr(s) { return String(s).replace(/'/g, "\\'"); }
 
 function sortTasks(a, b) { return (a.created_at || 0) - (b.created_at || 0); }
 function sortDone(a, b) { return (b.done_at || '').localeCompare(a.done_at || ''); }
@@ -964,6 +1225,7 @@ function openCatDrawer(id) {
     return '<div class="color-swatch' + (c === currentColor ? ' selected' : '') + '" style="background:' + c + '" onclick="pickColor(\'' + c + '\',this)"></div>';
   }).join('');
   document.getElementById('cat-delete-btn').style.display = (isEdit && id !== 'au') ? 'block' : 'none';
+  document.getElementById('cat-archive-btn').style.display = (isEdit && id !== 'au') ? 'block' : 'none';
   document.getElementById('cat-overlay').classList.add('open');
   setTimeout(function() { document.getElementById('cat-name').focus(); }, 250);
 }
@@ -996,7 +1258,7 @@ async function submitCat() {
 
 async function deleteCat() {
   if (!editCatId || editCatId === 'au') return;
-  if (!confirm('Supprimer "' + CATS[editCatId].label + '" ? Les tâches seront déplacées vers "Autres".')) return;
+  if (!confirm('Supprimer définitivement "' + CATS[editCatId].label + '" ? Les tâches seront déplacées vers "Autres".\n\n(Astuce : "Archiver" permet de tout cacher sans perdre les tâches.)')) return;
   var affected = tasks.filter(function(t) { return t.cat === editCatId; });
   affected.forEach(function(t) { t.cat = 'au'; });
   delete CATS[editCatId];
@@ -1008,6 +1270,68 @@ async function deleteCat() {
   for (var i = 0; i < affected.length; i++) {
     await sbUpsert('tasks', affected[i]);
   }
+}
+
+/* ARCHIVER : la catégorie et ses tâches disparaissent des vues, mais restent en base */
+function archiveCat() {
+  if (!editCatId || editCatId === 'au') return;
+  var cat = CATS[editCatId];
+  if (!cat) return;
+  var taskCount = tasks.filter(function(t) { return t.cat === editCatId; }).length;
+  var msg = 'Archiver "' + cat.label + '" ?';
+  if (taskCount > 0) msg += '\n\n' + taskCount + ' tâche' + (taskCount > 1 ? 's seront masquées' : ' sera masquée') + ' (elles reviendront à la restauration).';
+  if (!confirm(msg)) return;
+  ARCHIVED_CATS[editCatId] = {
+    label: cat.label,
+    color: cat.color,
+    archived_at: Date.now()
+  };
+  saveArchivedCats();
+  delete CATS[editCatId];
+  saveCats();
+  if (currentTab === 'cat:' + editCatId) currentTab = 'all';
+  closeOverlay(null, 'cat-overlay');
+  renderTabs();
+  renderContent();
+}
+
+function openArchiveDrawer() {
+  var list = document.getElementById('archive-list');
+  var keys = Object.keys(ARCHIVED_CATS);
+  if (keys.length === 0) {
+    list.innerHTML = '<div class="archive-empty">Aucune catégorie archivée.</div>';
+  } else {
+    // Trier par date d'archivage descendante
+    keys.sort(function(a, b) { return (ARCHIVED_CATS[b].archived_at || 0) - (ARCHIVED_CATS[a].archived_at || 0); });
+    list.innerHTML = keys.map(function(id) {
+      var a = ARCHIVED_CATS[id];
+      var n = tasks.filter(function(t) { return t.cat === id; }).length;
+      var when = a.archived_at ? new Date(a.archived_at).toLocaleDateString('fr-FR') : '';
+      return '<div class="archive-item">'
+        + '<div class="archive-dot" style="background:' + a.color + '"></div>'
+        + '<div class="archive-info">'
+        +   '<div class="archive-name">' + esc(a.label) + '</div>'
+        +   '<div class="archive-meta">' + n + ' tâche' + (n !== 1 ? 's' : '') + (when ? ' • archivée le ' + when : '') + '</div>'
+        + '</div>'
+        + '<button class="archive-restore" onclick="restoreCat(\'' + escAttr(id) + '\')">Restaurer</button>'
+        + '</div>';
+    }).join('');
+  }
+  document.getElementById('archive-overlay').classList.add('open');
+}
+
+function restoreCat(id) {
+  var a = ARCHIVED_CATS[id];
+  if (!a) return;
+  // Si le même id existe déjà dans CATS (collision improbable mais possible), on refuse.
+  if (CATS[id]) { alert('Une catégorie avec ce nom existe déjà.'); return; }
+  CATS[id] = { label: a.label, color: a.color };
+  delete ARCHIVED_CATS[id];
+  saveCats();
+  saveArchivedCats();
+  closeOverlay(null, 'archive-overlay');
+  renderTabs();
+  renderContent();
 }
 
 function rgbToHex(rgb) {
@@ -1348,7 +1672,7 @@ async function loadAll() {
 loadAll();
 
 setInterval(async function() {
-  var anyOpen = ['cat-overlay', 'hlog-overlay', 'book-overlay', 'ms-overlay'].some(function(id) {
+  var anyOpen = ['cat-overlay', 'hlog-overlay', 'book-overlay', 'ms-overlay', 'archive-overlay'].some(function(id) {
     var el = document.getElementById(id);
     return el && el.classList.contains('open');
   });
