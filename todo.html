@@ -334,6 +334,10 @@ h1, h2, h3, .app-title, .tab-btn, .drawer-title, .section-lbl, .loading-title { 
 }
 .room-body .task-item:last-child { border-bottom: 1px solid var(--border); }
 
+/* Drag & drop */
+.task-item.dragging { opacity: 0.4; }
+.room-section.drop-target { background: var(--accent-soft); border-radius: var(--radius); outline: 2px dashed var(--accent); outline-offset: -2px; }
+
 /* Input bar */
 .input-bar {
   padding: 0.75rem 1rem;
@@ -742,6 +746,28 @@ input:focus { border-color: var(--accent); }
   </div>
 </div>
 
+<!-- TASK EDIT DRAWER -->
+<div class="overlay" id="task-overlay" onclick="closeOverlay(event,'task-overlay')">
+  <div class="drawer" onclick="event.stopPropagation()">
+    <div class="drawer-handle"></div>
+    <div class="drawer-title">Modifier la tâche</div>
+    <div class="field">
+      <div class="field-lbl">Texte</div>
+      <input type="text" id="task-text-input">
+    </div>
+    <div class="field" id="task-room-field" style="display:none">
+      <div class="field-lbl">Pièce</div>
+      <select id="task-room-select" style="width:100%;font-family:inherit;font-size:14px;padding:10px 12px;border:1px solid var(--border-md);border-radius:var(--radius-sm);background:var(--surface-2);color:var(--ink)"></select>
+    </div>
+    <div class="field">
+      <div class="field-lbl">Catégorie</div>
+      <div id="task-cat-row" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+    </div>
+    <button class="btn-primary" onclick="saveTaskEdit()">Enregistrer</button>
+    <button class="btn-ghost" onclick="closeOverlay(null,'task-overlay')">Annuler</button>
+  </div>
+</div>
+
 <script>
 /* ============================================
    SUPABASE
@@ -1015,15 +1041,15 @@ function renderContent() {
 /* --- TASKS --- */
 function taskHTML(t) {
   var cat = CATS[t.cat] || { label: 'Autres', color: '#8A8A8A' };
-  return '<div class="task-item">'
+  return '<div class="task-item" draggable="true" data-task-id="' + t.id + '" ondragstart="onTaskDragStart(event,\'' + t.id + '\')" ondragend="onTaskDragEnd(event)">'
     + '<div class="task-check' + (t.done ? ' checked' : '') + '" onclick="toggleDone(\'' + t.id + '\')">' + (t.done ? '✓' : '') + '</div>'
-    + '<div class="task-body">'
+    + '<div class="task-body" onclick="openTaskEdit(\'' + t.id + '\')" style="cursor:pointer">'
     +   '<div class="task-text' + (t.done ? ' done' : '') + '">'
     +     '<span class="task-cat-dot" style="background:' + cat.color + '" title="' + esc(cat.label) + '"></span>'
     +     '<span>' + esc(t.text) + '</span>'
     +   '</div>'
     + '</div>'
-    + '<button class="task-del" onclick="delTask(\'' + t.id + '\')" title="Supprimer">✕</button>'
+    + '<button class="task-del" onclick="event.stopPropagation();delTask(\'' + t.id + '\')" title="Supprimer">✕</button>'
     + '</div>';
 }
 
@@ -1072,10 +1098,11 @@ function renderCatTasks(catKey) {
   return renderTaskList(active, done, catKey);
 }
 
-/* Parse "Pièce — description" ; renvoie {room, text} */
+/* Parse "Pièce — description" ; renvoie {room, text}.
+   On sépare UNIQUEMENT sur em-dash (—) ou en-dash (–), pas sur hyphen (-),
+   sinon "Sous-sol" serait coupé à tort. */
 function parseRoom(text) {
-  // Séparateur : em-dash (—), en-dash (–) ou hyphen-minus (-) précédé d'espaces
-  var m = text.match(/^([^—–\-]+?)\s*[—–\-]\s+(.+)$/);
+  var m = text.match(/^([^—–]+?)\s*[—–]\s+(.+)$/);
   if (m) return { room: m[1].trim(), text: m[2].trim() };
   return { room: 'Sans pièce', text: text };
 }
@@ -1119,7 +1146,7 @@ function renderRoomGrouped(active, done, catKey) {
       var key = 'tr_room_' + room;
       // Par défaut ouvert. On stocke l'état PLIÉ dans doneOpenByCat (réutilise le même mécanisme, valeur inversée)
       var isCollapsed = doneOpenByCat[key] === 'collapsed';
-      html += '<div class="room-section">'
+      html += '<div class="room-section" data-room="' + esc(room) + '" ondragover="onRoomDragOver(event)" ondragleave="onRoomDragLeave(event)" ondrop="onRoomDrop(event,\'' + escAttr(room) + '\')">'
         + '<button class="room-hdr" onclick="toggleRoomSection(\'' + escAttr(key) + '\')">'
         +   '<span class="room-caret">' + (isCollapsed ? '▶' : '▼') + '</span>'
         +   '<span>' + esc(room) + '</span>'
@@ -1153,15 +1180,15 @@ function renderRoomGrouped(active, done, catKey) {
 
 function roomTaskHTML(t, displayText) {
   var cat = CATS[t.cat] || { label: 'Autres', color: '#8A8A8A' };
-  return '<div class="task-item">'
+  return '<div class="task-item" draggable="true" data-task-id="' + t.id + '" ondragstart="onTaskDragStart(event,\'' + t.id + '\')" ondragend="onTaskDragEnd(event)">'
     + '<div class="task-check' + (t.done ? ' checked' : '') + '" onclick="toggleDone(\'' + t.id + '\')">' + (t.done ? '✓' : '') + '</div>'
-    + '<div class="task-body">'
+    + '<div class="task-body" onclick="openTaskEdit(\'' + t.id + '\')" style="cursor:pointer">'
     +   '<div class="task-text' + (t.done ? ' done' : '') + '">'
     +     '<span class="task-cat-dot" style="background:' + cat.color + '" title="' + esc(cat.label) + '"></span>'
     +     '<span>' + esc(displayText) + '</span>'
     +   '</div>'
     + '</div>'
-    + '<button class="task-del" onclick="delTask(\'' + t.id + '\')" title="Supprimer">✕</button>'
+    + '<button class="task-del" onclick="event.stopPropagation();delTask(\'' + t.id + '\')" title="Supprimer">✕</button>'
     + '</div>';
 }
 
@@ -1209,6 +1236,146 @@ async function quickAdd() {
   renderContent();
   renderTabs();
   await sbUpsert('tasks', t);
+}
+
+/* ============================================
+   DRAG & DROP (Travaux : entre pièces)
+   ============================================ */
+var _dragTaskId = null;
+function onTaskDragStart(e, id) {
+  _dragTaskId = id;
+  e.currentTarget.classList.add('dragging');
+  try { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', id); } catch (err) {}
+}
+function onTaskDragEnd(e) {
+  e.currentTarget.classList.remove('dragging');
+  _dragTaskId = null;
+  document.querySelectorAll('.room-section.drop-target').forEach(function(el) { el.classList.remove('drop-target'); });
+}
+function onRoomDragOver(e) {
+  if (!_dragTaskId) return;
+  e.preventDefault();
+  e.currentTarget.classList.add('drop-target');
+  try { e.dataTransfer.dropEffect = 'move'; } catch (err) {}
+}
+function onRoomDragLeave(e) {
+  // On enlève la classe seulement si on quitte vraiment la section (pas juste un enfant)
+  if (!e.currentTarget.contains(e.relatedTarget)) {
+    e.currentTarget.classList.remove('drop-target');
+  }
+}
+async function onRoomDrop(e, newRoom) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drop-target');
+  var id = _dragTaskId || (e.dataTransfer && e.dataTransfer.getData('text/plain'));
+  if (!id) return;
+  var t = tasks.find(function(x) { return x.id === id; });
+  if (!t) return;
+  var parsed = parseRoom(t.text);
+  if (parsed.room === newRoom) return; // rien à faire
+  t.text = newRoom + ' — ' + parsed.text;
+  renderContent();
+  renderTabs();
+  await sbUpsert('tasks', { id: t.id, text: t.text, cat: t.cat, done: t.done, done_at: t.done_at, created_at: t.created_at });
+}
+
+/* ============================================
+   TASK EDIT DRAWER
+   ============================================ */
+var _editingTaskId = null;
+var _editSelCat = null;
+var _editSelRoom = null;
+function openTaskEdit(id) {
+  var t = tasks.find(function(x) { return x.id === id; });
+  if (!t) return;
+  _editingTaskId = id;
+  _editSelCat = t.cat;
+  var parsed = parseRoom(t.text);
+  // Sur Travaux, le champ texte ne contient QUE la partie après la pièce
+  var isTravaux = (t.cat === 'tr');
+  _editSelRoom = isTravaux ? parsed.room : null;
+  document.getElementById('task-text-input').value = isTravaux ? parsed.text : t.text;
+  // Room field
+  var roomField = document.getElementById('task-room-field');
+  if (isTravaux) {
+    roomField.style.display = 'block';
+    // Récupère toutes les pièces existantes + ROOM_ORDER
+    var allRooms = {};
+    ROOM_ORDER.forEach(function(r) { allRooms[r] = true; });
+    tasks.forEach(function(tk) {
+      if (tk.cat === 'tr') { var p = parseRoom(tk.text); if (p.room) allRooms[p.room] = true; }
+    });
+    delete allRooms['Sans pièce'];
+    var rooms = Object.keys(allRooms).sort(function(a, b) { return roomRank(a) - roomRank(b); });
+    var sel = document.getElementById('task-room-select');
+    sel.innerHTML = rooms.map(function(r) {
+      return '<option value="' + esc(r) + '"' + (r === _editSelRoom ? ' selected' : '') + '>' + esc(r) + '</option>';
+    }).join('');
+  } else {
+    roomField.style.display = 'none';
+  }
+  // Category row
+  var catRow = document.getElementById('task-cat-row');
+  catRow.innerHTML = Object.keys(CATS).map(function(k) {
+    var c = CATS[k];
+    var isSel = (k === _editSelCat);
+    return '<button style="display:flex;align-items:center;gap:6px;padding:6px 10px;font-size:12px;font-family:inherit;border:1.5px solid ' + (isSel ? c.color : 'var(--border-md)') + ';background:' + (isSel ? c.color + '22' : 'transparent') + ';color:' + (isSel ? c.color : 'var(--ink-muted)') + ';border-radius:14px;cursor:pointer" onclick="pickTaskCat(\'' + k + '\')"><span style="width:8px;height:8px;border-radius:50%;background:' + c.color + '"></span>' + esc(c.label) + '</button>';
+  }).join('');
+  document.getElementById('task-overlay').classList.add('open');
+  setTimeout(function() { document.getElementById('task-text-input').focus(); }, 250);
+}
+function pickTaskCat(k) {
+  _editSelCat = k;
+  var wasTravaux = (document.getElementById('task-room-field').style.display === 'block');
+  var isTravaux = (k === 'tr');
+  // Si on bascule vers/depuis Travaux, on met à jour l'affichage du champ Pièce
+  if (wasTravaux !== isTravaux) {
+    var t = tasks.find(function(x) { return x.id === _editingTaskId; });
+    var currentText = document.getElementById('task-text-input').value;
+    if (isTravaux && !wasTravaux) {
+      // On active Travaux : on doit demander une pièce
+      var parsed = parseRoom(currentText);
+      _editSelRoom = parsed.room !== 'Sans pièce' ? parsed.room : ROOM_ORDER[0];
+      document.getElementById('task-text-input').value = parsed.text;
+      // Ré-affiche le sélecteur de pièce
+      document.getElementById('task-room-field').style.display = 'block';
+      var rooms = ROOM_ORDER.filter(function(r) { return r !== 'Sans pièce'; });
+      var sel = document.getElementById('task-room-select');
+      sel.innerHTML = rooms.map(function(r) {
+        return '<option value="' + esc(r) + '"' + (r === _editSelRoom ? ' selected' : '') + '>' + esc(r) + '</option>';
+      }).join('');
+    } else {
+      // On quitte Travaux : on peut concaténer la pièce dans le texte pour ne pas la perdre
+      if (_editSelRoom && _editSelRoom !== 'Sans pièce') {
+        document.getElementById('task-text-input').value = _editSelRoom + ' — ' + currentText;
+      }
+      document.getElementById('task-room-field').style.display = 'none';
+    }
+  }
+  // Re-render cat row
+  var catRow = document.getElementById('task-cat-row');
+  catRow.innerHTML = Object.keys(CATS).map(function(kk) {
+    var c = CATS[kk];
+    var isSel = (kk === _editSelCat);
+    return '<button style="display:flex;align-items:center;gap:6px;padding:6px 10px;font-size:12px;font-family:inherit;border:1.5px solid ' + (isSel ? c.color : 'var(--border-md)') + ';background:' + (isSel ? c.color + '22' : 'transparent') + ';color:' + (isSel ? c.color : 'var(--ink-muted)') + ';border-radius:14px;cursor:pointer" onclick="pickTaskCat(\'' + kk + '\')"><span style="width:8px;height:8px;border-radius:50%;background:' + c.color + '"></span>' + esc(c.label) + '</button>';
+  }).join('');
+}
+async function saveTaskEdit() {
+  var t = tasks.find(function(x) { return x.id === _editingTaskId; });
+  if (!t) return;
+  var newText = document.getElementById('task-text-input').value.trim();
+  if (!newText) { alert('Le texte ne peut pas être vide.'); return; }
+  t.cat = _editSelCat || t.cat;
+  if (t.cat === 'tr') {
+    var room = document.getElementById('task-room-select').value || _editSelRoom || ROOM_ORDER[0];
+    t.text = room + ' — ' + newText;
+  } else {
+    t.text = newText;
+  }
+  closeOverlay(null, 'task-overlay');
+  renderContent();
+  renderTabs();
+  await sbUpsert('tasks', { id: t.id, text: t.text, cat: t.cat, done: t.done, done_at: t.done_at, created_at: t.created_at });
 }
 
 /* ============================================
@@ -1672,7 +1839,7 @@ async function loadAll() {
 loadAll();
 
 setInterval(async function() {
-  var anyOpen = ['cat-overlay', 'hlog-overlay', 'book-overlay', 'ms-overlay', 'archive-overlay'].some(function(id) {
+  var anyOpen = ['cat-overlay', 'hlog-overlay', 'book-overlay', 'ms-overlay', 'archive-overlay', 'task-overlay'].some(function(id) {
     var el = document.getElementById(id);
     return el && el.classList.contains('open');
   });
