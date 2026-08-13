@@ -90,6 +90,35 @@ h1, h2, h3, .app-title, .tab-btn, .drawer-title, .section-lbl, .loading-title { 
 .app-title em { color: var(--accent); font-style: normal; }
 
 /* TABS */
+.tabs-wrap {
+  position: relative;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+}
+.tabs-arrow {
+  position: absolute;
+  top: 0;
+  bottom: 1px;
+  width: 32px;
+  border: none;
+  background: var(--bg);
+  color: var(--ink-muted);
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 2;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.12s;
+  font-family: inherit;
+}
+.tabs-arrow:hover { color: var(--ink); }
+.tabs-arrow-l { left: 0; box-shadow: 4px 0 8px -2px var(--bg); }
+.tabs-arrow-r { right: 0; box-shadow: -4px 0 8px -2px var(--bg); }
+.tabs-arrow.visible { display: flex; }
+@media (hover: none) { .tabs-arrow { display: none !important; } }
+
 .tabs-bar {
   display: flex;
   gap: 4px;
@@ -97,8 +126,7 @@ h1, h2, h3, .app-title, .tab-btn, .drawer-title, .section-lbl, .loading-title { 
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
-  flex-shrink: 0;
-  border-bottom: 1px solid var(--border);
+  scroll-behavior: smooth;
 }
 .tabs-bar::-webkit-scrollbar { display: none; }
 .tab-btn {
@@ -527,7 +555,11 @@ input:focus { border-color: var(--accent); }
   <div class="app-title">mes <em>tâches</em></div>
 </div>
 
-<div class="tabs-bar" id="tabs-bar"></div>
+<div class="tabs-wrap">
+  <button class="tabs-arrow tabs-arrow-l" id="tabs-arrow-l" onclick="scrollTabs(-1)" aria-label="Défiler à gauche">‹</button>
+  <div class="tabs-bar" id="tabs-bar"></div>
+  <button class="tabs-arrow tabs-arrow-r" id="tabs-arrow-r" onclick="scrollTabs(1)" aria-label="Défiler à droite">›</button>
+</div>
 
 <div class="content" id="content"></div>
 
@@ -758,7 +790,37 @@ function renderTabs() {
   }).join('');
   html += '<button class="tab-add" onclick="openCatDrawer(null)" title="Nouvelle catégorie">+</button>';
   bar.innerHTML = html;
+  updateTabsArrows();
 }
+
+/* Scroll horizontal des onglets (desktop) */
+function scrollTabs(dir) {
+  var bar = document.getElementById('tabs-bar');
+  bar.scrollBy({ left: dir * 200, behavior: 'smooth' });
+}
+function updateTabsArrows() {
+  var bar = document.getElementById('tabs-bar');
+  var l = document.getElementById('tabs-arrow-l');
+  var r = document.getElementById('tabs-arrow-r');
+  if (!bar || !l || !r) return;
+  var overflow = bar.scrollWidth > bar.clientWidth + 2;
+  if (!overflow) { l.classList.remove('visible'); r.classList.remove('visible'); return; }
+  l.classList.toggle('visible', bar.scrollLeft > 4);
+  r.classList.toggle('visible', bar.scrollLeft + bar.clientWidth < bar.scrollWidth - 4);
+}
+/* Convertit le scroll vertical en horizontal quand on est sur la barre d'onglets (souris à molette) */
+document.addEventListener('DOMContentLoaded', function() {
+  var bar = document.getElementById('tabs-bar');
+  if (!bar) return;
+  bar.addEventListener('wheel', function(e) {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      e.preventDefault();
+      bar.scrollLeft += e.deltaY;
+    }
+  }, { passive: false });
+  bar.addEventListener('scroll', updateTabsArrows);
+  window.addEventListener('resize', updateTabsArrows);
+});
 
 var lpTimer = null;
 function lpStart(catKey) {
