@@ -820,14 +820,25 @@ var DEFAULT_CATS = {
   we: { label: 'Weavenn',          color: '#8A6BA1' },
   co: { label: 'Courses',          color: '#C88A3D' },
   tr: { label: 'Travaux',          color: '#5A8BA8' },
-  ac: { label: 'Achats maison',    color: '#B8642A' },
+  mi: { label: 'Missions',         color: '#3B4A5A',
+        subLabel: 'Client',
+        subs: ['EM', 'CHR', 'Atalian', 'Weavenn'] },
+  ac: { label: 'Achats maison',    color: '#B8642A',
+        subLabel: 'Zone',
+        subs: ['Salon', 'Cuisine', 'Chambre Chloé', 'Chambre Millie', 'Chambre Léo', 'Chambre parents', 'Salle de bain', 'Extérieur'] },
   au: { label: 'Autres',           color: '#8A8A8A' }
 };
+// Travaux garde sa liste de pièces via ROOM_ORDER (backward compat)
+// Une catégorie a des sous-groupes si elle a un champ `subs` OU si son id est 'tr'.
 var CATS = JSON.parse(localStorage.getItem('t_cats_v2') || 'null') || Object.assign({}, DEFAULT_CATS);
-// Merge : ajoute les catégories par défaut qui manquent (utile pour les mises à jour de l'app)
+// Merge : ajoute les catégories par défaut qui manquent, et propage subs/subLabel sur les catégories existantes qui en ont pas
 Object.keys(DEFAULT_CATS).forEach(function(k) {
   if (!CATS[k] && !(ARCHIVED_CATS_PEEK() || {})[k]) {
     CATS[k] = Object.assign({}, DEFAULT_CATS[k]);
+  } else if (CATS[k] && DEFAULT_CATS[k].subs && !CATS[k].subs) {
+    // Cette catégorie existe déjà mais n'avait pas encore de sous-groupes définis dans les défauts : on les ajoute
+    CATS[k].subs = DEFAULT_CATS[k].subs.slice();
+    CATS[k].subLabel = DEFAULT_CATS[k].subLabel;
   }
 });
 // Petit helper pour lire les archives sans conflit d'ordre d'init
@@ -1101,11 +1112,29 @@ function renderAllTasks() {
 function renderCatTasks(catKey) {
   var active = tasks.filter(function(t) { return !t.done && t.cat === catKey; }).sort(sortTasks);
   var done   = tasks.filter(function(t) { return t.done && t.cat === catKey; }).sort(sortDone);
-  // Catégories avec regroupement par pièce (préfixe "Pièce — ...")
-  if (catKey === 'tr' || catKey === 'ac') {
+  // Catégories avec sous-groupes (Travaux → pièces, Missions → clients, Achats maison → zones)
+  if (hasSubGroups(catKey)) {
     return renderRoomGrouped(active, done, catKey);
   }
   return renderTaskList(active, done, catKey);
+}
+
+/* Une catégorie a des sous-groupes si son id est 'tr' (Travaux legacy) ou si CATS[id].subs existe */
+function hasSubGroups(catKey) {
+  if (catKey === 'tr') return true;
+  return CATS[catKey] && Array.isArray(CATS[catKey].subs) && CATS[catKey].subs.length > 0;
+}
+/* Liste ordonnée des sous-groupes d'une catégorie */
+function subsOf(catKey) {
+  if (catKey === 'tr') return ROOM_ORDER.filter(function(r) { return r !== 'Sans pièce'; });
+  if (CATS[catKey] && CATS[catKey].subs) return CATS[catKey].subs.slice();
+  return [];
+}
+/* Nom du label de sous-groupe pour l'UI ('Pièce', 'Client', 'Zone'…) */
+function subLabelOf(catKey) {
+  if (catKey === 'tr') return 'Pièce';
+  if (CATS[catKey] && CATS[catKey].subLabel) return CATS[catKey].subLabel;
+  return 'Groupe';
 }
 
 /* Parse "Pièce — description" ; renvoie {room, text}.
@@ -1134,27 +1163,37 @@ function roomRank(r) {
 function renderRoomGrouped(active, done, catKey) {
   var html = '';
   if (active.length === 0 && done.length === 0) {
-    return '<div class="empty"><div class="empty-icon">🔨</div>Aucune tâche ici.<br>Tape ta première ci-dessous.</div>';
+    return '<div class="empty"><div class="empty-icon">📌</div>Aucune tâche ici.<br>Tape ta première ci-dessous.</div>';
   }
-  // Grouper les actives par pièce
+  // Ordre des sous-groupes propre à la catégorie
+  var subs = subsOf(catKey);
+  var order = {};
+  subs.forEach(function(s, i) { order[s] = i; });
+  function subRank(s) { return s in order ? order[s] : 999; }
+  // Grouper les actives par sous-groupe (parseRoom fonctionne pour tous les préfixes "X — texte")
   var groups = {};
   active.forEach(function(t) {
     var p = parseRoom(t.text);
     if (!groups[p.room]) groups[p.room] = [];
     groups[p.room].push({ task: t, cleanText: p.text });
   });
-  var roomKeys = Object.keys(groups).sort(function(a, b) {
-    var ra = roomRank(a), rb = roomRank(b);
+  // On veut aussi afficher les sous-groupes VIDES (utile pour drag & drop cible), donc on part de subs
+  var allGroupKeys = {};
+  subs.forEach(function(s) { allGroupKeys[s] = true; });
+  Object.keys(groups).forEach(function(g) { allGroupKeys[g] = true; });
+  var groupKeys = Object.keys(allGroupKeys).sort(function(a, b) {
+    var ra = subRank(a), rb = subRank(b);
     if (ra !== rb) return ra - rb;
     return a.localeCompare(b);
   });
-  if (roomKeys.length === 0) {
+  if (Object.keys(groups).length === 0) {
     html += '<div class="empty" style="padding:1.5rem 1rem">Tout est fait ici 🎉</div>';
   } else {
-    roomKeys.forEach(function(room) {
-      var items = groups[room];
-      var key = 'tr_room_' + room;
-      // Par défaut ouvert. On stocke l'état PLIÉ dans doneOpenByCat (réutilise le même mécanisme, valeur inversée)
+    groupKeys.forEach(function(room) {
+      var items = groups[room] || [];
+      // Ne pas afficher les groupes vides qui ne sont pas dans les subs officiels (ex : "Sans pièce" quand vide)
+      if (items.length === 0 && !(room in order)) return;
+      var key = catKey + '_group_' + room;
       var isCollapsed = doneOpenByCat[key] === 'collapsed';
       html += '<div class="room-section" data-room="' + esc(room) + '" ondragover="onRoomDragOver(event)" ondragleave="onRoomDragLeave(event)" ondrop="onRoomDrop(event,\'' + escAttr(room) + '\')">'
         + '<button class="room-hdr" onclick="toggleRoomSection(\'' + escAttr(key) + '\')">'
@@ -1163,9 +1202,13 @@ function renderRoomGrouped(active, done, catKey) {
         +   '<span class="room-count">' + items.length + '</span>'
         + '</button>';
       if (!isCollapsed) {
-        html += '<div class="room-body">' + items.map(function(item) {
-          return roomTaskHTML(item.task, item.cleanText);
-        }).join('') + '</div>';
+        if (items.length === 0) {
+          html += '<div class="room-body"><div class="empty" style="padding:0.75rem 1rem;font-size:12px">—</div></div>';
+        } else {
+          html += '<div class="room-body">' + items.map(function(item) {
+            return roomTaskHTML(item.task, item.cleanText);
+          }).join('') + '</div>';
+        }
       }
       html += '</div>';
     });
@@ -1301,24 +1344,26 @@ function openTaskEdit(id) {
   _editingTaskId = id;
   _editSelCat = t.cat;
   var parsed = parseRoom(t.text);
-  // Sur Travaux et Achats maison, le champ texte ne contient QUE la partie après la pièce
-  var hasRooms = (t.cat === 'tr' || t.cat === 'ac');
-  _editSelRoom = hasRooms ? parsed.room : null;
-  document.getElementById('task-text-input').value = hasRooms ? parsed.text : t.text;
-  // Room field
+  var hasSub = hasSubGroups(t.cat);
+  _editSelRoom = hasSub ? parsed.room : null;
+  document.getElementById('task-text-input').value = hasSub ? parsed.text : t.text;
+  // Sub-group field (label dynamique : Pièce, Client, Zone, …)
   var roomField = document.getElementById('task-room-field');
-  if (hasRooms) {
+  var roomFieldLbl = roomField.querySelector('.field-lbl');
+  if (hasSub) {
     roomField.style.display = 'block';
-    // Récupère toutes les pièces existantes (dans tr et ac) + ROOM_ORDER
-    var allRooms = {};
-    ROOM_ORDER.forEach(function(r) { allRooms[r] = true; });
+    if (roomFieldLbl) roomFieldLbl.textContent = subLabelOf(t.cat);
+    var subs = subsOf(t.cat);
+    // Ajoute aussi les sous-groupes déjà présents dans les tâches (au cas où l'utilisateur en aurait tapé)
+    var extras = {};
     tasks.forEach(function(tk) {
-      if (tk.cat === 'tr' || tk.cat === 'ac') { var p = parseRoom(tk.text); if (p.room) allRooms[p.room] = true; }
+      if (tk.cat === t.cat) { var p = parseRoom(tk.text); if (p.room && p.room !== 'Sans pièce') extras[p.room] = true; }
     });
-    delete allRooms['Sans pièce'];
-    var rooms = Object.keys(allRooms).sort(function(a, b) { return roomRank(a) - roomRank(b); });
+    subs.forEach(function(s) { delete extras[s]; });
+    var extraList = Object.keys(extras).sort();
+    var allSubs = subs.concat(extraList);
     var sel = document.getElementById('task-room-select');
-    sel.innerHTML = rooms.map(function(r) {
+    sel.innerHTML = allSubs.map(function(r) {
       return '<option value="' + esc(r) + '"' + (r === _editSelRoom ? ' selected' : '') + '>' + esc(r) + '</option>';
     }).join('');
   } else {
@@ -1337,28 +1382,42 @@ function openTaskEdit(id) {
 function pickTaskCat(k) {
   _editSelCat = k;
   var wasHasRooms = (document.getElementById('task-room-field').style.display === 'block');
-  var hasRooms = (k === 'tr' || k === 'ac');
-  // Si on bascule vers/depuis une catégorie avec pièces, on met à jour l'affichage
-  if (wasHasRooms !== hasRooms) {
-    var t = tasks.find(function(x) { return x.id === _editingTaskId; });
+  var hasSub = hasSubGroups(k);
+  // Si on bascule vers/depuis une catégorie avec sous-groupes, on met à jour l'affichage
+  if (wasHasRooms !== hasSub) {
     var currentText = document.getElementById('task-text-input').value;
-    if (hasRooms && !wasHasRooms) {
+    var roomField = document.getElementById('task-room-field');
+    var roomFieldLbl = roomField.querySelector('.field-lbl');
+    if (hasSub && !wasHasRooms) {
       var parsed = parseRoom(currentText);
-      _editSelRoom = parsed.room !== 'Sans pièce' ? parsed.room : ROOM_ORDER[0];
-      document.getElementById('task-text-input').value = parsed.text;
-      document.getElementById('task-room-field').style.display = 'block';
-      var rooms = ROOM_ORDER.filter(function(r) { return r !== 'Sans pièce'; });
+      var subs = subsOf(k);
+      _editSelRoom = (parsed.room !== 'Sans pièce' && subs.indexOf(parsed.room) !== -1) ? parsed.room : subs[0];
+      document.getElementById('task-text-input').value = parsed.text !== currentText ? parsed.text : currentText;
+      roomField.style.display = 'block';
+      if (roomFieldLbl) roomFieldLbl.textContent = subLabelOf(k);
       var sel = document.getElementById('task-room-select');
-      sel.innerHTML = rooms.map(function(r) {
+      sel.innerHTML = subs.map(function(r) {
         return '<option value="' + esc(r) + '"' + (r === _editSelRoom ? ' selected' : '') + '>' + esc(r) + '</option>';
       }).join('');
-    } else {
-      // On quitte une catégorie avec pièces : on concatène la pièce dans le texte pour ne pas la perdre
+    } else if (!hasSub && wasHasRooms) {
+      // On quitte une catégorie avec sous-groupes : on concatène le sous-groupe dans le texte
       if (_editSelRoom && _editSelRoom !== 'Sans pièce') {
         document.getElementById('task-text-input').value = _editSelRoom + ' — ' + currentText;
       }
-      document.getElementById('task-room-field').style.display = 'none';
+      roomField.style.display = 'none';
     }
+  } else if (hasSub && wasHasRooms) {
+    // Changement de catégorie qui a AUSSI des sous-groupes (ex : Travaux → Missions) : recharger les subs
+    var currentText2 = document.getElementById('task-text-input').value;
+    var subs2 = subsOf(k);
+    _editSelRoom = subs2.indexOf(_editSelRoom) !== -1 ? _editSelRoom : subs2[0];
+    var roomField2 = document.getElementById('task-room-field');
+    var roomFieldLbl2 = roomField2.querySelector('.field-lbl');
+    if (roomFieldLbl2) roomFieldLbl2.textContent = subLabelOf(k);
+    var sel2 = document.getElementById('task-room-select');
+    sel2.innerHTML = subs2.map(function(r) {
+      return '<option value="' + esc(r) + '"' + (r === _editSelRoom ? ' selected' : '') + '>' + esc(r) + '</option>';
+    }).join('');
   }
   // Re-render cat row
   var catRow = document.getElementById('task-cat-row');
@@ -1374,8 +1433,9 @@ async function saveTaskEdit() {
   var newText = document.getElementById('task-text-input').value.trim();
   if (!newText) { alert('Le texte ne peut pas être vide.'); return; }
   t.cat = _editSelCat || t.cat;
-  if (t.cat === 'tr' || t.cat === 'ac') {
-    var room = document.getElementById('task-room-select').value || _editSelRoom || ROOM_ORDER[0];
+  if (hasSubGroups(t.cat)) {
+    var subs = subsOf(t.cat);
+    var room = document.getElementById('task-room-select').value || _editSelRoom || subs[0];
     t.text = room + ' — ' + newText;
   } else {
     t.text = newText;
