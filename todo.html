@@ -344,7 +344,7 @@ h1, h2, h3, .app-title, .tab-btn, .drawer-title, .section-lbl, .loading-title { 
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 8px 12px;
-  margin-bottom: 12px;
+  margin-top: 1.5rem;
   font-size: 12px;
   color: var(--ink-muted);
 }
@@ -1005,6 +1005,8 @@ function renderTabs() {
     } else if (t.type === 'category') {
       var n2 = tasks.filter(function(x) { return !x.done && x.cat === t.catKey; }).length;
       if (n2 > 0) count = '<span class="tab-count">' + n2 + '</span>';
+    } else if (t.id === 'books') {
+      if (books.length > 0) count = '<span class="tab-count">' + books.length + '</span>';
     }
     var handler;
     if (t.type === 'category') {
@@ -1251,17 +1253,18 @@ function roomRank(r) {
 
 function renderRoomGrouped(active, done, catKey) {
   var html = '';
-  // Bannière si sous-groupes archivés
+  // Bannière si sous-groupes archivés (préparée, appendée à la fin)
   var archivedSubsHere = Object.keys(ARCHIVED_SUBS).filter(function(k) { return k.indexOf(catKey + '|') === 0; });
+  var bannerHTML = '';
   if (archivedSubsHere.length > 0) {
-    html += '<div class="sub-archived-banner">'
+    bannerHTML = '<div class="sub-archived-banner">'
       + '<span>🗄️ ' + archivedSubsHere.length + ' sous-groupe' + (archivedSubsHere.length > 1 ? 's' : '') + ' masqué' + (archivedSubsHere.length > 1 ? 's' : '') + '</span>'
       + '<button onclick="openSubArchivePanel(\'' + escAttr(catKey) + '\')">Voir</button>'
       + '</div>';
   }
   if (active.length === 0 && done.length === 0) {
     html += '<div class="empty"><div class="empty-icon">📌</div>Aucune tâche ici.<br>Tape ta première ci-dessous.</div>';
-    return html;
+    return html + bannerHTML;
   }
   // Ordre des sous-groupes propre à la catégorie
   var subs = subsOf(catKey);
@@ -1332,7 +1335,7 @@ function renderRoomGrouped(active, done, catKey) {
         }).join('') + '</div>' : '')
       + '</div>';
   }
-  return html;
+  return html + bannerHTML;
 }
 
 function roomTaskHTML(t, displayText) {
