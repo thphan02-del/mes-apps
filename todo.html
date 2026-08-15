@@ -820,10 +820,23 @@ var DEFAULT_CATS = {
   we: { label: 'Weavenn',          color: '#8A6BA1' },
   co: { label: 'Courses',          color: '#C88A3D' },
   tr: { label: 'Travaux',          color: '#5A8BA8' },
+  ac: { label: 'Achats maison',    color: '#B8642A' },
   au: { label: 'Autres',           color: '#8A8A8A' }
 };
 var CATS = JSON.parse(localStorage.getItem('t_cats_v2') || 'null') || Object.assign({}, DEFAULT_CATS);
+// Merge : ajoute les catégories par défaut qui manquent (utile pour les mises à jour de l'app)
+Object.keys(DEFAULT_CATS).forEach(function(k) {
+  if (!CATS[k] && !(ARCHIVED_CATS_PEEK() || {})[k]) {
+    CATS[k] = Object.assign({}, DEFAULT_CATS[k]);
+  }
+});
+// Petit helper pour lire les archives sans conflit d'ordre d'init
+function ARCHIVED_CATS_PEEK() {
+  try { return JSON.parse(localStorage.getItem('t_cats_archived_v2') || '{}'); } catch (e) { return {}; }
+}
 function saveCats() { localStorage.setItem('t_cats_v2', JSON.stringify(CATS)); }
+// Save immediately if we added anything
+saveCats();
 // Catégories archivées : { id: {label, color, archived_at} }
 var ARCHIVED_CATS = JSON.parse(localStorage.getItem('t_cats_archived_v2') || '{}');
 function saveArchivedCats() { localStorage.setItem('t_cats_archived_v2', JSON.stringify(ARCHIVED_CATS)); }
@@ -858,7 +871,7 @@ var DEFAULT_MS = [
   { id: 'm7', label: 'Décès de papa',         date: '2026-04-19' }
 ];
 
-var currentTab = 'all';
+var currentTab = null;
 var bookFilter = 'all';
 var doneOpenByCat = {};
 var editCatId = null;
@@ -907,7 +920,7 @@ function catLastActivity(catKey) {
 }
 
 function getTabList() {
-  var list = [{ id: 'all', label: 'Toutes', type: 'all', rank: Infinity }]; // toujours en premier
+  var list = [];
   Object.keys(CATS).forEach(function(k) {
     list.push({
       id: 'cat:' + k,
@@ -921,8 +934,7 @@ function getTabList() {
   list.push({ id: 'habits', label: 'Habitudes', type: 'view', icon: '✓', rank: VIEW_LAST_USED['habits'] || 0 });
   list.push({ id: 'books',  label: 'Livres',    type: 'view', icon: '📚', rank: VIEW_LAST_USED['books']  || 0 });
   list.push({ id: 'life',   label: 'Ma vie',    type: 'view', icon: '⌛', rank: VIEW_LAST_USED['life']   || 0 });
-  // Tri : "Toutes" (Infinity) toujours en premier, puis le reste par rank décroissant.
-  // Pour les items sans activité (rank=0), on tombe sur un ordre alphabétique stable.
+  // Tri par rank décroissant (dernière activité en premier), fallback alpha
   list.sort(function(a, b) {
     if (a.rank !== b.rank) return b.rank - a.rank;
     return (a.label || '').localeCompare(b.label || '');
@@ -1020,10 +1032,8 @@ function showTab(id) {
 function renderContent() {
   var content = document.getElementById('content');
   var inputBar = document.getElementById('input-bar');
-  if (currentTab === 'all') {
-    inputBar.style.display = 'flex';
-    content.innerHTML = renderAllTasks();
-  } else if (currentTab.indexOf('cat:') === 0) {
+  if (!currentTab) { content.innerHTML = ''; inputBar.style.display = 'none'; return; }
+  if (currentTab.indexOf('cat:') === 0) {
     inputBar.style.display = 'flex';
     content.innerHTML = renderCatTasks(currentTab.slice(4));
   } else if (currentTab === 'habits') {
@@ -1091,8 +1101,8 @@ function renderAllTasks() {
 function renderCatTasks(catKey) {
   var active = tasks.filter(function(t) { return !t.done && t.cat === catKey; }).sort(sortTasks);
   var done   = tasks.filter(function(t) { return t.done && t.cat === catKey; }).sort(sortDone);
-  // Cas spécial: Travaux → sections par pièce (préfixe "Pièce — ...")
-  if (catKey === 'tr') {
+  // Catégories avec regroupement par pièce (préfixe "Pièce — ...")
+  if (catKey === 'tr' || catKey === 'ac') {
     return renderRoomGrouped(active, done, catKey);
   }
   return renderTaskList(active, done, catKey);
@@ -1291,19 +1301,19 @@ function openTaskEdit(id) {
   _editingTaskId = id;
   _editSelCat = t.cat;
   var parsed = parseRoom(t.text);
-  // Sur Travaux, le champ texte ne contient QUE la partie après la pièce
-  var isTravaux = (t.cat === 'tr');
-  _editSelRoom = isTravaux ? parsed.room : null;
-  document.getElementById('task-text-input').value = isTravaux ? parsed.text : t.text;
+  // Sur Travaux et Achats maison, le champ texte ne contient QUE la partie après la pièce
+  var hasRooms = (t.cat === 'tr' || t.cat === 'ac');
+  _editSelRoom = hasRooms ? parsed.room : null;
+  document.getElementById('task-text-input').value = hasRooms ? parsed.text : t.text;
   // Room field
   var roomField = document.getElementById('task-room-field');
-  if (isTravaux) {
+  if (hasRooms) {
     roomField.style.display = 'block';
-    // Récupère toutes les pièces existantes + ROOM_ORDER
+    // Récupère toutes les pièces existantes (dans tr et ac) + ROOM_ORDER
     var allRooms = {};
     ROOM_ORDER.forEach(function(r) { allRooms[r] = true; });
     tasks.forEach(function(tk) {
-      if (tk.cat === 'tr') { var p = parseRoom(tk.text); if (p.room) allRooms[p.room] = true; }
+      if (tk.cat === 'tr' || tk.cat === 'ac') { var p = parseRoom(tk.text); if (p.room) allRooms[p.room] = true; }
     });
     delete allRooms['Sans pièce'];
     var rooms = Object.keys(allRooms).sort(function(a, b) { return roomRank(a) - roomRank(b); });
@@ -1326,18 +1336,16 @@ function openTaskEdit(id) {
 }
 function pickTaskCat(k) {
   _editSelCat = k;
-  var wasTravaux = (document.getElementById('task-room-field').style.display === 'block');
-  var isTravaux = (k === 'tr');
-  // Si on bascule vers/depuis Travaux, on met à jour l'affichage du champ Pièce
-  if (wasTravaux !== isTravaux) {
+  var wasHasRooms = (document.getElementById('task-room-field').style.display === 'block');
+  var hasRooms = (k === 'tr' || k === 'ac');
+  // Si on bascule vers/depuis une catégorie avec pièces, on met à jour l'affichage
+  if (wasHasRooms !== hasRooms) {
     var t = tasks.find(function(x) { return x.id === _editingTaskId; });
     var currentText = document.getElementById('task-text-input').value;
-    if (isTravaux && !wasTravaux) {
-      // On active Travaux : on doit demander une pièce
+    if (hasRooms && !wasHasRooms) {
       var parsed = parseRoom(currentText);
       _editSelRoom = parsed.room !== 'Sans pièce' ? parsed.room : ROOM_ORDER[0];
       document.getElementById('task-text-input').value = parsed.text;
-      // Ré-affiche le sélecteur de pièce
       document.getElementById('task-room-field').style.display = 'block';
       var rooms = ROOM_ORDER.filter(function(r) { return r !== 'Sans pièce'; });
       var sel = document.getElementById('task-room-select');
@@ -1345,7 +1353,7 @@ function pickTaskCat(k) {
         return '<option value="' + esc(r) + '"' + (r === _editSelRoom ? ' selected' : '') + '>' + esc(r) + '</option>';
       }).join('');
     } else {
-      // On quitte Travaux : on peut concaténer la pièce dans le texte pour ne pas la perdre
+      // On quitte une catégorie avec pièces : on concatène la pièce dans le texte pour ne pas la perdre
       if (_editSelRoom && _editSelRoom !== 'Sans pièce') {
         document.getElementById('task-text-input').value = _editSelRoom + ' — ' + currentText;
       }
@@ -1366,7 +1374,7 @@ async function saveTaskEdit() {
   var newText = document.getElementById('task-text-input').value.trim();
   if (!newText) { alert('Le texte ne peut pas être vide.'); return; }
   t.cat = _editSelCat || t.cat;
-  if (t.cat === 'tr') {
+  if (t.cat === 'tr' || t.cat === 'ac') {
     var room = document.getElementById('task-room-select').value || _editSelRoom || ROOM_ORDER[0];
     t.text = room + ' — ' + newText;
   } else {
@@ -1832,6 +1840,11 @@ async function loadAll() {
     console.error('loadAll', e);
   }
   document.getElementById('loading').style.display = 'none';
+  // Sélection de l'onglet initial : le premier de la liste (tri par activité récente)
+  if (!currentTab) {
+    var list = getTabList();
+    currentTab = list.length > 0 ? list[0].id : null;
+  }
   renderTabs();
   renderContent();
 }
