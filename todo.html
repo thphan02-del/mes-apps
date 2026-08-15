@@ -334,6 +334,33 @@ h1, h2, h3, .app-title, .tab-btn, .drawer-title, .section-lbl, .loading-title { 
 }
 .room-body .task-item:last-child { border-bottom: 1px solid var(--border); }
 
+/* Sub-archived banner */
+.sub-archived-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.sub-archived-banner button {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: none;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+.sub-archived-banner button:hover { background: var(--accent); color: var(--surface); }
+
 /* Drag & drop */
 .task-item.dragging { opacity: 0.4; }
 .room-section.drop-target { background: var(--accent-soft); border-radius: var(--radius); outline: 2px dashed var(--accent); outline-offset: -2px; }
@@ -851,6 +878,11 @@ saveCats();
 // Catégories archivées : { id: {label, color, archived_at} }
 var ARCHIVED_CATS = JSON.parse(localStorage.getItem('t_cats_archived_v2') || '{}');
 function saveArchivedCats() { localStorage.setItem('t_cats_archived_v2', JSON.stringify(ARCHIVED_CATS)); }
+// Sous-groupes archivés : { "catKey|subName": archived_at }
+var ARCHIVED_SUBS = JSON.parse(localStorage.getItem('t_subs_archived_v2') || '{}');
+function saveArchivedSubs() { localStorage.setItem('t_subs_archived_v2', JSON.stringify(ARCHIVED_SUBS)); }
+function subArchiveKey(catKey, subName) { return catKey + '|' + subName; }
+function isSubArchived(catKey, subName) { return !!ARCHIVED_SUBS[subArchiveKey(catKey, subName)]; }
 
 var HABITS = [
   { id: 'echecs',  emoji: '♟️', name: 'Joué aux échecs' },
@@ -1027,6 +1059,63 @@ function lpEnd() {
   if (lpTimer) { clearTimeout(lpTimer); lpTimer = null; }
 }
 
+/* Long-press sous-groupe (mobile) : archive */
+var subLpTimer = null;
+function subLpStart(catKey, subName) {
+  subLpEnd();
+  subLpTimer = setTimeout(function() { archiveSubgroup(catKey, subName); }, 500);
+}
+function subLpEnd() {
+  if (subLpTimer) { clearTimeout(subLpTimer); subLpTimer = null; }
+}
+
+/* Archive un sous-groupe (les tâches restent en base, juste masquées) */
+function archiveSubgroup(catKey, subName) {
+  var n = tasks.filter(function(t) {
+    if (t.cat !== catKey) return false;
+    var p = parseRoom(t.text);
+    return p.room === subName;
+  }).length;
+  var msg = 'Masquer le sous-groupe "' + subName + '" ?';
+  if (n > 0) msg += '\n\n' + n + ' tâche' + (n > 1 ? 's seront cachées' : ' sera cachée') + ' (elles reviendront à la restauration).';
+  if (!confirm(msg)) return;
+  ARCHIVED_SUBS[subArchiveKey(catKey, subName)] = Date.now();
+  saveArchivedSubs();
+  renderContent();
+  renderTabs();
+}
+
+/* Ouvre un mini-panneau pour restaurer les sous-groupes archivés d'une catégorie */
+function openSubArchivePanel(catKey) {
+  var keys = Object.keys(ARCHIVED_SUBS).filter(function(k) { return k.indexOf(catKey + '|') === 0; });
+  if (keys.length === 0) return;
+  var lines = keys.map(function(k) {
+    var subName = k.slice(catKey.length + 1);
+    var n = tasks.filter(function(t) {
+      if (t.cat !== catKey) return false;
+      var p = parseRoom(t.text);
+      return p.room === subName;
+    }).length;
+    return (keys.indexOf(k) + 1) + ') ' + subName + ' (' + n + ' tâches)';
+  }).join('\n');
+  var ans = prompt('Sous-groupes masqués :\n\n' + lines + '\n\nTape le numéro à restaurer (ou "all" pour tout restaurer, "cancel" pour annuler) :', '');
+  if (!ans || ans === 'cancel') return;
+  if (ans.toLowerCase() === 'all') {
+    keys.forEach(function(k) { delete ARCHIVED_SUBS[k]; });
+  } else {
+    var idx = parseInt(ans, 10) - 1;
+    if (idx >= 0 && idx < keys.length) {
+      delete ARCHIVED_SUBS[keys[idx]];
+    } else {
+      alert('Numéro invalide.');
+      return;
+    }
+  }
+  saveArchivedSubs();
+  renderContent();
+  renderTabs();
+}
+
 function showTab(id) {
   currentTab = id;
   // Marque l'usage pour les vues perso (les catégories utilisent l'activité des tâches)
@@ -1162,8 +1251,17 @@ function roomRank(r) {
 
 function renderRoomGrouped(active, done, catKey) {
   var html = '';
+  // Bannière si sous-groupes archivés
+  var archivedSubsHere = Object.keys(ARCHIVED_SUBS).filter(function(k) { return k.indexOf(catKey + '|') === 0; });
+  if (archivedSubsHere.length > 0) {
+    html += '<div class="sub-archived-banner">'
+      + '<span>🗄️ ' + archivedSubsHere.length + ' sous-groupe' + (archivedSubsHere.length > 1 ? 's' : '') + ' masqué' + (archivedSubsHere.length > 1 ? 's' : '') + '</span>'
+      + '<button onclick="openSubArchivePanel(\'' + escAttr(catKey) + '\')">Voir</button>'
+      + '</div>';
+  }
   if (active.length === 0 && done.length === 0) {
-    return '<div class="empty"><div class="empty-icon">📌</div>Aucune tâche ici.<br>Tape ta première ci-dessous.</div>';
+    html += '<div class="empty"><div class="empty-icon">📌</div>Aucune tâche ici.<br>Tape ta première ci-dessous.</div>';
+    return html;
   }
   // Ordre des sous-groupes propre à la catégorie
   var subs = subsOf(catKey);
@@ -1190,13 +1288,19 @@ function renderRoomGrouped(active, done, catKey) {
     html += '<div class="empty" style="padding:1.5rem 1rem">Tout est fait ici 🎉</div>';
   } else {
     groupKeys.forEach(function(room) {
+      // Filtrer les sous-groupes archivés
+      if (isSubArchived(catKey, room)) return;
       var items = groups[room] || [];
       // Ne pas afficher les groupes vides qui ne sont pas dans les subs officiels (ex : "Sans pièce" quand vide)
       if (items.length === 0 && !(room in order)) return;
       var key = catKey + '_group_' + room;
       var isCollapsed = doneOpenByCat[key] === 'collapsed';
+      // Long-press mobile + clic droit desktop pour archiver le sous-groupe
+      var subHandlers = 'oncontextmenu="archiveSubgroup(\'' + escAttr(catKey) + '\',\'' + escAttr(room) + '\');return false" '
+                     + 'ontouchstart="subLpStart(\'' + escAttr(catKey) + '\',\'' + escAttr(room) + '\')" '
+                     + 'ontouchend="subLpEnd()" ontouchmove="subLpEnd()" ontouchcancel="subLpEnd()"';
       html += '<div class="room-section" data-room="' + esc(room) + '" ondragover="onRoomDragOver(event)" ondragleave="onRoomDragLeave(event)" ondrop="onRoomDrop(event,\'' + escAttr(room) + '\')">'
-        + '<button class="room-hdr" onclick="toggleRoomSection(\'' + escAttr(key) + '\')">'
+        + '<button class="room-hdr" onclick="toggleRoomSection(\'' + escAttr(key) + '\')" ' + subHandlers + '>'
         +   '<span class="room-caret">' + (isCollapsed ? '▶' : '▼') + '</span>'
         +   '<span>' + esc(room) + '</span>'
         +   '<span class="room-count">' + items.length + '</span>'
